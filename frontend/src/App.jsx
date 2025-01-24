@@ -1,5 +1,15 @@
+import { BrowserRouter, Route, Routes } from "react-router";
+import LoginPage from "../pages/LoginPage";
+import SignupPage from "../pages/SignupPage";
 function App() {
-  return <div>Kam krna pdega jldi hi</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="login" element={<LoginPage />} />
+        <Route path="signup" element={<SignupPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
