@@ -1,48 +1,66 @@
-import { useState } from "react";
-import { Card } from "../components/Card";
-import { CardContent } from "../components/CardContent";
+import { FcGoogle } from "react-icons/fc";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+
 const LoginPage = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login Submitted:", formData);
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md shadow-2xl">
-        <CardContent>
-          <h2 className="text-xl font-bold text-center mb-4">Login</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+          Login to Your Account
+        </h2>
+
+        <form>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-600 mb-2">
+              Email Address
+            </label>
             <Input
               type="email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
+              id="email"
+              placeholder="Enter your email"
+              className="w-full"
             />
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-gray-600 mb-2">
+              Password
+            </label>
             <Input
               type="password"
-              placeholder="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
+              id="password"
+              placeholder="Enter your password"
+              className="w-full"
             />
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 mb-4">
+            Login
+          </Button>
+        </form>
+
+        <div className="flex items-center justify-center mb-4">
+          <hr className="flex-grow border-gray-300" />
+          <span className="px-2 text-gray-500 text-sm">OR</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+
+        <Button
+          variant="outline"
+          className="w-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 border border-gray-300"
+        >
+          <FcGoogle className="mr-2 text-lg" />
+          Continue with Google
+        </Button>
+
+        <p className="text-sm text-gray-600 text-center mt-4">
+          Don’t have an account?{" "}
+          <a href="/signup" className="text-blue-600 hover:underline">
+            Sign Up
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
