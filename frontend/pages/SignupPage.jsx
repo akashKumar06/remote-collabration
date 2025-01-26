@@ -1,8 +1,9 @@
 // SignupPage.jsx
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
+import { CardContent } from "../components/CardContent";
+import { Card } from "../components/Card";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ const SignupPage = () => {
         <CardContent>
           <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex space-x-4">
+            <div className="flex justify-between">
               <Input
                 type="text"
                 placeholder="First Name"
@@ -48,47 +49,46 @@ const SignupPage = () => {
                 required
               />
             </div>
-            <Input
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="date"
-              placeholder="Birth Date"
-              name="birthDate"
-              value={formData.birthDate}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="tel"
-              placeholder="Phone Number"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="Confirm Password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-            <Button type="submit" className="w-full py-2">Sign Up</Button>
+            <div className="flex flex-col gap-4">
+              <Input
+                type="email"
+                placeholder="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full"
+                required
+              />
+              <Input
+                type="tel"
+                placeholder="Phone Number"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="flex justify-between">
+              <Input
+                type="password"
+                placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="password"
+                placeholder="Confirm Password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full py-2">
+              Sign Up
+            </Button>
           </form>
           <div className="text-center mt-4">
             <Button variant="outline" className="w-full py-2">
@@ -97,7 +97,10 @@ const SignupPage = () => {
           </div>
           <div className="text-center mt-4">
             <p>
-              Already have an account? <a href="/login" className="text-blue-500 hover:underline">Login</a>
+              Already have an account?{" "}
+              <a href="/login" className="text-blue-500 hover:underline">
+                Login
+              </a>
             </p>
           </div>
         </CardContent>
