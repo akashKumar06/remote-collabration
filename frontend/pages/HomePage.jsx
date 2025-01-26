@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { Button } from "../components/Button";
@@ -12,8 +13,12 @@ const HomePage = () => {
         <div className="container mx-auto flex justify-between items-center px-4">
           <h1 className="text-2xl font-bold text-blue-600">CollabTrack</h1>
           <div>
-            <Button className="mr-4">Login</Button>
-            <Button variant="outline">Sign Up</Button>
+            <Button className="mr-4">
+            <Link to="/login">login</Link>
+            </Button>
+            <Button variant="outline">
+              <Link to="/signup">signup</Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -38,7 +43,7 @@ const HomePage = () => {
           </Button>
         </div>
         <img
-          src="/collab.jpg"
+          src="/collab.png"
           alt="Collaboration Illustration"
           className="w-xl mb-8"
         />
