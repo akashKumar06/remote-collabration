@@ -4,8 +4,10 @@ import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { CardContent } from "../components/CardContent";
 import { Card } from "../components/Card";
+import { useNavigate } from "react-router";
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -86,7 +88,13 @@ const SignupPage = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full py-2">
+            <Button
+              type="submit"
+              className="w-full py-2"
+              onClick={() => {
+                navigate("/account_setup");
+              }}
+            >
               Sign Up
             </Button>
           </form>
