@@ -43,7 +43,7 @@ const HomePage = () => {
           </Button>
         </div>
         <img
-          src="/collab.png"
+          src="/collab1.png"
           alt="Collaboration Illustration"
           className="w-xl mb-8"
         />
