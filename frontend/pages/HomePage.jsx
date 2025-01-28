@@ -14,7 +14,7 @@ const HomePage = () => {
           <h1 className="text-2xl font-bold text-blue-600">CollabTrack</h1>
           <div>
             <Button className="mr-4">
-            <Link to="/login">login</Link>
+              <Link to="/login">login</Link>
             </Button>
             <Button variant="outline">
               <Link to="/signup">signup</Link>
@@ -42,11 +42,6 @@ const HomePage = () => {
             Get Started
           </Button>
         </div>
-        <img
-          src="/collab1.png"
-          alt="Collaboration Illustration"
-          className="w-xl mb-8"
-        />
       </motion.section>
 
       {/* Features Section */}
