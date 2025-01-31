@@ -1,5 +1,5 @@
 import { Card } from "../components/Card";
-import {CardContent} from "../components/CardContent";
+// import {CardContent} from "../components/CardContent";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Bell, User, Settings, Search } from "lucide-react";
