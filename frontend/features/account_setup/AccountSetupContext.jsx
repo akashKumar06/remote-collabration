@@ -5,8 +5,10 @@ const AccountSetupContext = createContext();
 // eslint-disable-next-line react/prop-types
 export function AccountSetupProvider({ children }) {
   const [step, setStep] = useState(1);
+  const [projectName,setProjectName]=useState("project-name");
+  const [TaskName,setTaskName]=useState("Task name");
   return (
-    <AccountSetupContext.Provider value={{ setStep, step }}>
+    <AccountSetupContext.Provider value={{ setStep, step,setProjectName,projectName,TaskName,setTaskName}}>
       {children}
     </AccountSetupContext.Provider>
   );
