@@ -1,15 +1,13 @@
 import { useNavigate } from "react-router";
 import { useAccountSetup } from "./AccountSetupContext";
-import Step1 from "./Step1";
+import GetStarted from "./GetStarted";
 
 function AccountSetup() {
-  const { step,setStep } = useAccountSetup();
+  const { step, setStep } = useAccountSetup();
   const navigate = useNavigate();
   switch (step) {
     case 1:
-      return (
-        <Step1 />
-      );
+      return <GetStarted />;
     case 2:
       return (
         <div>

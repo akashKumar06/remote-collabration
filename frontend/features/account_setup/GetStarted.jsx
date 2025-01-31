@@ -1,7 +1,7 @@
-import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Lightbulb } from "lucide-react";
 import { useAccountSetup } from "./AccountSetupContext";
+import { useState } from "react";
 
 const GetStarted = () => {
   const { step, setStep } = useAccountSetup();

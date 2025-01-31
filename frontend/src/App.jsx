@@ -3,8 +3,8 @@ import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import HomePage from "../pages/HomePage";
 import Dashboard from "../pages/DashboardPage";
-import { AccountSetupProvider } from "../features/AccountSetupContext";
-import AccountSetup from "../features/AccountSetup";
+import { AccountSetupProvider } from "../features/account_setup/AccountSetupContext";
+import AccountSetup from "../features/account_setup/AccountSetup";
 function App() {
   return (
     <BrowserRouter>

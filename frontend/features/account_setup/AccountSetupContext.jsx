@@ -14,7 +14,6 @@ export function AccountSetupProvider({ children }) {
 
 export function useAccountSetup() {
   const context = useContext(AccountSetupContext);
-  console.log(context);
   if (!context) console.log("Account setup is used outside provider");
   return context;
 }
