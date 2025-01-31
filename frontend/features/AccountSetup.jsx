@@ -1,23 +1,14 @@
 import { useNavigate } from "react-router";
 import { useAccountSetup } from "./AccountSetupContext";
+import Step1 from "./Step1";
 
 function AccountSetup() {
-  const { step, setStep } = useAccountSetup();
+  const { step,setStep } = useAccountSetup();
   const navigate = useNavigate();
   switch (step) {
     case 1:
       return (
-        <div>
-          <h1 className="text-lg font-bold">
-            start step - continue with a project page will come
-          </h1>
-          <button
-            className="cursor-pointer bg-blue-500 rounded text-white p-2"
-            onClick={() => setStep((step) => step + 1)}
-          >
-            Continue
-          </button>
-        </div>
+        <Step1 />
       );
     case 2:
       return (
