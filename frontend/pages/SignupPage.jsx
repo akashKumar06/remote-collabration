@@ -5,6 +5,7 @@ import { Button } from "../components/Button";
 import { CardContent } from "../components/CardContent";
 import { Card } from "../components/Card";
 import { useNavigate } from "react-router";
+import axios from 'axios'
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -12,20 +13,28 @@ const SignupPage = () => {
     firstName: "",
     lastName: "",
     email: "",
-    birthDate: "",
     phoneNumber: "",
     password: "",
     confirmPassword: "",
   });
-
+  const [firstName,setFirstName] = useState()
+  const [lastName,setLastName] = useState()
+  const [email,setEmail]= useState()
+  const [phoneNumber,setphoneNumber] = useState()
+  const [password,setPassword]=useState()
+  const [confirmPassword,setConfirmPassword]=useState()
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Signup Submitted:", formData);
-  };
+    axios.post('http://localhost:8000/signup',{firstName,lastName,email,phoneNumber,password,confirmPassword})
+    .then(result => {console.log(result)
+     navigate('./LoginPage.jsx')
+  })
+    .catch(err=> console.log(err))
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">

@@ -1,14 +1,9 @@
 import mongoose from "mongoose";
-
-const userSchema = new mongoose.Schema(
+const SignupSchema = new mongoose.Schema(
   {
-    fullname: {
+    firstname: {
       firstname: { type: String, required: true },
       lastname: { type: String },
-    },
-    password: {
-      type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -18,15 +13,78 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role: {
+    password: {
       type: String,
-      enum: ["Team Leader", "Member"],
-      required: true,
+      required: [true, "length must be atleast 6 character"],
     },
+    confirmPassword:{
+       type: String,
+       required: [true, "length must be atleast 6 character"],
+    }
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const signupModel = mongoose.model("Signup", SignupSchema);
+Module.exports= signupModel
 
-export default User;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const userSchema = new mongoose.Schema(
+//   {
+//     fullname: {
+//       firstname: { type: String, required: true },
+//       lastname: { type: String },
+//     },
+//     password: {
+//       type: String,
+//       required: [true, "length must be atleast 6 character"],
+//     },
+//     email: {
+//       type: String,
+//       required: true,
+//     },
+//     phoneNo: {
+//       type: String,
+//       required: true,
+//     },
+//     role: {  
+//       type: String,
+//       enum: ["Team Leader", "Member"],
+//       required: true,
+//     },
+//   },
+//   { timestamps: true }
+// );
+
+// const User = mongoose.model("User", userSchema);
+
+
