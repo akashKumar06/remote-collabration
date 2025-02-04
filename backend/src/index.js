@@ -1,7 +1,16 @@
-import express from "express";
-const app = express();
+import server from "./app.js";
+import connectDB from "./db/connection.js";
 
-app.listen(process.env.PORT, () => {
-  console.log("initial Testing .....");
-  console.log("Server is running at port ", process.env.PORT);
-});
+(async () => {
+  try {
+    await connectDB();
+    server.on("error", (err) => console.log(err));
+
+    server.listen(process.env.PORT, () => {
+      console.log(`server is listening is port ${process.env.PORT}`);
+    });
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+})();

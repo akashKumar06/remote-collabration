@@ -1,8 +1,24 @@
 import { FcGoogle } from "react-icons/fc";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+import axios from 'axios'
+import { useNavigate } from "react-router";
 
 const LoginPage = () => {
+    const [email,setEmail] = useState()
+    const [password,setPassword] = useState()
+    const navigate = useNavigate()
+
+     const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post('http://localhost:8000/login',{email,password})
+        .then(result => {console.log(result)
+        if(result.data==="success"){  
+           navigate('/frontend/features/dashboard')
+        }
+      })
+        .catch(err=> console.log(err))
+      }
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6">

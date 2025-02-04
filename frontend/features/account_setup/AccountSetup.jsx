@@ -3,6 +3,7 @@ import { useAccountSetup } from "./AccountSetupContext";
 import GetStarted from "./GetStarted";
 import ProjectSetup from "./ProjectSetup";
 import TaskSetup from "./TaskSetup";
+import TeamInvite from "./TeamInvite";
 
 function AccountSetup() {
   const { step } = useAccountSetup();
@@ -15,17 +16,7 @@ function AccountSetup() {
     case 3:
       return <TaskSetup />;
     case 4:
-      return (
-        <>
-          <h1>Team invite page ayega yha pe</h1>
-          <button
-            className="bg-amber-200 rounded p-4"
-            onClick={() => navigate("/dashboard")}
-          >
-            Continue
-          </button>
-        </>
-      );
+      return <TeamInvite/>
     default:
       return null;
   }
