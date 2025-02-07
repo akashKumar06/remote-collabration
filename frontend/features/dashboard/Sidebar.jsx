@@ -2,7 +2,34 @@ import { CircleCheck, CirclePlus, House, InboxIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 
-function Div({ icon, name, isToggled }) {
+function Div({ icon, name, isToggled, onCreate }) {
+  if (name === "create") {
+    return (
+      <div
+        onClick={onCreate}
+        className="flex items-center transition-all duration-300 hover:bg-[#3a3a3c] py-2 px-1 rounded cursor-pointer"
+      >
+        {/* Icon - Will Expand When Toggled */}
+        <div
+          className={`transition-all flex items-center justify-center duration-300 ${
+            isToggled ? "flex-1" : ""
+          }`}
+        >
+          {icon}
+        </div>
+
+        {/* Text - Will Shrink & Hide */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            isToggled ? "w-0 opacity-0" : "w-full opacity-100"
+          }`}
+        >
+          <p className="text-white whitespace-nowrap ml-2">{name}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Link
       to={name}
@@ -30,6 +57,8 @@ function Div({ icon, name, isToggled }) {
 }
 
 function Sidebar({ isToggled }) {
+  function handleCreate() {}
+
   return (
     <motion.div
       initial={{ width: "16rem" }}
@@ -39,8 +68,9 @@ function Sidebar({ isToggled }) {
     >
       <Div
         icon={<CirclePlus color="#a19fa1" />}
-        name="Create"
+        name="create"
         isToggled={isToggled}
+        onCreate={handleCreate}
       />
 
       <Div icon={<House color="#a19fa1" />} name="home" isToggled={isToggled} />
