@@ -1,6 +1,9 @@
+import { createPortal } from "react-dom";
 import { CircleCheck, CirclePlus, House, InboxIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
+import { useState } from "react";
+import NewTask from "./NewTask";
 
 function Div({ icon, name, isToggled, onCreate }) {
   if (name === "create") {
@@ -57,8 +60,14 @@ function Div({ icon, name, isToggled, onCreate }) {
 }
 
 function Sidebar({ isToggled }) {
-  function handleCreate() {}
+  const [showModal, setShowModal] = useState(false);
+  function handleCreate() {
+    setShowModal(() => true);
+  }
 
+  function handleClose() {
+    setShowModal(() => false);
+  }
   return (
     <motion.div
       initial={{ width: "16rem" }}
@@ -66,6 +75,8 @@ function Sidebar({ isToggled }) {
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="bg-[#2e2e30] border-r border-l border-[#424244] p-2 flex flex-col gap-1"
     >
+      {showModal &&
+        createPortal(<NewTask onClose={handleClose} />, document.body)}
       <Div
         icon={<CirclePlus color="#a19fa1" />}
         name="create"
