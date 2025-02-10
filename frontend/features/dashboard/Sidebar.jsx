@@ -1,9 +1,13 @@
 import { CircleCheck, CirclePlus, House, InboxIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
 
 function Div({ icon, name, isToggled }) {
   return (
-    <div className="flex items-center transition-all duration-300 hover:bg-[#3a3a3c] py-2 px-1 rounded cursor-pointer">
+    <Link
+      to={name}
+      className="flex items-center transition-all duration-300 hover:bg-[#3a3a3c] py-2 px-1 rounded cursor-pointer"
+    >
       {/* Icon - Will Expand When Toggled */}
       <div
         className={`transition-all flex items-center justify-center duration-300 ${
@@ -21,7 +25,7 @@ function Div({ icon, name, isToggled }) {
       >
         <p className="text-white whitespace-nowrap ml-2">{name}</p>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -38,15 +42,16 @@ function Sidebar({ isToggled }) {
         name="Create"
         isToggled={isToggled}
       />
-      <Div icon={<House color="#a19fa1" />} name="Home" isToggled={isToggled} />
+
+      <Div icon={<House color="#a19fa1" />} name="home" isToggled={isToggled} />
       <Div
         icon={<CircleCheck color="#a19fa1" />}
-        name="My Tasks"
+        name="my-tasks"
         isToggled={isToggled}
       />
       <Div
         icon={<InboxIcon color="#a19fa1" />}
-        name="Inbox"
+        name="inbox"
         isToggled={isToggled}
       />
     </motion.div>

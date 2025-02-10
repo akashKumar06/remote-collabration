@@ -15,10 +15,7 @@ const Dashboard = () => {
       <div className="flex h-screen">
         <Sidebar isToggled={isSidebarToggled} />
         <main className="overflow-scroll flex-1 p-4 bg-[#1e1f21]">
-          <h1 className="text-xs text-gray-900 dark:text-white">
-             hello world
-          </h1>
-          <Outlet/>
+          <Outlet />
         </main>
       </div>
     </div>
