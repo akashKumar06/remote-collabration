@@ -5,7 +5,6 @@ import { useState } from "react";
 
 const Dashboard = () => {
   const [isSidebarToggled, setIsSidebarToggled] = useState(false);
-
   function handleToggleSidebar() {
     setIsSidebarToggled((prev) => !prev);
   }
