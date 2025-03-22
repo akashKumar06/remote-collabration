@@ -5,7 +5,6 @@ import connectDB from "./db/connection.js";
   try {
     await connectDB();
     server.on("error", (err) => console.log(err));
-
     server.listen(process.env.PORT, () => {
       console.log(`server is listening is port ${process.env.PORT}`);
     });

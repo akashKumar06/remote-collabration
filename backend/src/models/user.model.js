@@ -17,46 +17,16 @@ const SignupSchema = new mongoose.Schema(
       type: String,
       required: [true, "length must be atleast 6 character"],
     },
-    confirmPassword:{
-       type: String,
-       required: [true, "length must be atleast 6 character"],
-    }
+    confirmPassword: {
+      type: String,
+      required: [true, "length must be atleast 6 character"],
+    },
   },
   { timestamps: true }
 );
 
 const signupModel = mongoose.model("Signup", SignupSchema);
-Module.exports= signupModel
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Module.exports = signupModel;
 
 // const userSchema = new mongoose.Schema(
 //   {
@@ -76,7 +46,7 @@ Module.exports= signupModel
 //       type: String,
 //       required: true,
 //     },
-//     role: {  
+//     role: {
 //       type: String,
 //       enum: ["Team Leader", "Member"],
 //       required: true,
@@ -86,5 +56,3 @@ Module.exports= signupModel
 // );
 
 // const User = mongoose.model("User", userSchema);
-
-

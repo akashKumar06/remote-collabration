@@ -1,31 +1,27 @@
-import { Connection } from "../db/connection";
-const express = require("express")
-const cors= require("cors")
-const signupModel= require('../models/user.model')
+import { validationResult } from "express-validator";
 
-const app =express()
-app.use(express.json())
-app.use(cors())
+async function register(req, res) {
+  try {
+    const errors = validationResult(req);
 
-app.post('/signup',(req,res)=>{
-    signupModel.create(req.body)
-    .then(signup=> res.json(signup))
-    .catch(err=> res.json(err))
-})
-
-app.post("/login",(req,res)=>{
-    const {email,password} = req.body;
-    signupModel.findOne({email:email})
-    .then(user=>{
-       if(user){ 
-        if(user.password===password){
-            res.json("Success")
-        }
-        else{
-            res.json("the password is incorrect")
-        }
-    } else{
-        res.json("No record existed")
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    })
-})
+
+    console.log(req.body);
+
+    return res.status(200).json({
+      body: req.body,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
+async function login(req, res) {}
+
+export { register, login };

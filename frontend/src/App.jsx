@@ -1,13 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import LoginPage from "../pages/LoginPage";
-import SignupPage from "../pages/SignupPage";
-import HomePage from "../pages/HomePage";
-import Dashboard from "../pages/DashboardPage";
-import { AccountSetupProvider } from "../features/account_setup/AccountSetupContext";
-import AccountSetup from "../features/account_setup/AccountSetup";
-import MyTasksPage from "../features/dashboard/MyTasksPage";
-import DashboardHome from "../features/dashboard/DashboardHome";
-import Inbox from "../features/dashboard/Inbox";
+import DashboardHome from "./features/dashboard/DashboardHome";
+import Dashboard from "./features/dashboard/Dashboard";
+import MyTasksPage from "./features/dashboard/MyTasksPage";
+import { Inbox } from "lucide-react";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import { AccountSetupProvider } from "./features/account_setup/AccountSetupContext";
+import AccountSetup from "./features/account_setup/AccountSetup";
+
 function App() {
   return (
     <BrowserRouter>
