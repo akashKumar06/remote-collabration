@@ -10,11 +10,11 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen overflow-hidden font-roboto">
       <Navbar onToggleSidbar={handleToggleSidebar} />
       <div className="flex h-screen">
         <Sidebar isToggled={isSidebarToggled} />
-        <main className="overflow-scroll flex-1 p-4 bg-[#1e1f21]">
+        <main className="w-full bg-[#1E1F21] text-white">
           <Outlet />
         </main>
       </div>

@@ -1,101 +1,101 @@
-import { createPortal } from "react-dom";
-import { CircleCheck, CirclePlus, House, InboxIcon } from "lucide-react";
-import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { CircleCheck, HomeIcon, Inbox, Plus } from "lucide-react";
 import { useState } from "react";
-import NewTask from "./NewTask";
+import { Link } from "react-router";
 
-function Div({ icon, name, isToggled, onCreate }) {
-  if (name === "create") {
-    return (
-      <div
-        onClick={onCreate}
-        className="flex items-center transition-all duration-300 hover:bg-[#3a3a3c] py-2 px-1 rounded cursor-pointer"
-      >
-        {/* Icon - Will Expand When Toggled */}
-        <div
-          className={`transition-all flex items-center justify-center duration-300 ${
-            isToggled ? "flex-1" : ""
-          }`}
-        >
-          {icon}
-        </div>
+const initalProjects = [
+  {
+    name: "Demo Project",
+    id: 1,
+  },
+  {
+    id: 2,
+    name: "MNC Project",
+  },
+];
 
-        {/* Text - Will Shrink & Hide */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ${
-            isToggled ? "w-0 opacity-0" : "w-full opacity-100"
-          }`}
-        >
-          <p className="text-white whitespace-nowrap ml-2">{name}</p>
-        </div>
-      </div>
-    );
-  }
+const initalTeams = [
+  {
+    id: 12,
+    name: "Junior team",
+  },
+  {
+    id: 23,
+    name: "remtoe collab team",
+  },
+];
+
+function Sidebar() {
+  const [teams, setTeams] = useState(initalProjects);
+  const [projects, setProjects] = useState(initalTeams);
 
   return (
-    <Link
-      to={name}
-      className="flex items-center transition-all duration-300 hover:bg-[#3a3a3c] py-2 px-1 rounded cursor-pointer"
-    >
-      {/* Icon - Will Expand When Toggled */}
-      <div
-        className={`transition-all flex items-center justify-center duration-300 ${
-          isToggled ? "flex-1" : ""
-        }`}
-      >
-        {icon}
+    <aside className="shadow border-r-1 border-white/30 flex flex-col bg-background text-white/90 text-sm w-72 font-medium">
+      <ul className="p-4 border-b-1 border-white/30 flex flex-col gap-1.5">
+        <li className="hover:bg-[#555555] transition px-3 py-1 rounded">
+          <Link to="home" className="flex gap-2">
+            <span>
+              <HomeIcon size={20} />
+            </span>
+            <span>Home</span>
+          </Link>
+        </li>
+        <li className="hover:bg-[#555555] transition px-3 py-1 rounded">
+          <Link to="home" className="flex gap-2">
+            <span>
+              <CircleCheck size={20} />
+            </span>
+            <span>My Tasks</span>
+          </Link>
+        </li>
+        <li className="hover:bg-[#555555] transition px-3 py-1 rounded">
+          <Link to="home" className="flex gap-2">
+            <span>
+              <Inbox size={20} />
+            </span>
+            <span>Inbox</span>
+          </Link>
+        </li>
+      </ul>
+
+      <div className="flex gap-2  flex-col p-4 overflow-auto flex-1 scrollbar-hide">
+        <div>
+          <div className="flex items-center justify-between">
+            <h1 className="text-base">Projects</h1>
+            <div className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition">
+              <Plus size={18} fontWeight={900} />
+            </div>
+          </div>
+          <ul className=" flex flex-col gap-1">
+            {projects.map((project) => (
+              <li
+                key={project.id}
+                className="hover:bg-[#555555] transition px-2 py-1 rounded"
+              >
+                <Link to="projects">{project.name}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <div className="flex items-center justify-between py-">
+            <h1 className="text-base">Teams</h1>
+            <div className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition">
+              <Plus size={18} fontWeight={900} />
+            </div>
+          </div>
+          <ul className=" flex flex-col gap-1">
+            {teams.map((team) => (
+              <li
+                key={team.id}
+                className="hover:bg-[#555555] transition px-2 py-1 rounded"
+              >
+                <Link to="projects">{team.name}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-
-      {/* Text - Will Shrink & Hide */}
-      <div
-        className={`overflow-hidden transition-all duration-300 ${
-          isToggled ? "w-0 opacity-0" : "w-full opacity-100"
-        }`}
-      >
-        <p className="text-white whitespace-nowrap ml-2">{name}</p>
-      </div>
-    </Link>
-  );
-}
-
-function Sidebar({ isToggled }) {
-  const [showModal, setShowModal] = useState(false);
-  function handleCreate() {
-    setShowModal(() => true);
-  }
-
-  function handleClose() {
-    setShowModal(() => false);
-  }
-  return (
-    <motion.div
-      initial={{ width: "16rem" }}
-      animate={{ width: isToggled ? "4rem" : "16rem" }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-[#2e2e30] border-r border-l border-[#424244] p-2 flex flex-col gap-1"
-    >
-      {showModal &&
-        createPortal(<NewTask onClose={handleClose} />, document.body)}
-      <Div
-        icon={<CirclePlus color="#a19fa1" />}
-        name="create"
-        isToggled={isToggled}
-        onCreate={handleCreate}
-      />
-
-      <Div icon={<House color="#a19fa1" />} name="home" isToggled={isToggled} />
-      <Div
-        icon={<CircleCheck color="#a19fa1" />}
-        name="my-tasks"
-        isToggled={isToggled}
-      />
-      <Div
-        icon={<InboxIcon color="#a19fa1" />}
-        name="inbox"
-        isToggled={isToggled}
-      />
-    </motion.div>
+    </aside>
   );
 }
 
