@@ -1,12 +1,10 @@
 function ProjectDasboard() {
-  return <div>
+  return (
     <div>
-       kuch aayega vaishnavi
+      <div>kuch aayega ok yha pe ana pdega kuch vaishnavi</div>
+      <div>hmm..</div>
     </div>
-    <div>
-      hmm..
-    </div>
-  </div>;
+  );
 }
 
 export default ProjectDasboard;
