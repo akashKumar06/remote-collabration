@@ -15,6 +15,8 @@ import List from "./features/dashboard/project/List";
 import Inbox from "./features/dashboard/Inbox";
 import ProjectDasboard from "./features/dashboard/project/ProjectDasboard";
 import TeamsPage from "./features/dashboard/teams/TeamsPage";
+import Modal from "./components/Modal";
+import { useSelector } from "react-redux";
 
 function App() {
   return (

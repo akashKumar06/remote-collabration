@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
+import Modal from "../../components/Modal";
 
 const Dashboard = () => {
   const [isSidebarToggled, setIsSidebarToggled] = useState(false);
@@ -10,9 +11,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="h-screen overflow-hidden font-roboto">
+    <div className="h-screen overflow-x-hidden font-roboto">
       <Navbar onToggleSidbar={handleToggleSidebar} />
-      <div className="flex h-screen">
+      <div className="flex w-full h-screen overflow-hidden">
+        <Modal />
         <Sidebar isToggled={isSidebarToggled} />
         <main className="w-full bg-[#1E1F21] text-white">
           <Outlet />

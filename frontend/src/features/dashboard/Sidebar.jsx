@@ -1,6 +1,8 @@
 import { CircleCheck, HomeIcon, Inbox, Plus } from "lucide-react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router";
+import { toggle } from "../../app/slices/modal";
 
 const initalProjects = [
   {
@@ -27,7 +29,7 @@ const initalTeams = [
 function Sidebar() {
   const [teams, setTeams] = useState(initalProjects);
   const [projects, setProjects] = useState(initalTeams);
-
+  const dispatch = useDispatch();
   return (
     <aside className="shadow border-r-1 border-white/30 flex flex-col bg-background text-white/90 text-sm w-72 font-medium">
       <ul className="p-4 border-b-1 border-white/30 flex flex-col gap-1.5">
@@ -61,7 +63,10 @@ function Sidebar() {
         <div>
           <div className="flex items-center justify-between">
             <h1 className="text-base">Projects</h1>
-            <div className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition">
+            <div
+              className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition"
+              onClick={() => dispatch(toggle())}
+            >
               <Plus size={18} fontWeight={900} />
             </div>
           </div>
