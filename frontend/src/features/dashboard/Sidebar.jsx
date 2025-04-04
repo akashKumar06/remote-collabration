@@ -2,7 +2,7 @@ import { CircleCheck, HomeIcon, Inbox, Plus } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router";
-import { toggle } from "../../app/slices/modal";
+import { open, setActiveComponent } from "../../app/slices/modal";
 
 const initalProjects = [
   {
@@ -65,7 +65,10 @@ function Sidebar() {
             <h1 className="text-base">Projects</h1>
             <div
               className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition"
-              onClick={() => dispatch(toggle())}
+              onClick={() => {
+                dispatch(open());
+                dispatch(setActiveComponent("new_project_form"));
+              }}
             >
               <Plus size={18} fontWeight={900} />
             </div>
@@ -84,7 +87,13 @@ function Sidebar() {
         <div>
           <div className="flex items-center justify-between py-">
             <h1 className="text-base">Teams</h1>
-            <div className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition">
+            <div
+              className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition"
+              onClick={() => {
+                dispatch(open());
+                dispatch(setActiveComponent("new_team_form"));
+              }}
+            >
               <Plus size={18} fontWeight={900} />
             </div>
           </div>
