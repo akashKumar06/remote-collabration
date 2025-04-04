@@ -2,13 +2,30 @@ import UserLogo from "../../../components/UserLogo";
 
 function Messages() {
   return (
-    <div className="flex flex-col p-10 items-center justify-center gap-6">
-      <div className="w-4xl px-10 py-4 flex gap-2">
+    <div className="flex flex-col items-center justify-center p-10 gap-6 min-h-screen bg-gray-1000 text-white">
+      
+      {/* User Logo and Message Button */}
+      <div className="flex flex-col items-center text-center w-full max-w-xl p-6 bg-gray-1000 rounded-lg shadow-md">
         <UserLogo />
-        <button className="flex-1">Send message to members</button>
+        <button className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+          Send message to members
+        </button>
       </div>
-      <div className="w-4xl"></div>
-      <div className="w-4xl"></div>
+
+      {/* Message Text */}
+      <div className="text-center w-full max-w-lg">
+        <p className="text-gray-400 text-sm">
+          Try clearing your filters or switching types to see more results.
+        </p>
+      </div>
+
+      {/* Adjust Filters Button */}
+      <div className="text-center w-full">
+        <button className="mt-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+          Adjust filters
+        </button>
+      </div>
+      
     </div>
   );
 }
