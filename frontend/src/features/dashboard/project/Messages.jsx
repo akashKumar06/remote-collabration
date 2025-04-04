@@ -2,7 +2,7 @@ import UserLogo from "../../../components/UserLogo";
 
 function Messages() {
   return (
-    <div className="flex flex-col items-center justify-center p-10 gap-6 min-h-screen bg-gray-1000 text-white">
+    <div className=" mt-0.2 flex flex-col items-center justify-center p-10 gap-6 min-h-screen bg-gray-1000 text-white">
       
       {/* User Logo and Message Button */}
       <div className="flex flex-col items-center text-center w-full max-w-xl p-6 bg-gray-1000 rounded-lg shadow-md">
