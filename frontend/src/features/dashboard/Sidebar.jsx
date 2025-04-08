@@ -1,116 +1,108 @@
-import { CircleCheck, HomeIcon, Inbox, Plus } from "lucide-react";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import {
+  Home,
+  ListTodo,
+  Inbox,
+  FolderKanban,
+  Users2,
+  Plus,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
-import { open, setActiveComponent } from "../../app/slices/modal";
+import { close, open, setActiveComponent } from "../../app/slices/modal";
 
-const initalProjects = [
-  {
-    name: "Demo Project",
-    id: 1,
-  },
-  {
-    id: 2,
-    name: "MNC Project",
-  },
-];
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-const initalTeams = [
-  {
-    id: 12,
-    name: "Junior team",
-  },
-  {
-    id: 23,
-    name: "remtoe collab team",
-  },
-];
-
-function Sidebar() {
-  const [teams, setTeams] = useState(initalProjects);
-  const [projects, setProjects] = useState(initalTeams);
+export default function Sidebar() {
   const dispatch = useDispatch();
-  return (
-    <aside className="shadow border-r-1 border-white/30 flex flex-col bg-background text-white/90 text-sm w-72 font-medium">
-      <ul className="p-4 border-b-1 border-white/30 flex flex-col gap-1.5">
-        <li className="hover:bg-[#555555] transition px-3 py-1 rounded">
-          <Link to="home" className="flex gap-2">
-            <span>
-              <HomeIcon size={20} />
-            </span>
-            <span>Home</span>
-          </Link>
-        </li>
-        <li className="hover:bg-[#555555] transition px-3 py-1 rounded">
-          <Link to="home" className="flex gap-2">
-            <span>
-              <CircleCheck size={20} />
-            </span>
-            <span>My Tasks</span>
-          </Link>
-        </li>
-        <li className="hover:bg-[#555555] transition px-3 py-1 rounded">
-          <Link to="home" className="flex gap-2">
-            <span>
-              <Inbox size={20} />
-            </span>
-            <span>Inbox</span>
-          </Link>
-        </li>
-      </ul>
+  const { state } = useSelector((state) => state.modal);
 
-      <div className="flex gap-2  flex-col p-4 overflow-auto flex-1 scrollbar-hide">
+  async function handleNew(activeComponent) {
+    if (state) {
+      dispatch(close());
+      await delay(700);
+    }
+    dispatch(open());
+    dispatch(setActiveComponent(activeComponent));
+  }
+
+  return (
+    <aside className="w-64 h-screen bg-[#1A1A1A] text-white flex flex-col">
+      {/* Fixed Section */}
+      <div className="p-4 border-b border-white/10">
+        <nav className="flex flex-col gap-2">
+          <SidebarItem icon={<Home size={18} />} label="Home" to="/" />
+          <SidebarItem
+            icon={<ListTodo size={18} />}
+            label="My Tasks"
+            to="my-tasks"
+          />
+          <SidebarItem icon={<Inbox size={18} />} label="Inbox" to="inbox" />
+        </nav>
+      </div>
+
+      {/* Scrollable Section */}
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-6">
+        {/* Projects */}
         <div>
-          <div className="flex items-center justify-between">
-            <h1 className="text-base">Projects</h1>
-            <div
-              className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition"
-              onClick={() => {
-                dispatch(open());
-                dispatch(setActiveComponent("new_project_form"));
-              }}
-            >
-              <Plus size={18} fontWeight={900} />
-            </div>
+          <SectionHeader
+            label="Projects"
+            onClick={() => handleNew("new_project_form")}
+          />
+          <div className="flex flex-col gap-2 mt-2">
+            <SidebarItem
+              icon={<FolderKanban size={18} />}
+              label="Demo Project"
+              to="projects"
+            />
+            <SidebarItem
+              icon={<FolderKanban size={18} />}
+              label="New Website"
+            />
+            {/* Add more dynamically if needed */}
           </div>
-          <ul className=" flex flex-col gap-1">
-            {projects.map((project) => (
-              <li
-                key={project.id}
-                className="hover:bg-[#555555] transition px-2 py-1 rounded"
-              >
-                <Link to="projects">{project.name}</Link>
-              </li>
-            ))}
-          </ul>
         </div>
+
+        {/* Teams */}
         <div>
-          <div className="flex items-center justify-between py-">
-            <h1 className="text-base">Teams</h1>
-            <div
-              className="cursor-pointer px-1 py-1 rounded hover:bg-[#2B2C2E] transition"
-              onClick={() => {
-                dispatch(open());
-                dispatch(setActiveComponent("new_team_form"));
-              }}
-            >
-              <Plus size={18} fontWeight={900} />
-            </div>
+          <SectionHeader
+            label="Teams"
+            onClick={() => handleNew("new_team_form")}
+          />
+          <div className="flex flex-col gap-2 mt-2">
+            <SidebarItem
+              icon={<Users2 size={18} />}
+              label="Akash's First Team"
+            />
+            <SidebarItem icon={<Users2 size={18} />} label="Dev Team" />
+            {/* Add more dynamically if needed */}
           </div>
-          <ul className=" flex flex-col gap-1">
-            {teams.map((team) => (
-              <li
-                key={team.id}
-                className="hover:bg-[#555555] transition px-2 py-1 rounded"
-              >
-                <Link to="projects">{team.name}</Link>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </aside>
   );
 }
 
-export default Sidebar;
+// Reusable Item
+const SidebarItem = ({ icon, label, to }) => (
+  <Link
+    to={to}
+    className="flex items-center gap-2 text-sm px-2 py-2 rounded hover:bg-[#2B2C2E] cursor-pointer transition"
+  >
+    {icon}
+    <span>{label}</span>
+  </Link>
+);
+
+// Section Header with "+" icon
+const SectionHeader = ({ label, onClick }) => (
+  <div className="flex items-center justify-between text-xs uppercase text-white/60">
+    <span>{label}</span>
+    <Plus
+      size={16}
+      className="cursor-pointer hover:text-white transition"
+      onClick={onClick}
+    />
+  </div>
+);
