@@ -74,6 +74,7 @@ export default function Sidebar() {
             <SidebarItem
               icon={<Users2 size={18} />}
               label="Akash's First Team"
+              to="teams"
             />
             <SidebarItem icon={<Users2 size={18} />} label="Dev Team" />
             {/* Add more dynamically if needed */}
