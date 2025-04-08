@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import DashboardHome from "./features/dashboard/DashboardHome";
 import Dashboard from "./features/dashboard/Dashboard";
-import MyTasksPage from "./features/dashboard/MyTasksPage";
+import MyTasks from "./features/dashboard/MyTasks";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -15,8 +15,6 @@ import List from "./features/dashboard/project/List";
 import Inbox from "./features/dashboard/Inbox";
 import ProjectDasboard from "./features/dashboard/project/ProjectDasboard";
 import TeamsPage from "./features/dashboard/teams/TeamsPage";
-import Modal from "./components/Modal";
-import { useSelector } from "react-redux";
 
 function App() {
   return (
@@ -38,7 +36,7 @@ function App() {
         <Route path="dashboard" element={<Dashboard />}>
           <Route index element={<Navigate to="home" />} />
           <Route path="home" element={<DashboardHome />} />
-          <Route path="my-tasks" element={<MyTasksPage />} />
+          <Route path="my-tasks" element={<MyTasks />} />
           <Route path="inbox" element={<Inbox />} />
 
           {/* nested projects route */}
