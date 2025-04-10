@@ -32,7 +32,7 @@ export default function Sidebar() {
       {/* Fixed Section */}
       <div className="p-4 border-b border-white/10">
         <nav className="flex flex-col gap-2">
-          <SidebarItem icon={<Home size={18} />} label="Home" to="/" />
+          <SidebarItem icon={<Home size={18} />} label="Home" to="/dashboard" />
           <SidebarItem
             icon={<ListTodo size={18} />}
             label="My Tasks"
