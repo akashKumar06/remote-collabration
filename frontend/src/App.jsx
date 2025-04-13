@@ -41,6 +41,7 @@ function App() {
 
           {/* nested projects route */}
           <Route path="projects" element={<ProjectPage />}>
+            <Route index element={<Navigate to="overview" />} />
             <Route path="overview" element={<Overview />} />
             <Route path="list" element={<List />} />
             <Route path="files" element={<Files />} />

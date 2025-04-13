@@ -8,10 +8,16 @@ import {
   CalendarCheck,
   ChevronDown,
   ChevronRight,
+  Pencil,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { close, open, setActiveComponent } from "../../../app/slices/modal";
+import { delay } from "../../../utils/delay";
 
 export default function Overview() {
-  const [description, setDescription] = useState("");
+  const dispatch = useDispatch();
+  const { state } = useSelector((state) => state.modal);
+
   const [members, setMembers] = useState(["Akash Kumar"]);
   const [newMember, setNewMember] = useState("");
 
@@ -33,16 +39,6 @@ export default function Overview() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <h1 className="text-3xl font-bold">Demo Project</h1>
-        <p className="text-gray-400">Overview • In Progress</p>
-      </motion.div>
-
       {/* Layout */}
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Panel */}
@@ -52,16 +48,32 @@ export default function Overview() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className=" p-6 rounded-2xl "
+            className="bg-[#2A2A2A] border border-gray-700 p-6 rounded-2xl"
           >
-            <h2 className="text-lg font-semibold mb-2">Project Description</h2>
-            <textarea
-              rows="6"
-              placeholder="Write something about the project..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 rounded-lg border  bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            />
+            <div className="flex items-start justify-between">
+              <h2 className="text-lg font-semibold mb-2">
+                Project Description
+              </h2>
+              <button
+                className="flex items-center gap-1 text-sm text-blue-400 hover:underline"
+                onClick={async () => {
+                  if (state) {
+                    dispatch(close());
+                    await delay(700);
+                  }
+                  dispatch(open());
+                  dispatch(setActiveComponent("set_project_description"));
+                }}
+              >
+                <Pencil size={16} /> Edit
+              </button>
+            </div>
+            <p className="text-gray-300">
+              This project aims to build a full-stack project management
+              platform that allows users to create, join, and manage projects.
+              Users can track milestones, share resources, manage tasks, and
+              collaborate efficiently with their teams.
+            </p>
           </motion.div>
 
           {/* Members */}
@@ -69,7 +81,7 @@ export default function Overview() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className=" p-6 rounded-2xl"
+            className="p-6 rounded-2xl"
           >
             <div
               className="flex items-center justify-between cursor-pointer"

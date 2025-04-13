@@ -11,17 +11,7 @@ const Dashboard = () => {
   }
 
   return (
-    // <div className="h-screen overflow-x-hidden font-roboto">
-    //   <Navbar onToggleSidbar={handleToggleSidebar} />
-    //   <div className="flex w-full h-screen overflow-hidden">
-    //     <Modal />
-    //     <Sidebar isToggled={isSidebarToggled} />
-    //     <main className="w-full bg-[#1E1F21] text-white">
-    //       <Outlet />
-    //     </main>
-    //   </div>
-    // </div>
-    <div className="h-screen overflow-hidden font-roboto flex flex-col">
+    <div className="h-screen font-roboto flex flex-col">
       {/* Fixed Navbar */}
       <div className="flex-shrink-0">
         <Navbar onToggleSidbar={handleToggleSidebar} />
