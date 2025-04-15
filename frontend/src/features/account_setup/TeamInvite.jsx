@@ -19,13 +19,13 @@ const TeamInvite = () => {
                 key={index}
                 type="email"
                 placeholder="Teammate’s email"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             ))}
           </div>
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            className="w-full mt-4 bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700"
           >
             Continue
           </button>

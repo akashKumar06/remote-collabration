@@ -7,9 +7,9 @@ export const Button = ({
   const baseStyle =
     "rounded-2xl px-4 py-2 font-semibold focus:outline-none focus:ring transition";
   const variants = {
-    default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-300",
+    default: "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-300",
     outline:
-      "border border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-300",
+      "border border-gray-600 text-gray-600 hover:bg-gray-50 focus:ring-gray-300",
   };
 
   return (

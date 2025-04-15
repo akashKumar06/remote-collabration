@@ -22,7 +22,7 @@ const GetStarted = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-semibold mb-6">
         How would you like to get started?
       </h1>
@@ -50,7 +50,7 @@ const GetStarted = () => {
       <button
         className={`mt-6 px-6 py-2 text-white font-medium rounded-lg ${
           step
-            ? "bg-blue-500 hover:bg-blue-600"
+            ? "bg-gray-500 hover:bg-gray-600"
             : "bg-gray-300 cursor-not-allowed"
         }`}
         disabled={!step}
