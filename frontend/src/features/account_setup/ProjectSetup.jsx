@@ -26,14 +26,14 @@ const ProjectSetup = () => {
             placeholder="e.g. Cross-functional project plan"
             value={projectName}
             onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition"
           />
         </div>
 
         {/* Submit Button */}
         <button
           onClick={() => setStep((step) => step + 1)}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+          className="w-full bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition"
         >
           Continue
         </button>

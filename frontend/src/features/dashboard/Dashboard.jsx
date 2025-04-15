@@ -6,10 +6,10 @@ import Modal from "../../components/Modal";
 
 const Dashboard = () => {
   const [isSidebarToggled, setIsSidebarToggled] = useState(false);
-  function handleToggleSidebar() {
+  function handleToggleSidebar() 
+  {
     setIsSidebarToggled((prev) => !prev);
   }
-
   return (
     <div className="h-screen font-roboto flex flex-col">
       {/* Fixed Navbar */}
