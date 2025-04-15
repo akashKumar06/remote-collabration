@@ -9,10 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
 import { close, open, setActiveComponent } from "../../app/slices/modal";
-
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import { delay } from "../../utils/delay";
 
 export default function Sidebar() {
   const dispatch = useDispatch();
