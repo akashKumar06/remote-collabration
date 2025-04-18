@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    firstname: {
       type: String,
       required: true,
       trim: true,
     },
 
-    lastName: {
+    lastname: {
       type: String,
       required: true,
       trim: true,
@@ -31,11 +33,6 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
-    bio: {
-      type: String,
-      default: "",
-    },
-
     refreshToken: {
       type: String,
       default: null,
@@ -51,6 +48,11 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
+
+// 🔑 Check password is correct
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 export default User;
