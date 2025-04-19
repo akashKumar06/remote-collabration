@@ -1,6 +1,10 @@
 import express from "express";
 import { body } from "express-validator";
-import { loginUser, registerUser } from "../controllers/user.controller.js";
+import {
+  loginUser,
+  refreshTokenHandler,
+  registerUser,
+} from "../controllers/user.controller.js";
 import { validateRequest } from "../middlewares/validate-request.middleware.js";
 
 const router = express.Router();
@@ -25,5 +29,7 @@ router.post(
   validateRequest,
   loginUser
 );
+
+router.post("/refresh_token", refreshTokenHandler);
 
 export default router;

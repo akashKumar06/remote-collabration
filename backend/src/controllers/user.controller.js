@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 
@@ -129,6 +130,66 @@ export async function loginUser(req, res) {
           email: user.email,
           avatar: user.avatar,
         },
+      });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export async function refreshTokenHandler(req, res) {
+  try {
+    const authHeader = req.headers["authorization"];
+    const incomingRefreshToken =
+      req.cookies?.refresh_token ||
+      (authHeader &&
+        authHeader.startsWith("Bearer") &&
+        authHeader.split(" ")[1]);
+
+    // 1. check if refreshToken is present
+    if (!incomingRefreshToken) throw new ApiError(400, "Token is required.");
+
+    // 2. decode the incoming refresh token
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    // 3. get the user with refresh token
+    const user = await User.findById(decodedToken.id);
+    if (!user) throw new ApiError(400, "Invalid token or user not found.");
+
+    if (incomingRefreshToken !== user.refreshToken)
+      throw new ApiError(400, "Invalid token");
+
+    // 4. generate new access and refresh token
+    const newAccessToken = await generateAccessToken(user._id);
+    const newRefreshToken = await generateRefreshToken(user._id);
+
+    // 5. update the new refresh token in the user
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    // 6. return response and cookie
+    return res
+      .status(200)
+      .cookie("refresh_token", newRefreshToken, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .cookie("access_token", newAccessToken, {
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+      })
+      .json({
+        success: true,
       });
   } catch (error) {
     console.error(error);
