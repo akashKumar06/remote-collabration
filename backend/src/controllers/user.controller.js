@@ -3,6 +3,16 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 
+// /api/users/register        POST
+// /api/users/login           POST
+// /api/users/refresh-token   POST
+// /api/users/logout          POST
+// /api/users/profile	        GET	    Fetches the profile of the authenticated user.
+// /api/users/profile	        PUT	    Updates the profile of the authenticated user.
+// /api/users/change-password	PUT	    Allows the user to change their password.
+// /api/users/delete	        DELETE	Deletes the authenticated user's account.
+// /api/users/reset-password	POST	  Sends a password reset link to the user's email.
+
 export async function registerUser(req, res) {
   try {
     const { firstname, lastname, email, password } = req.body;
@@ -204,4 +214,45 @@ export async function refreshTokenHandler(req, res) {
   }
 }
 
-export function logoutUser(req, res) {}
+export async function logoutUser(req, res) {
+  try {
+    await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set: { refreshToken: undefined },
+      },
+      {
+        new: true,
+      }
+    );
+
+    return res
+      .status(200)
+      .clearCookie("access_token", {
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+      })
+      .clearCookie("refresh_token", {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({
+        success: true,
+        message: "User logged out successfully.",
+      });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export async function getUser(req, res) {
+  return res.status(200).json({ user: req.user });
+}

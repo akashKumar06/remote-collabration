@@ -16,6 +16,7 @@ This document provides an overview of the user authentication APIs implemented i
 4. [Validation Middleware](#validation-middleware)
 5. [Tokens: AccessToken and RefreshToken](#tokens-accesstoken-and-refreshtoken)
 6. [Error Handling](#error-handling)
+7. [CheckAuth Middleware](#checkauth-middleware)
 
 ---
 
@@ -260,6 +261,61 @@ The `ApiError` class is used to handle custom errors with specific status codes 
   "message": "Internal Server Error"
 }
 ```
+
+---
+
+## CheckAuth Middleware
+
+**Description**: The `checkAuth` middleware is used to protect routes by ensuring that only authenticated users can access them. It verifies the `accessToken` provided in the request and attaches the authenticated user's data to the `req` object.
+
+**How It Works**:
+
+1. Extracts the `accessToken` from either the `Authorization` header or cookies.
+2. Verifies the token using the `ACCESS_TOKEN_SECRET`.
+3. Fetches the user associated with the token from the database.
+4. Attaches the user data (excluding sensitive fields like `password` and `refreshToken`) to the `req` object.
+5. Calls the `next()` function to proceed to the next middleware or route handler.
+
+**Error Handling**:
+
+- If the token is missing, invalid, or expired, an appropriate error response is sent.
+- Logs errors to the console for debugging purposes.
+
+**Example Usage**:
+
+```javascript
+import { checkAuth } from "../middlewares/auth.middleware.js";
+
+router.get("/profile", checkAuth, getUser);
+```
+
+**Error Response**:
+
+- **Missing Token** (`400 Bad Request`):
+
+  ```json
+  {
+    "success": false,
+    "message": "Token is missing."
+  }
+  ```
+
+- **Invalid Token** (`400 Bad Request`):
+
+  ```json
+  {
+    "success": false,
+    "message": "Not a valid token."
+  }
+  ```
+
+- **Unauthorized** (`401 Unauthorized`):
+  ```json
+  {
+    "success": false,
+    "message": "Unauthorized or invalid token."
+  }
+  ```
 
 ---
 

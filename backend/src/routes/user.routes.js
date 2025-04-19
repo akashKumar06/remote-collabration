@@ -1,11 +1,14 @@
 import express from "express";
 import { body } from "express-validator";
 import {
+  getUser,
   loginUser,
+  logoutUser,
   refreshTokenHandler,
   registerUser,
 } from "../controllers/user.controller.js";
 import { validateRequest } from "../middlewares/validate-request.middleware.js";
+import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -32,4 +35,6 @@ router.post(
 
 router.post("/refresh_token", refreshTokenHandler);
 
+router.post("/logout", checkAuth, logoutUser);
+router.get("/profile", checkAuth, getUser);
 export default router;
