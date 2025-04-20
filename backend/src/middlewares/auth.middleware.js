@@ -10,7 +10,8 @@ export async function checkAuth(req, res, next) {
       (authHeader &&
         authHeader.startsWith("Bearer") &&
         authHeader.split(" ")[1]);
-    if (!token) throw new ApiError(400, "Token is missing.");
+    if (!token)
+      throw new ApiError(401, "Unauthorized request or token is missing.");
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     if (!decodedToken) throw new ApiError(400, "Not a valid token.");
 

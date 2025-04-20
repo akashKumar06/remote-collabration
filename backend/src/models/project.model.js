@@ -16,6 +16,7 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
 
     deadline: {
@@ -34,10 +35,11 @@ const projectSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
           required: true,
+          index: true,
         },
         role: {
           type: String,
-          enum: ["manager", "developer", "designer", "qa", "viewer"],
+          enum: ["owner", "manager", "developer", "designer", "qa", "viewer"],
           default: "developer",
         },
       },
