@@ -9,10 +9,8 @@ This document provides an overview of the user authentication APIs implemented i
 1. [Introduction](#introduction)
 2. [Authentication Flow](#authentication-flow)
 3. [API Endpoints](#api-endpoints)
-   - [Register User](#register-user)
-   - [Login User](#login-user)
-   - [Refresh Token](#refresh-token)
-   - [Logout User](#logout-user)
+   - [User Controller](#user-controller)
+   - [Project Controller](#project-controller)
 4. [Validation Middleware](#validation-middleware)
 5. [Tokens: AccessToken and RefreshToken](#tokens-accesstoken-and-refreshtoken)
 6. [Error Handling](#error-handling)
@@ -44,159 +42,228 @@ This backend provides a secure user authentication system using **JWT (JSON Web 
 
 ## API Endpoints
 
-### 1. **Register User**
+### User Controller
 
-**Endpoint**: `POST /api/users/register`
+1. **Register User**
 
-**Description**: Registers a new user by saving their details in the database. The password is hashed before saving.
+   - **Endpoint**: `POST /api/users/register`
+   - **Description**: Registers a new user by saving their details in the database.
+   - **Request Body**:
+     ```json
+     {
+       "firstname": "John",
+       "lastname": "Doe",
+       "email": "john.doe@example.com",
+       "password": "password123"
+     }
+     ```
+   - **Response**:
+     - **Success** (`201 Created`):
+       ```json
+       {
+         "success": true,
+         "user": {
+           "id": "userId",
+           "firstname": "John",
+           "lastname": "Doe",
+           "email": "john.doe@example.com",
+           "avatar": "JD"
+         }
+       }
+       ```
+     - **Error** (`400 Bad Request`):
+       ```json
+       {
+         "success": false,
+         "message": "All fields are required."
+       }
+       ```
 
-**Request Body**:
+2. **Login User**
 
-```json
-{
-  "firstname": "John",
-  "lastname": "Doe",
-  "email": "john.doe@example.com",
-  "password": "password123"
-}
-```
+   - **Endpoint**: `POST /api/users/login`
+   - **Description**: Authenticates a user and generates access and refresh tokens.
+   - **Request Body**:
+     ```json
+     {
+       "email": "john.doe@example.com",
+       "password": "password123"
+     }
+     ```
+   - **Response**:
+     - **Success** (`200 OK`):
+       ```json
+       {
+         "success": true,
+         "user": {
+           "id": "userId",
+           "firstname": "John",
+           "lastname": "Doe",
+           "email": "john.doe@example.com",
+           "avatar": "JD"
+         }
+       }
+       ```
+     - **Error** (`401 Unauthorized`):
+       ```json
+       {
+         "success": false,
+         "message": "Invalid credentials."
+       }
+       ```
 
-**Response**:
+3. **Refresh Token**
 
-- **Success** (`201 Created`):
+   - **Endpoint**: `POST /api/users/refresh-token`
+   - **Description**: Generates a new access token using the refresh token.
+   - **Response**:
+     - **Success** (`200 OK`):
+       ```json
+       {
+         "success": true
+       }
+       ```
+     - **Error** (`400 Bad Request`):
+       ```json
+       {
+         "success": false,
+         "message": "Invalid token or user not found."
+       }
+       ```
 
-  ```json
-  {
-    "success": true,
-    "user": {
-      "id": "userId",
-      "firstname": "John",
-      "lastname": "Doe",
-      "email": "john.doe@example.com",
-      "avatar": "JD"
-    }
-  }
-  ```
+4. **Logout User**
 
-  Cookies:
+   - **Endpoint**: `POST /api/users/logout`
+   - **Description**: Logs out the user by clearing the access and refresh tokens.
+   - **Response**:
+     - **Success** (`200 OK`):
+       ```json
+       {
+         "success": true,
+         "message": "User logged out successfully."
+       }
+       ```
 
-  - `refresh_token`: HTTP-only, valid for 7 days
-  - `access_token`: HTTP-only, valid for 15 minutes
-
-- **Error** (`400 Bad Request`):
-  ```json
-  {
-    "success": false,
-    "message": "All fields are required."
-  }
-  ```
-
----
-
-### 2. **Login User**
-
-**Endpoint**: `POST /api/users/login`
-
-**Description**: Authenticates a user by verifying their email and password. Generates and sends `accessToken` and `refreshToken`.
-
-**Request Body**:
-
-```json
-{
-  "email": "john.doe@example.com",
-  "password": "password123"
-}
-```
-
-**Response**:
-
-- **Success** (`200 OK`):
-
-  ```json
-  {
-    "success": true,
-    "user": {
-      "id": "userId",
-      "firstname": "John",
-      "lastname": "Doe",
-      "email": "john.doe@example.com",
-      "avatar": "JD"
-    }
-  }
-  ```
-
-  Cookies:
-
-  - `refresh_token`: HTTP-only, valid for 7 days
-  - `access_token`: HTTP-only, valid for 15 minutes
-
-- **Error** (`401 Unauthorized`):
-  ```json
-  {
-    "success": false,
-    "message": "Invalid credentials."
-  }
-  ```
-
----
-
-### 3. **Refresh Token**
-
-**Endpoint**: `POST /api/users/refresh_token`
-
-**Description**: Generates a new `accessToken` and `refreshToken` using the existing `refreshToken`.
-
-**Request**:
-
-- **Headers**:
-  ```http
-  Authorization: Bearer <refresh_token>
-  ```
-- **Cookies**:
-  ```http
-  refresh_token=<refresh_token>
-  ```
-
-**Response**:
-
-- **Success** (`200 OK`):
-
-  ```json
-  {
-    "success": true
-  }
-  ```
-
-  Cookies:
-
-  - `refresh_token`: HTTP-only, valid for 7 days
-  - `access_token`: HTTP-only, valid for 15 minutes
-
-- **Error** (`400 Bad Request`):
-  ```json
-  {
-    "success": false,
-    "message": "Invalid token or user not found."
-  }
-  ```
+5. **Get User Profile**
+   - **Endpoint**: `GET /api/users/profile`
+   - **Description**: Fetches the profile of the authenticated user.
+   - **Response**:
+     - **Success** (`200 OK`):
+       ```json
+       {
+         "user": {
+           "id": "userId",
+           "firstname": "John",
+           "lastname": "Doe",
+           "email": "john.doe@example.com",
+           "avatar": "JD"
+         }
+       }
+       ```
 
 ---
 
-### 4. **Logout User**
+### Project Controller
 
-**Endpoint**: `POST /api/users/logout`
+1. **Create Project**
 
-**Description**: Logs out the user by clearing the `accessToken` and `refreshToken` cookies.
+   - **Endpoint**: `POST /api/projects`
+   - **Description**: Creates a new project.
+   - **Request Body**:
+     ```json
+     {
+       "name": "New Project",
+       "teamId": "teamId"
+     }
+     ```
+   - **Response**:
+     - **Success** (`201 Created`):
+       ```json
+       {
+         "success": true,
+         "message": "Project created successfully.",
+         "project": {
+           "id": "projectId",
+           "name": "New Project",
+           "owner": "userId",
+           "team": "teamId",
+           "members": [
+             {
+               "user": "userId",
+               "role": "owner"
+             }
+           ],
+           "activityLogs": [
+             {
+               "message": "Project created by John",
+               "createdBy": "userId"
+             }
+           ]
+         }
+       }
+       ```
+     - **Error** (`400 Bad Request`):
+       ```json
+       {
+         "success": false,
+         "message": "Project name is required."
+       }
+       ```
 
-**Response**:
+2. **Get User Projects**
+   - **Endpoint**: `GET /api/projects`
+   - **Description**: Fetches all projects where the user is the owner or a member.
+   - **Response**:
+     - **Success** (`200 OK`):
+       ```json
+       {
+         "success": true,
+         "projects": [
+           {
+             "id": "projectId",
+             "name": "New Project",
+             "owner": {
+               "id": "userId",
+               "firstname": "John",
+               "lastname": "Doe",
+               "avatar": "JD"
+             },
+             "team": {
+               "id": "teamId",
+               "name": "Team Name"
+             },
+             "members": [
+               {
+                 "user": {
+                   "id": "userId",
+                   "firstname": "John",
+                   "lastname": "Doe",
+                   "avatar": "JD"
+                 },
+                 "role": "owner"
+               }
+             ]
+           }
+         ]
+       }
+       ```
 
-- **Success** (`200 OK`):
-  ```json
-  {
-    "success": true,
-    "message": "Logged out successfully."
-  }
-  ```
+---
+
+### Detailed Description of Controllers
+
+#### User Controller
+
+- **registerUser**: Handles user registration by validating input, checking for existing users, and creating a new user. Generates access and refresh tokens.
+- **loginUser**: Authenticates a user by verifying email and password. Generates and stores tokens.
+- **refreshTokenHandler**: Validates the refresh token and generates new tokens.
+- **logoutUser**: Clears tokens from cookies and database.
+- **getUser**: Fetches the authenticated user's profile.
+
+#### Project Controller
+
+- **createProject**: Creates a new project with the provided name and optional team ID. Adds the creator as the owner.
+- **getUserProjects**: Retrieves all projects where the user is the owner or a member. Populates related fields like owner, team, and members.
 
 ---
 
