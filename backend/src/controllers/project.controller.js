@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import Project from "../models/project.model.js";
 import Team from "../models/team.model.js";
 import { ApiError } from "../utils/ApiError.js";
+import User from "../models/user.model.js";
 
 export async function createProject(req, res) {
   try {
@@ -76,10 +78,107 @@ export async function getUserProjects(req, res) {
   }
 }
 
-// getProjectById           GET     /api/projects/:projectId
+export async function getProjectById(req, res) {
+  try {
+    const { projectId } = req.params;
+
+    // Validate projectId
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      throw new ApiError(400, "Invalid project ID");
+    }
+
+    const project = await Project.findById(projectId)
+      .populate("owner", "firstname lastname avatar")
+      .populate("members.user", "firstname lastname avatar")
+      .populate("team", "name")
+      .populate("activityLogs.createdBy", "firstname lastname avatar");
+
+    if (!project) {
+      throw new ApiError(404, "Project not found");
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Project feteched successfully.",
+      project,
+    });
+  } catch (error) {
+    console.log("Error in getProjectById", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export async function addMemberToProject(req, res) {
+  try {
+    const { projectId } = req.params;
+    const { userId, role } = req.body;
+
+    // validate inputs
+    if (
+      !mongoose.Types.ObjectId.isValid(userId) ||
+      !mongoose.Types.ObjectId.isValid(projectId)
+    )
+      throw new ApiError(400, "Invalid Project ID or User ID");
+
+    // find the project
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found.");
+
+    // check if user exits
+    const user = await User.findById(userId);
+    if (!user) throw new ApiError(404, "User to add not found.");
+
+    // Check if the user is the owner
+    if (project.owner.toString() !== req.user._id.toString()) {
+      throw new ApiError(
+        403,
+        "Only the project owner is authorized to perform this action"
+      );
+    }
+
+    // check if user is already a member
+    const alreadyMember = project.members.some(
+      (member) => member.user.toString() === userId
+    );
+    if (alreadyMember)
+      throw new ApiError(400, "User is already member of project");
+
+    project.members.push({ user: userId, role });
+
+    // log the activity
+    project.activityLogs.push({
+      message: `${user.firstname} ${
+        user.lastname
+      } was added to the project as ${role || "member"}.`,
+      createdBy: req.user._id,
+    });
+
+    await project.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Member added successfully." });
+  } catch (error) {
+    console.log("Error in addMemberToProject", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
 // updateProject            PUT     /api/projects/:projectId
 // deleteProject            DELETE  /api/projects/:projectId
-// addMemberToProject       POST    /api/projects/:projectId/members
 // removeMemberFromProject  DELETE  /api/projects/:projectId/members/:memberId
 // assignTeamToProject      POST    /api/projects/:projectId/assign-team
 // getProjectTimeline       GET     /api/projects/:projectId/timeline
