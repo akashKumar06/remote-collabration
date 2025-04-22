@@ -177,8 +177,85 @@ export async function addMemberToProject(req, res) {
   }
 }
 
-// updateProject            PUT     /api/projects/:projectId
-// deleteProject            DELETE  /api/projects/:projectId
+export async function updateProjectDescription(req, res) {
+  try {
+    const { projectId } = req.params;
+    const { description } = req.body;
+
+    if (
+      !description ||
+      description.trim() === "" ||
+      typeof description !== "string"
+    )
+      throw new ApiError(400, "Valid description is required.");
+
+    // check if project exists;
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found.");
+
+    // check if user is member of the project or not
+    const userId = req.user._id;
+    const isMember = project.members.some(
+      (member) => member.user.toString() === userId.toString()
+    );
+    if (!isMember)
+      throw new ApiError(403, "You are not a member of this project");
+
+    project.description = description;
+    project.activityLogs.push({
+      message: `Project description was updated by ${req.user.firstname}.`,
+      createdBy: req.user._id,
+    });
+    await project.save();
+    return res.status(200).json({
+      success: true,
+      message: "Project description updated successfully.",
+    });
+  } catch (error) {
+    console.log("Error in updateProjectDescription", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export async function deleteProject(req, res) {
+  try {
+    const { projectId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(projectId))
+      throw new ApiError(400, "Invalid project ID.");
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found.");
+
+    if (req.user._id.toString() !== project.owner.toString())
+      throw new ApiError(
+        403,
+        "Only the project owner can delete this project."
+      );
+
+    await Project.findByIdAndDelete(projectId);
+    return res
+      .status(200)
+      .json({ success: true, message: "Project deleted successfully." });
+  } catch (error) {
+    console.log("Error in deleteProject", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
 // removeMemberFromProject  DELETE  /api/projects/:projectId/members/:memberId
 // assignTeamToProject      POST    /api/projects/:projectId/assign-team
 // getProjectTimeline       GET     /api/projects/:projectId/timeline
