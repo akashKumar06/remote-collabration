@@ -22,7 +22,8 @@ export async function registerUser(req, res) {
       [firstname, lastname, email, password].some(
         (field) => !field || field.trim() === ""
       )
-    ) {
+    ) 
+    {
       throw new ApiError(400, "All fileds are required.");
     }
 
