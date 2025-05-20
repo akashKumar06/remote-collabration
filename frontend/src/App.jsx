@@ -29,7 +29,9 @@ function App() {
   }, [dispatch]);
 
   const { status } = useSelector((state) => state.auth);
+
   if (status === "loading" || status === "idle") return <SplashScreen />;
+
   return (
     <BrowserRouter>
       <Routes>

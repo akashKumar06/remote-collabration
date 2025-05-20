@@ -6,14 +6,19 @@ import {
   List,
   MessagesSquare,
 } from "lucide-react";
+import { useSelector } from "react-redux";
+import SplashScreen from "../../components/SplashScreen";
 
 function ProjectPageLayout() {
+  const { currentProject } = useSelector((state) => state.project);
+  if (!currentProject) return <SplashScreen />;
+
   return (
     <div className="h-screen overflow-hidden font-roboto bg-[#1A1A1A] text-gray-300">
       {/* Header */}
       <header className="bg-[#1A1A1A] border-b border-white/10 px-6 py-2 shadow-md">
         <h2 className="text-2xl font-bold tracking-tight text-white">
-          Cross-functional project plan
+          {currentProject.name}
         </h2>
 
         {/* Nav Links */}

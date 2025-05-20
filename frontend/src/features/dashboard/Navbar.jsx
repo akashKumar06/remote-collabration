@@ -1,11 +1,10 @@
 import { LogOut, Settings, User } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../../app/slices/auth/authThunks";
 
 function Navbar() {
-  const user = {
-    name: "John Doe",
-    avatar:
-      "https://ui-avatars.com/api/?name=John+Doe&background=4f46e5&color=fff",
-  };
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <div className="bg-[#2e2e30] p-3 border border-[#424244] flex justify-between items-center px-6">
@@ -16,12 +15,12 @@ function Navbar() {
       <div className="flex items-center gap-6">
         {/* User Info */}
         <div className="flex items-center gap-2">
-          <img
-            src={user.avatar}
-            alt="User avatar"
-            className="w-7 h-7 rounded-full"
-          />
-          <span className="text-white font-medium text-sm">{user.name}</span>
+          <p className=" flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-sm text-center">
+            {user.avatar}
+          </p>
+          <span className="text-white font-medium text-sm">
+            {`${user.firstname} ${user.lastname}`}
+          </span>
         </div>
 
         {/* Options */}
@@ -34,7 +33,12 @@ function Navbar() {
             <Settings size={16} />
             <span>Settings</span>
           </div>
-          <div className="flex items-center gap-2 cursor-pointer hover:text-red-400 transition">
+          <div
+            className="flex items-center gap-2 cursor-pointer hover:text-red-400 transition"
+            onClick={() => {
+              dispatch(logoutUser());
+            }}
+          >
             <LogOut size={16} />
             <span>Logout</span>
           </div>

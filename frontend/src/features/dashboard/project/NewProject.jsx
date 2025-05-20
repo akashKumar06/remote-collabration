@@ -1,8 +1,19 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { close } from "../../../app/slices/modal";
+import { useState } from "react";
+import { createProject } from "../../../app/slices/project/projectThunk";
 
 export default function NewProject() {
   const dispatch = useDispatch();
+  const [projectName, setProjectName] = useState("");
+  const { loading } = useSelector((state) => state.project);
+  const handleNewProject = () => {
+    const projectData = {
+      name: projectName,
+    };
+    dispatch(createProject(projectData));
+    dispatch(close());
+  };
 
   return (
     <div className="min-h-screen bg-[#1E1E1E] text-white p-8">
@@ -17,6 +28,8 @@ export default function NewProject() {
           id="projectName"
           className="w-full bg-[#1E1E1E] border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
           placeholder="Enter project name"
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
         />
       </div>
 
@@ -43,8 +56,12 @@ export default function NewProject() {
         >
           Cancel
         </button>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">
-          Continue
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+          onClick={handleNewProject}
+          disabled={loading}
+        >
+          {loading ? "Creating.." : "Continue"}
         </button>
       </div>
     </div>

@@ -10,8 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
 import { close, open, setActiveComponent } from "../../app/slices/modal";
 import { delay } from "../../utils/delay";
+import { getProjectById } from "../../app/slices/project/projectThunk";
 
-export default function Sidebar() {
+export default function Sidebar({ projects }) {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
 
@@ -48,15 +49,15 @@ export default function Sidebar() {
             onClick={() => handleNew("new_project_form")}
           />
           <div className="flex flex-col gap-2 mt-2">
-            <SidebarItem
-              icon={<FolderKanban size={18} />}
-              label="Demo Project"
-              to="projects"
-            />
-            <SidebarItem
-              icon={<FolderKanban size={18} />}
-              label="New Website"
-            />
+            {projects.map((project) => (
+              <SidebarItem
+                key={project._id}
+                icon={<FolderKanban size={18} />}
+                label={project.name}
+                to="projects"
+                onClick={() => dispatch(getProjectById(project._id))}
+              />
+            ))}
             {/* Add more dynamically if needed */}
           </div>
         </div>
@@ -83,10 +84,11 @@ export default function Sidebar() {
 }
 
 // Reusable Item
-const SidebarItem = ({ icon, label, to }) => (
+const SidebarItem = ({ icon, label, to, onClick }) => (
   <Link
     to={to}
     className="flex items-center gap-2 text-sm px-2 py-2 rounded hover:bg-[#2B2C2E] cursor-pointer transition"
+    onClick={onClick}
   >
     {icon}
     <span>{label}</span>

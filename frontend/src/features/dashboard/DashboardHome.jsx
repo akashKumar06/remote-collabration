@@ -76,6 +76,7 @@ import {
   BarChart2,
   Settings2,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const projectCards = [
   {
@@ -127,6 +128,7 @@ const activities = [
 ];
 
 export default function DashboardHome() {
+  const { user } = useSelector((state) => state.auth);
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-10">
       {/* Welcome Section */}
@@ -135,7 +137,9 @@ export default function DashboardHome() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="text-3xl font-bold mb-2">Welcome back, Akash 👋</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          Welcome back, {`${user.firstname}`}👋
+        </h1>
         <p className="text-gray-400">
           Here’s what’s happening with your projects.
         </p>

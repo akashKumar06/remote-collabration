@@ -1,15 +1,23 @@
 import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProjects } from "../../app/slices/project/projectThunk";
 
 const Dashboard = () => {
   const [isSidebarToggled, setIsSidebarToggled] = useState(false);
-  function handleToggleSidebar() 
-  {
+  function handleToggleSidebar() {
     setIsSidebarToggled((prev) => !prev);
   }
+
+  const dispatch = useDispatch();
+  const { projects } = useSelector((state) => state.project);
+  useEffect(() => {
+    dispatch(getUserProjects());
+  }, [dispatch]);
+
   return (
     <div className="h-screen font-roboto flex flex-col">
       {/* Fixed Navbar */}
@@ -21,7 +29,7 @@ const Dashboard = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Fixed Sidebar */}
         <div className="flex-shrink-0">
-          <Sidebar isToggled={isSidebarToggled} />
+          <Sidebar isToggled={isSidebarToggled} projects={projects} />
         </div>
 
         {/* Scrollable Main Content */}
