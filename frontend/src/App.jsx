@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchCurrentUser } from "./app/slices/auth/authThunks";
 import SplashScreen from "./components/SplashScreen";
+import AcceptInvite from "./components/AcceptInvite";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -74,6 +76,9 @@ function App() {
           {/* teams route */}
           <Route path="teams" element={<TeamsPage />} />
         </Route>
+      </Routes>
+      <Routes>
+         <Route path="acceptInvite" element={<AcceptInvite/>}></Route>
       </Routes>
       <Toaster
         position="top-center"
