@@ -15,11 +15,11 @@ import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 
 export async function registerUser(req, res) {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, phoneNo } = req.body;
 
     // 1. check all the fields are valid
     if (
-      [firstname, lastname, email, password].some(
+      [firstname, lastname, email, password, phoneNo].some(
         (field) => !field || field.trim() === ""
       )
     ) 
@@ -40,6 +40,7 @@ export async function registerUser(req, res) {
       lastname,
       email,
       password,
+      phoneNo,
       avatar,
     });
 

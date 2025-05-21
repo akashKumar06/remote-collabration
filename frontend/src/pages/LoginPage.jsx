@@ -3,24 +3,41 @@ import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 // import axios from 'axios'
 import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../app/slices/auth/authThunks";
+import toast from "react-hot-toast";
+import { clearErrors } from "../app/slices/auth/authSlice";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { user, error, fieldErrors } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:8000/login", { email, password })
-      .then((result) => {
-        console.log(result);
-        if (result.data === "success") {
-          navigate("/frontend/features/dashboard");
-        }
-      })
-      .catch((err) => console.log(err));
+    const formData = {
+      email,
+      password,
+    };
+    dispatch(loginUser(formData));
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearErrors());
+    }
+  }, [error, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6">
@@ -28,7 +45,7 @@ const LoginPage = () => {
           Login to Your Account
         </h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-600 mb-2">
               Email Address
@@ -38,7 +55,12 @@ const LoginPage = () => {
               id="email"
               placeholder="Enter your email"
               className="w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
+            {fieldErrors.email && (
+              <p className="text-red-500 text-sm">{fieldErrors.email}</p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -50,10 +72,18 @@ const LoginPage = () => {
               id="password"
               placeholder="Enter your password"
               className="w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            {fieldErrors.password && (
+              <p className="text-red-500 text-sm">{fieldErrors.password}</p>
+            )}
           </div>
 
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 mb-4">
+          <Button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 mb-4"
+          >
             Login
           </Button>
         </form>
