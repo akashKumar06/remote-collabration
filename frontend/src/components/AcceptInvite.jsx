@@ -1,44 +1,45 @@
+//vaishvi.sisodiya28@gmail.com
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useSearchParams, useNavigate } from "react-router";
+// import axios from "axios";
 import { UserIcon } from "@heroicons/react/24/solid";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import api from "../api/axios";
+import { getProjectById } from "../app/slices/project/projectThunk";
 
 const AcceptInvite = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
-
+  const { user } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
   const [inviter, setInviter] = useState("Someone");
   const [projectName, setProjectName] = useState("a Project");
   const [message, setMessage] = useState("You're invited to collaborate!");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!token) {
-      setError("Invalid or missing invitation token.");
-    } else {
-      axios
-        .get(`/api/invite/validate?token=${token}`)
-        .then((res) => {
-          setEmail(res.data.email || "");
-          setInviter(res.data.inviter || "Someone");
-          setProjectName(res.data.projectName || "a Project");
-          setMessage(res.data.message || "You're invited to collaborate!");
-          setError("");
-        })
-        .catch(() => setError("Invalid or expired token."));
+      toast.error("Invalid or missing invitation token.");
+      return;
     }
-  }, [token]);
+    // check if you are valid user or not
+    if (!user) {
+      navigate("/login");
+    }
+  }, [token, navigate, user]);
 
   const handleAccept = async () => {
     try {
-      await axios.post("/api/invite/accept", { token });
-      setSuccess("Invite accepted! Redirecting...");
-      setTimeout(() => navigate("/login"), 2000);
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong.");
+      const res = await api.post("/projects/accept-invite", { token });
+      const projectId = res.data.projectId;
+      dispatch(getProjectById(projectId));
+      navigate(`/dashboard/projects`);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data?.message);
     }
   };
 

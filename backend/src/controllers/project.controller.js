@@ -260,13 +260,14 @@ export async function deleteProject(req, res) {
 
 export async function inviteUserToProject(req, res) {
   try {
-    const { email, projectId } = req.body;
-    const token = jwt.sign({ email, projectId }, process.end.JWT_SECRET, {
+    const { projectId } = req.params;
+    const { email } = req.body;
+    const token = jwt.sign({ email, projectId }, process.env.JWT_SECRET, {
       expiresIn: "2d",
     });
 
     if (!token) throw new ApiError(400, "Token could not be created.");
-    const inviteLink = `${process.env.CLIENT_URL}/dashboard/inbox?token=${token}`;
+    const inviteLink = `${process.env.CLIENT_URL}/accept-invite?token=${token}`;
     await sendEmail({
       to: email,
       subject: "You are invited to join a project!",
@@ -276,14 +277,56 @@ export async function inviteUserToProject(req, res) {
 
     return res.status(200).json({ message: "Invitation sent" });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     return res.status(500).json({ message: "Failed to send invitation" });
   }
 }
 
 export async function acceptProjectInvite(req, res) {
   try {
-  } catch (error) {}
+    const { token } = req.body; // email of the user to be accepted
+    const user = req.user;
+    const { email, projectId } = jwt.decode(token);
+    if (user.email !== email)
+      throw new ApiError(403, "Invite email does not match with your account");
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found");
+
+    // check if user is already a member
+    const alreadyMember = project.members.some(
+      (member) => member.user.toString() === user._id.toString()
+    );
+
+    if (alreadyMember)
+      throw new ApiError(400, "User is already member of project");
+
+    project.members.push({ user: user._id });
+
+    // log the activity
+    project.activityLogs.push({
+      message: `${user.firstname} ${user.lastname} has joined as a member`,
+      createdBy: req.user._id,
+    });
+
+    await project.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Member added successfully.",
+      projectId,
+    });
+  } catch (error) {
+    console.log("Error in acceptProjectInvite", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
 }
 
 // removeMemberFromProject  DELETE  /api/projects/:projectId/members/:memberId

@@ -13,6 +13,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { close, open, setActiveComponent } from "../../../app/slices/modal";
 import { delay } from "../../../utils/delay";
+import api from "../../../api/axios";
+import toast from "react-hot-toast";
 
 export default function Overview() {
   const dispatch = useDispatch();
@@ -30,10 +32,20 @@ export default function Overview() {
     { label: "Figma Design", url: "https://figma.com/file/xyz" },
   ]);
 
-  const handleAddMember = () => {
-    if (newMember.trim()) {
-      setMembers([...members, newMember.trim()]);
-      setNewMember("");
+  const { currentProject } = useSelector((state) => state.project);
+  const handleAddMember = async () => {
+    const memberData = {
+      email: newMember.trim(),
+    };
+    console.log(currentProject);
+    const res = await api.post(
+      `/projects/${currentProject._id}/invite`,
+      memberData
+    );
+    if (res.status === 200) {
+      toast.success(res.data.message);
+    } else {
+      toast.error(res.response.data.message);
     }
   };
 

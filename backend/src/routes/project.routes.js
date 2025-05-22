@@ -3,6 +3,7 @@ import { checkAuth } from "../middlewares/auth.middleware.js";
 import { validateRequest } from "../middlewares/validate-request.middleware.js";
 import { body } from "express-validator";
 import {
+  acceptProjectInvite,
   addMemberToProject,
   createProject,
   deleteProject,
@@ -25,6 +26,9 @@ router
   )
   .get(checkAuth, getUserProjects);
 
+// acceptInvite POST  /api/projects/accept-invite
+router.route("/accept-invite").post(checkAuth, acceptProjectInvite);
+
 // getProjectById   GET   /api/projects/:projectId
 // deleteProject    DELETE  /api/projects/:projectId
 router
@@ -43,6 +47,4 @@ router
 // sendInvite   POST  /api/projects/:projectId/invite
 router.route("/:projectId/invite").post(checkAuth, inviteUserToProject);
 
-// acceptInvite POST  /api/projects/accept-invite
-router.route("/:projectId/accept-invite").post(checkAuth);
 export default router;
