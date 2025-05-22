@@ -113,17 +113,17 @@ export default function Overview() {
                 </div>
                 <div className="flex gap-2 pt-6">
                   <input
-                    type="text"
-                    placeholder="Add member name..."
+                    type="email"
+                    placeholder="Enter email"
                     value={newMember}
                     onChange={(e) => setNewMember(e.target.value)}
-                    className="flex-1 p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
                   />
                   <button
                     onClick={handleAddMember}
                     className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
                   >
-                    <Plus size={16} /> Add
+                    Invite
                   </button>
                 </div>
               </motion.div>

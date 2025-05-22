@@ -1,8 +1,22 @@
-import { Ellipsis, Plus } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import Select from "react-select";
 
 function List() {
+  const [isAdddingTask, setIsAddingTask] = useState(false);
+  const [assigness, setAssignees] = useState([]);
+  const { currentProject } = useSelector((state) => state.project);
+  const members = currentProject.members;
+
+  const options = [];
+  members.forEach((member) => {
+    if (member.role !== "owner") {
+      const name = member.user.firstname + " " + member.user.lastname;
+      options.push({ label: name, value: member.user._id });
+    }
+  });
   return (
-    <div className="px-8 py-6 text-sm text-white/90">
+    <div className="px-4 py-2 text-sm text-white/90">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-white">Task List</h2>
         <nav className="flex gap-3 text-sm">
@@ -21,8 +35,11 @@ function List() {
         </nav>
       </div>
       <div className="mb-4">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
-          + Add task
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+          onClick={() => setIsAddingTask(true)}
+        >
+          {isAdddingTask ? "Done" : "+ Add task"}
         </button>
       </div>
       <table className="table-auto w-full border-collapse">
@@ -46,7 +63,123 @@ function List() {
           </tr>
         </thead>
         <tbody>
-          <tr className="bg-[#1E1E1E] text-white">
+          {isAdddingTask && (
+            <tr className="hover:bg-[#2B2C2E] transition">
+              <td className="border-b border-r h-12 border-white/20 relative">
+                <input
+                  type="text"
+                  className="w-full h-full border-none outline-none p-2 text-base"
+                />
+              </td>
+              <td className="border-b h-12 border-r border-white/20 relative">
+                <Select
+                  isMulti
+                  options={options}
+                  onChange={(selectedOptions) =>
+                    setAssignees(selectedOptions.map((opt) => opt.value))
+                  }
+                  placeholder="Select Assignees"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: "transparent",
+                      border: "none",
+                      boxShadow: "none",
+                      color: "white",
+                      minHeight: "2.5rem",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      backgroundColor: "#2B2C2E",
+                      color: "white",
+                      border: "none",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isFocused
+                        ? "#3a3b3d"
+                        : "transparent",
+                      color: "white",
+                      cursor: "pointer",
+                    }),
+                    multiValue: (base) => ({
+                      ...base,
+                      backgroundColor: "#3a3b3d",
+                    }),
+                    multiValueLabel: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+                    multiValueRemove: (base) => ({
+                      ...base,
+                      color: "#aaa",
+                      ":hover": {
+                        backgroundColor: "#555",
+                        color: "white",
+                      },
+                    }),
+                    placeholder: (base) => ({
+                      ...base,
+                      color: "#ccc",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+                    singleValue: (base) => ({
+                      ...base,
+                      color: "white",
+                    }),
+                  }}
+                />
+              </td>
+              <td className="border-b border-r h-12 border-white/20 relative">
+                <input
+                  type="date"
+                  className="w-full h-full border-none outline-none p-2 text-base"
+                />
+              </td>
+              <td className="border-b border-r h-12 border-white/20 relative">
+                <select className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none">
+                  <option className="bg-[#2B2C2E] text-white" value="">
+                    Select Priority
+                  </option>
+                  <option className="bg-[#2B2C2E] text-white" value="Low">
+                    Low
+                  </option>
+                  <option className="bg-[#2B2C2E] text-white" value="Medium">
+                    Medium
+                  </option>
+                  <option className="bg-[#2B2C2E] text-white" value="High">
+                    High
+                  </option>
+                </select>
+              </td>
+              <td className="border-b h-12 border-white/20 relative">
+                <select className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none">
+                  <option className="bg-[#2B2C2E] text-white" value="">
+                    Select Status
+                  </option>
+                  <option
+                    className="bg-[#2B2C2E] text-white"
+                    value="Not Started"
+                  >
+                    Not Started
+                  </option>
+                  <option
+                    className="bg-[#2B2C2E] text-white"
+                    value="In Progress"
+                  >
+                    In Progress
+                  </option>
+                  <option className="bg-[#2B2C2E] text-white" value="Completed">
+                    Completed
+                  </option>
+                </select>
+              </td>
+            </tr>
+          )}
+          {/* <tr className="bg-[#1E1E1E] text-white">
             <td colSpan={5} className="py-4 px-4 border-b border-white/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 text-lg font-semibold text-white">
@@ -62,7 +195,7 @@ function List() {
                 </div>
               </div>
             </td>
-          </tr>
+          </tr> */}
 
           <tr className="hover:bg-[#2B2C2E] transition">
             <td className="py-3 px-4 border-b border-white/20">

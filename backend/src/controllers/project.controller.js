@@ -3,6 +3,8 @@ import Project from "../models/project.model.js";
 import Team from "../models/team.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export async function createProject(req, res) {
   try {
@@ -254,6 +256,34 @@ export async function deleteProject(req, res) {
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
+}
+
+export async function inviteUserToProject(req, res) {
+  try {
+    const { email, projectId } = req.body;
+    const token = jwt.sign({ email, projectId }, process.end.JWT_SECRET, {
+      expiresIn: "2d",
+    });
+
+    if (!token) throw new ApiError(400, "Token could not be created.");
+    const inviteLink = `${process.env.CLIENT_URL}/dashboard/inbox?token=${token}`;
+    await sendEmail({
+      to: email,
+      subject: "You are invited to join a project!",
+      html: `<p>You have been invited to join a project.</p>
+             <p><a href="${inviteLink}">Click here to accept the invitation</a></p>`,
+    });
+
+    return res.status(200).json({ message: "Invitation sent" });
+  } catch (error) {
+    console.error(err);
+    return res.status(500).json({ message: "Failed to send invitation" });
+  }
+}
+
+export async function acceptProjectInvite(req, res) {
+  try {
+  } catch (error) {}
 }
 
 // removeMemberFromProject  DELETE  /api/projects/:projectId/members/:memberId

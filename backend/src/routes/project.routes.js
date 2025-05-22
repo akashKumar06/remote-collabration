@@ -8,6 +8,7 @@ import {
   deleteProject,
   getProjectById,
   getUserProjects,
+  inviteUserToProject,
   updateProjectDescription,
 } from "../controllers/project.controller.js";
 const router = express.Router();
@@ -39,4 +40,9 @@ router
   .route("/:projectId/update-description")
   .patch(checkAuth, updateProjectDescription);
 
+// sendInvite   POST  /api/projects/:projectId/invite
+router.route("/:projectId/invite").post(checkAuth, inviteUserToProject);
+
+// acceptInvite POST  /api/projects/accept-invite
+router.route("/:projectId/accept-invite").post(checkAuth);
 export default router;

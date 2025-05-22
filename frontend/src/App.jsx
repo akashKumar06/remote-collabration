@@ -6,8 +6,6 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { Toaster } from "react-hot-toast";
-import { AccountSetupProvider } from "./features/account_setup/AccountSetupContext";
-import AccountSetup from "./features/account_setup/AccountSetup";
 import ProjectPage from "./features/dashboard/ProjectPage";
 import Overview from "./features/dashboard/project/Overview";
 import Files from "./features/dashboard/project/Files";
@@ -50,6 +48,7 @@ function App() {
           }
         /> */}
         {/* dashboard routes */}
+
         <Route
           path="dashboard"
           element={

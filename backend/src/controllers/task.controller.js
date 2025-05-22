@@ -18,18 +18,17 @@ export async function createTask(req, res) {
     } = req.body;
 
     // Validation
-    if (!title || !assignee || !project || !team) {
+    if (!title || !assignee || !project) {
       throw new ApiError(400, "Missing required fields.");
     }
 
     // Optional: Validate references exist
-    const [assignedUser, foundProject, foundTeam] = await Promise.all([
+    const [assignedUser, foundProject] = await Promise.all([
       User.findById(assignee),
       Project.findById(project),
-      Team.findById(team),
     ]);
 
-    if (!assignedUser || !foundProject || !foundTeam) {
+    if (!assignedUser || !foundProject) {
       throw new ApiError(404, "Invalid assignee/project/team ID.");
     }
 
