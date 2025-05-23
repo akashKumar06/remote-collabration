@@ -22,8 +22,7 @@ export async function registerUser(req, res) {
       [firstname, lastname, email, password, phoneNo].some(
         (field) => !field || field.trim() === ""
       )
-    ) 
-    {
+    ) {
       throw new ApiError(400, "All fileds are required.");
     }
 
@@ -202,6 +201,8 @@ export async function refreshTokenHandler(req, res) {
       })
       .json({
         success: true,
+        newRefreshToken,
+        newAccessToken,
       });
   } catch (error) {
     console.error(error);

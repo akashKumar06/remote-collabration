@@ -1,11 +1,25 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import Select from "react-select";
+import {
+  createTask,
+  getProjectTasks,
+} from "../../../app/slices/task/taskThunk";
+import SplashScreen from "../../../components/SplashScreen";
 
 function List() {
   const [isAdddingTask, setIsAddingTask] = useState(false);
   const [assigness, setAssignees] = useState([]);
+  const [title, setTitle] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
+
   const { currentProject } = useSelector((state) => state.project);
+  const { projectTasks, loading } = useSelector((state) => state.task);
+  const dispatch = useDispatch();
+
   const members = currentProject.members;
 
   const options = [];
@@ -15,6 +29,29 @@ function List() {
       options.push({ label: name, value: member.user._id });
     }
   });
+
+  const handleAddTask = () => {
+    const task = {
+      title,
+      deadline,
+      priority,
+      status,
+      assignee: assigness[0],
+      project: currentProject._id,
+    };
+    dispatch(createTask(task))
+      .unwrap()
+      .then(() => {
+        toast.success("task created");
+      });
+  };
+
+  useEffect(() => {
+    // fetch the tasks belonging to the current project
+    dispatch(getProjectTasks({ projectId: currentProject._id }));
+  }, [dispatch, currentProject]);
+
+  if (loading) return <SplashScreen />;
   return (
     <div className="px-4 py-2 text-sm text-white/90">
       <div className="flex justify-between items-center mb-4">
@@ -35,12 +72,21 @@ function List() {
         </nav>
       </div>
       <div className="mb-4">
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-          onClick={() => setIsAddingTask(true)}
-        >
-          {isAdddingTask ? "Done" : "+ Add task"}
-        </button>
+        {!isAdddingTask ? (
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+            onClick={() => setIsAddingTask(true)}
+          >
+            Create new task
+          </button>
+        ) : (
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+            onClick={handleAddTask}
+          >
+            Add
+          </button>
+        )}
       </div>
       <table className="table-auto w-full border-collapse">
         <thead>
@@ -69,6 +115,9 @@ function List() {
                 <input
                   type="text"
                   className="w-full h-full border-none outline-none p-2 text-base"
+                  placeholder="Enter title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </td>
               <td className="border-b h-12 border-r border-white/20 relative">
@@ -137,10 +186,16 @@ function List() {
                 <input
                   type="date"
                   className="w-full h-full border-none outline-none p-2 text-base"
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
                 />
               </td>
               <td className="border-b border-r h-12 border-white/20 relative">
-                <select className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none">
+                <select
+                  className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none"
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                >
                   <option className="bg-[#2B2C2E] text-white" value="">
                     Select Priority
                   </option>
@@ -156,7 +211,11 @@ function List() {
                 </select>
               </td>
               <td className="border-b h-12 border-white/20 relative">
-                <select className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none">
+                <select
+                  className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
                   <option className="bg-[#2B2C2E] text-white" value="">
                     Select Status
                   </option>
@@ -179,47 +238,26 @@ function List() {
               </td>
             </tr>
           )}
-          {/* <tr className="bg-[#1E1E1E] text-white">
-            <td colSpan={5} className="py-4 px-4 border-b border-white/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 text-lg font-semibold text-white">
-                  To Do
-                </div>
-                <div className="flex gap-2">
-                  <div className="cursor-pointer p-2 rounded hover:bg-[#2B2C2E] transition">
-                    <Plus size={18} />
-                  </div>
-                  <div className="cursor-pointer p-2 rounded hover:bg-[#2B2C2E] transition">
-                    <Ellipsis size={18} />
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr> */}
 
-          <tr className="hover:bg-[#2B2C2E] transition">
-            <td className="py-3 px-4 border-b border-white/20">
-              The Sliding Mr. Bones (Next Stop, Pottersville)
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">
-              Malcolm Lockyer
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">1961</td>
-            <td className="py-3 px-4 border-b border-white/20">
-              Malcolm Lockyer
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">1961</td>
-          </tr>
-
-          <tr className="hover:bg-[#2B2C2E] transition">
-            <td className="py-3 px-4 border-b border-white/20">Witchy Woman</td>
-            <td className="py-3 px-4 border-b border-white/20">The Eagles</td>
-            <td className="py-3 px-4 border-b border-white/20">1972</td>
-            <td className="py-3 px-4 border-b border-white/20">
-              Malcolm Lockyer
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">1961</td>
-          </tr>
+          {projectTasks.map((task) => (
+            <tr className="hover:bg-[#2B2C2E] transition" key={task._id}>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.title}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.assignee.firstname}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.deadline}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.priority}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.status}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   User,
@@ -33,6 +33,7 @@ export default function Overview() {
   ]);
 
   const { currentProject } = useSelector((state) => state.project);
+
   const handleAddMember = async () => {
     const memberData = {
       email: newMember.trim(),
@@ -80,12 +81,7 @@ export default function Overview() {
                 <Pencil size={16} /> Edit
               </button>
             </div>
-            <p className="text-gray-300">
-              This project aims to build a full-stack project management
-              platform that allows users to create, join, and manage projects.
-              Users can track milestones, share resources, manage tasks, and
-              collaborate efficiently with their teams.
-            </p>
+            <p className="text-gray-300">{currentProject.description}</p>
           </motion.div>
 
           {/* Members */}

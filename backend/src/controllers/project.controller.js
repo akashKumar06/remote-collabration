@@ -212,6 +212,7 @@ export async function updateProjectDescription(req, res) {
     return res.status(200).json({
       success: true,
       message: "Project description updated successfully.",
+      project,
     });
   } catch (error) {
     console.log("Error in updateProjectDescription", error);

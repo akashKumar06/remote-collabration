@@ -14,11 +14,10 @@ export async function createTask(req, res) {
       status,
       priority,
       project,
-      team,
     } = req.body;
 
     // Validation
-    if (!title || !assignee || !project) {
+    if (!title || !assignee || !deadline || !status || !priority || !project) {
       throw new ApiError(400, "Missing required fields.");
     }
 
@@ -36,11 +35,10 @@ export async function createTask(req, res) {
       title,
       description,
       assignee,
-      deadline,
+      deadline: new Date(deadline),
       status,
       priority,
       project,
-      team,
       createdBy: req.user._id, // From authentication middleware
       activityLogs: [
         {
@@ -50,7 +48,14 @@ export async function createTask(req, res) {
       ],
     });
 
-    res.status(201).json({ success: true, task });
+    const newTask = await Task.findById(task._id)
+      .populate("assignee", "firstname lastname email")
+      .populate("createdBy", "firstname lastname email")
+      .populate("project", "name")
+      .populate("team", "name")
+      .sort({ createdAt: -1 });
+
+    res.status(201).json({ success: true, task: newTask });
   } catch (error) {
     console.error("Error creating task:", error);
     if (error instanceof ApiError) {
@@ -78,8 +83,8 @@ export async function getAllTasks(req, res) {
     if (priority) filter.priority = priority;
 
     const tasks = await Task.find(filter)
-      .populate("assignee", "name email avatar")
-      .populate("createdBy", "name email")
+      .populate("assignee", "firstname lastname email")
+      .populate("createdBy", "firstname lastname email")
       .populate("project", "name")
       .populate("team", "name")
       .sort({ createdAt: -1 });
