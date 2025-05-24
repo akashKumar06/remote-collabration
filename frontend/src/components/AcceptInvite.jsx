@@ -1,7 +1,7 @@
 //vaishvi.sisodiya28@gmail.com
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
-// import axios from "axios";
+import axios from "axios";
 import { UserIcon } from "@heroicons/react/24/solid";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
