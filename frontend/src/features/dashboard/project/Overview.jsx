@@ -15,6 +15,7 @@ import { close, open, setActiveComponent } from "../../../app/slices/modal";
 import { delay } from "../../../utils/delay";
 import api from "../../../api/axios";
 import toast from "react-hot-toast";
+import { marked } from "marked";
 
 export default function Overview() {
   const dispatch = useDispatch();
@@ -27,13 +28,16 @@ export default function Overview() {
   const [isResourcesOpen, setIsResourcesOpen] = useState(true);
   const [isMilestonesOpen, setIsMilestonesOpen] = useState(true);
 
+  const [isGeneratingWithAI, setIsGeneratingWithAI] = useState(false);
   const [resources] = useState([
     { label: "GitHub Repo", url: "https://github.com/example/repo" },
     { label: "Figma Design", url: "https://figma.com/file/xyz" },
   ]);
 
   const { currentProject } = useSelector((state) => state.project);
-
+  const [description, setDescription] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [prompt, setPrompt] = useState("");
   const handleAddMember = async () => {
     const memberData = {
       email: newMember.trim(),
@@ -50,6 +54,31 @@ export default function Overview() {
     }
   };
 
+  const handleGenerateWithAI = async () => {
+    setDescription("");
+    setIsGenerating(true);
+    const response = await fetch(
+      "http://localhost:8000/api/v1/projects/ai/generate-project",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idea: prompt }),
+      }
+    );
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      setDescription((prev) => prev + chunk);
+    }
+    setIsGenerating(false);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
       {/* Layout */}
@@ -57,6 +86,54 @@ export default function Overview() {
         {/* Left Panel */}
         <div className="flex-1 space-y-6">
           {/* Description */}
+          <div className="flex gap-4">
+            <button
+              onClick={() => setIsGeneratingWithAI((prev) => !prev)}
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+            >
+              {!isGeneratingWithAI
+                ? "Generate project description with AI"
+                : "Cancel"}
+            </button>
+            {isGeneratingWithAI && (
+              <button
+                onClick={handleGenerateWithAI}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+              >
+                {isGenerating ? "Generating..." : "Generate"}
+              </button>
+            )}
+          </div>
+          {isGeneratingWithAI && (
+            <input
+              type="text"
+              placeholder="Enter project idea..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              className="flex-1 w-full p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
+            />
+          )}
+
+          {isGeneratingWithAI && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-[#2A2A2A] border border-gray-700 p-6 rounded-2xl"
+            >
+              <div className="flex items-start justify-between">
+                <h2 className="text-lg font-semibold mb-2">
+                  Project Description
+                </h2>
+              </div>
+              <div
+                className="prose text-gray-300 prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: marked(description) }}
+              />
+              {/* <p className="text-gray-300">{description}</p> */}
+            </motion.div>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,15 +184,13 @@ export default function Overview() {
                 className="overflow-hidden"
               >
                 <div className="space-y-3 mt-4">
-                  {members.map((member, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
+                  {currentProject.members.map((member) => (
+                    <div key={member._id} className="flex items-center gap-3">
                       <User size={18} className="text-pink-400" />
-                      <span>{member}</span>
-                      {idx === 0 && (
-                        <span className="ml-auto text-sm text-gray-400 italic">
-                          Project Owner
-                        </span>
-                      )}
+                      <span>{member.user.firstname}</span>
+                      <span className="ml-auto text-sm text-gray-400 italic">
+                        {member.role}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -181,17 +256,18 @@ export default function Overview() {
           >
             <h2 className="text-lg font-semibold mb-4">Activity Timeline</h2>
             <div className="border-l border-gray-600 pl-4 space-y-6 text-sm text-gray-300">
-              {[
-                { text: "Akash joined the team", time: "15 min ago" },
-                { text: "You joined", time: "15 min ago" },
-                { text: "Project created", time: "20 min ago" },
-              ].map((item, idx) => (
-                <div key={idx} className="relative">
-                  <span className="w-2 h-2 bg-pink-400 rounded-full absolute -left-5 top-1" />
-                  <p>{item.text}</p>
-                  <p className="text-xs text-gray-500">{item.time}</p>
-                </div>
-              ))}
+              {currentProject.activityLogs
+                .slice()
+                .reverse()
+                .map((activity) => (
+                  <div key={activity._id} className="relative">
+                    <span className="w-2 h-2 bg-pink-400 rounded-full absolute -left-5 top-1" />
+                    <p>{activity.message}</p>
+                    <p className="text-xs text-gray-500">
+                      {activity.createdAt}
+                    </p>
+                  </div>
+                ))}
             </div>
           </motion.div>
 

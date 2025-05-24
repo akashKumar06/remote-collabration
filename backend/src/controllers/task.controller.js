@@ -1,6 +1,5 @@
 import Project from "../models/project.model.js";
 import Task from "../models/task.model.js";
-import Team from "../models/team.model.js";
 import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 

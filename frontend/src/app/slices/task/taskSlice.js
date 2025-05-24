@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTask, getProjectTasks } from "./taskThunk";
+import { createTask, getProjectTasks, getUserTasks } from "./taskThunk";
 
 const initialState = {
   projectTasks: [],
@@ -13,6 +13,19 @@ const taskSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // GET_USER_TASKS
+      .addCase(getUserTasks.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserTasks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userTasks = action.payload;
+      })
+      .addCase(getUserTasks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // PROJECT_TASKS
       .addCase(getProjectTasks.pending, (state) => {
         state.loading = true;
       })

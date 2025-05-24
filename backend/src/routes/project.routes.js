@@ -12,6 +12,7 @@ import {
   inviteUserToProject,
   updateProjectDescription,
 } from "../controllers/project.controller.js";
+import { generateProjectDetails } from "../controllers/ai.controller.js";
 const router = express.Router();
 
 // createProject    POST    /api/projects
@@ -28,7 +29,7 @@ router
 
 // acceptInvite POST  /api/projects/accept-invite
 router.route("/accept-invite").post(checkAuth, acceptProjectInvite);
-
+router.route("/ai/generate-project").post(checkAuth, generateProjectDetails);
 // getProjectById   GET   /api/projects/:projectId
 // deleteProject    DELETE  /api/projects/:projectId
 router

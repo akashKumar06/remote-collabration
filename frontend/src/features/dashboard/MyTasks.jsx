@@ -1,6 +1,18 @@
 import { Ellipsis, Plus } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserTasks } from "../../app/slices/task/taskThunk";
+import SplashScreen from "../../components/SplashScreen";
+import { open, setActiveComponent } from "../../app/slices/modal";
 
 export default function MyTasks() {
+  const { userTasks, loading } = useSelector((state) => state.task);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUserTasks({ userId: user._id }));
+  }, [dispatch, user]);
+  if (loading) return <SplashScreen />;
   return (
     <div className="px-8 py-6 text-sm text-white/90">
       <div className="flex justify-between items-center mb-4">
@@ -19,12 +31,6 @@ export default function MyTasks() {
             Options
           </button>
         </nav>
-      </div>
-
-      <div className="mb-4">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
-          + Add Task
-        </button>
       </div>
 
       <table className="table-auto w-full border-collapse">
@@ -66,27 +72,32 @@ export default function MyTasks() {
             </td>
           </tr>
 
-          <tr className="hover:bg-[#2B2C2E] transition">
-            <td className="py-3 px-4 border-b border-white/20">
-              Design login page
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">Auth System</td>
-            <td className="py-3 px-4 border-b border-white/20">Apr 9, 2025</td>
-            <td className="py-3 px-4 border-b border-white/20">High</td>
-            <td className="py-3 px-4 border-b border-white/20">In Progress</td>
-          </tr>
-
-          <tr className="hover:bg-[#2B2C2E] transition">
-            <td className="py-3 px-4 border-b border-white/20">
-              Fix bug on dashboard
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">
-              Project Tracker
-            </td>
-            <td className="py-3 px-4 border-b border-white/20">Apr 10, 2025</td>
-            <td className="py-3 px-4 border-b border-white/20">Medium</td>
-            <td className="py-3 px-4 border-b border-white/20">Pending</td>
-          </tr>
+          {userTasks.map((task) => (
+            <tr
+              className="hover:bg-[#2B2C2E] cursor-pointer transition"
+              key={task._id}
+              onClick={() => {
+                dispatch(open());
+                dispatch(setActiveComponent("view_task"));
+              }}
+            >
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.title}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.assignee.firstname}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.deadline}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.priority}
+              </td>
+              <td className="py-3 px-4 border-b border-white/20">
+                {task.status}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

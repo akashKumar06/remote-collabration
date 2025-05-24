@@ -22,9 +22,9 @@ function ProjectPageLayout() {
 
   if (!currentProject) return <SplashScreen />;
   return (
-    <div className="h-screen overflow-hidden font-roboto bg-[#1A1A1A] text-gray-300">
+    <div className="relative h-screen font-roboto  text-gray-300">
       {/* Header */}
-      <header className="bg-[#1A1A1A] border-b border-white/10 px-6 py-2 shadow-md">
+      <header className="z-10 bg-[#1A1A1A] sticky top-0 left-0 border-b border-white/10 px-6 py-2 shadow-md">
         <h2 className="text-2xl font-bold tracking-tight text-white">
           {currentProject.name}
         </h2>
@@ -94,8 +94,7 @@ function ProjectPageLayout() {
         </nav>
       </header>
 
-      {/* Scrollable Main Content */}
-      <main className="overflow-y-auto h-[calc(100vh-112px)] px-10 py-6 bg-[#1F1F1F]">
+      <main className="px-10 py-6">
         <Outlet />
       </main>
     </div>

@@ -27,3 +27,17 @@ export const createTask = createAsyncThunk(
     }
   }
 );
+
+export const getUserTasks = createAsyncThunk(
+  "task/userTasks",
+  async (data, thunkApi) => {
+    const { userId } = data;
+    try {
+      const res = await api(`/tasks?assignee=${userId}`);
+      return res.data.tasks;
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(error.response.data.message);
+    }
+  }
+);
