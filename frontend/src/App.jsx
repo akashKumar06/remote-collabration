@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { fetchCurrentUser } from "./app/slices/auth/authThunks";
 import SplashScreen from "./components/SplashScreen";
 import AcceptInvite from "./components/AcceptInvite";
-
+import { getUserProjects } from "./app/slices/project/projectThunk";
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +38,8 @@ function App() {
         {/* public routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="accept-invite" element={<AcceptInvite />}></Route>
+
         <Route path="signup" element={<SignupPage />} />
         {/* <Route
           path="account_setup"
@@ -76,9 +78,7 @@ function App() {
           <Route path="teams" element={<TeamsPage />} />
         </Route>
       </Routes>
-      <Routes>
-         <Route path="acceptInvite" element={<AcceptInvite/>}></Route>
-      </Routes>
+
       <Toaster
         position="top-center"
         reverseOrder={false}

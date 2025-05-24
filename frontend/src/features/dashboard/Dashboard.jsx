@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProjects } from "../../app/slices/project/projectThunk";
+import SplashScreen from "../../components/SplashScreen";
 
 const Dashboard = () => {
   const [isSidebarToggled, setIsSidebarToggled] = useState(false);
@@ -13,11 +14,14 @@ const Dashboard = () => {
   }
 
   const dispatch = useDispatch();
-  const { projects } = useSelector((state) => state.project);
+  const { projects, loading, error } = useSelector((state) => state.project);
+
   useEffect(() => {
     dispatch(getUserProjects());
   }, [dispatch]);
 
+  if (loading) return <SplashScreen />;
+  if (error) return <h1>error</h1>;
   return (
     <div className="h-screen font-roboto flex flex-col">
       {/* Fixed Navbar */}

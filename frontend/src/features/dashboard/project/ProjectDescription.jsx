@@ -1,19 +1,27 @@
 import React, { useState } from "react";
 import { Save, XCircle } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { close } from "../../../app/slices/modal";
+import { updateProjectDescription } from "../../../app/slices/project/projectThunk";
+import toast from "react-hot-toast";
 
-const ProjectDescription = ({ initialDescription = "", onSave }) => {
-  const [description, setDescription] = useState(initialDescription);
-  const [isSaved, setIsSaved] = useState(false);
+const ProjectDescription = ({}) => {
+  const { currentProject, loading } = useSelector((state) => state.project);
   const dispatch = useDispatch();
+  const [description, setDescription] = useState(currentProject.description);
 
   const handleSave = () => {
-    if (onSave) {
-      onSave(description);
-    }
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2000);
+    dispatch(
+      updateProjectDescription({
+        projectId: currentProject._id,
+        description,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        toast.success("Description updated successfully!");
+        dispatch(close());
+      });
   };
 
   const handleCancel = () => {
@@ -42,7 +50,7 @@ const ProjectDescription = ({ initialDescription = "", onSave }) => {
           className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition font-medium text-sm"
         >
           <Save size={16} />
-          {isSaved ? "Saved" : "Save Description"}
+          {loading ? "Saving.." : "Save Description"}
         </button>
       </div>
     </div>

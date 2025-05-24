@@ -33,7 +33,7 @@ router.post(
   loginUser
 );
 
-router.post("/refresh_token", refreshTokenHandler);
+router.post("/refresh-token", refreshTokenHandler);
 
 router.post("/logout", checkAuth, logoutUser);
 router.get("/profile", checkAuth, getUser);

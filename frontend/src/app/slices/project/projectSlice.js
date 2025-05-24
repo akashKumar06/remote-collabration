@@ -1,11 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createProject, getProjectById, getUserProjects } from "./projectThunk";
+import {
+  createProject,
+  getProjectById,
+  getUserProjects,
+  updateProjectDescription,
+} from "./projectThunk";
 
 const initialState = {
   projects: [],
   currentProject: null,
   loading: false,
   error: null,
+  tasks: [],
 };
 
 const projectSlice = createSlice({
@@ -33,7 +39,6 @@ const projectSlice = createSlice({
       })
       .addCase(createProject.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
         state.projects.push(action.payload);
       })
       .addCase(createProject.rejected, (state, action) => {
@@ -52,7 +57,27 @@ const projectSlice = createSlice({
       .addCase(getProjectById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // UPDATE_PROJECT_DESCRIPTION
+      .addCase(updateProjectDescription.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProjectDescription.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.projects.findIndex(
+          (project) => project._id === action.payload._id
+        );
+        state.projects[index] = action.payload;
+        state.currentProject = action.payload;
+      })
+      .addCase(updateProjectDescription.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
+    // ASSIGN_TASK_TO_MEMBER
+    // .addCase()
+    // .addCase()
+    // .addCase();
   },
 });
 

@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import {
   ClipboardList,
   FilesIcon,
@@ -7,12 +7,20 @@ import {
   MessagesSquare,
 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import SplashScreen from "../../components/SplashScreen";
 
 function ProjectPageLayout() {
   const { currentProject } = useSelector((state) => state.project);
-  if (!currentProject) return <SplashScreen />;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentProject) {
+      navigate("/dashboard");
+      return;
+    }
+  }, [currentProject, navigate]);
 
+  if (!currentProject) return <SplashScreen />;
   return (
     <div className="h-screen overflow-hidden font-roboto bg-[#1A1A1A] text-gray-300">
       {/* Header */}

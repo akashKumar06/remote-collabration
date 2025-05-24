@@ -44,3 +44,21 @@ export const getProjectById = createAsyncThunk(
     }
   }
 );
+
+export const updateProjectDescription = createAsyncThunk(
+  "project/updateDescription",
+  async (data, thunkApi) => {
+    const { projectId, description } = data;
+    try {
+      const res = await api.patch(`/projects/${projectId}/update-description`, {
+        description,
+      });
+      return res.data.project;
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(
+        error.response.data.message || "Failed updating description"
+      );
+    }
+  }
+);

@@ -8,7 +8,7 @@ export const sendEmail = async ({ to, subject, html }) => {
     },
   });
   await transporter.sendMail({
-    from: `"Your App" <${process.env.EMAIL_USERNAME}>`,
+    from: `"Remote Collab" <${process.env.EMAIL_USERNAME}>`,
     to,
     subject,
     html,
