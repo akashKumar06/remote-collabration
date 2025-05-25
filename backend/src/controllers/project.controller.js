@@ -263,23 +263,59 @@ export async function inviteUserToProject(req, res) {
   try {
     const { projectId } = req.params;
     const { email } = req.body;
-    const token = jwt.sign({ email, projectId }, process.env.JWT_SECRET, {
-      expiresIn: "2d",
-    });
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found");
+
+    const user = req.user;
+    if (user.email === email)
+      throw new ApiError(400, "You are already part of this project.");
+
+    const token = jwt.sign(
+      { inviter: user.firstname, projectName: project.name, email, projectId },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2d",
+      }
+    );
 
     if (!token) throw new ApiError(400, "Token could not be created.");
     const inviteLink = `${process.env.CLIENT_URL}/accept-invite?token=${token}`;
     await sendEmail({
       to: email,
-      subject: "You are invited to join a project!",
-      html: `<p>You have been invited to join a project.</p>
-             <p><a href="${inviteLink}">Click here to accept the invitation</a></p>`,
+      subject: "You are invited to join a project",
+      html: `
+    <div style="font-family: Arial, sans-serif; background-color: #f4f4f7; padding: 30px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+        <h1 style="color: #333333; font-size: 24px; margin-bottom: 10px;">
+          ${user.firstname} has invited you to join a project!
+        </h1>
+        <h2 style="color: #555555; font-size: 18px; margin-top: 0;">
+          Are you ready to contribute to <em style="color: #1a73e8;">${project.name}</em>?
+        </h2>
+        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+          You have been invited to collaborate on an exciting project. This is your chance to make an impact and work with a great team.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${inviteLink}" style="display: inline-block; background-color: #1a73e8; color: #ffffff; padding: 12px 20px; font-size: 16px; text-decoration: none; border-radius: 6px;">
+            Accept Invitation
+          </a>
+        </div>
+        <p style="color: #999999; font-size: 14px; text-align: center;">
+          If the button above doesn't work, copy and paste this link into your browser:<br/>
+          <a href="${inviteLink}" style="color: #1a73e8;">${inviteLink}</a>
+        </p>
+      </div>
+    </div>
+  `,
     });
 
     return res.status(200).json({ message: "Invitation sent" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Failed to send invitation" });
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to send invitation" });
   }
 }
 

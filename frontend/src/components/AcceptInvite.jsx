@@ -1,25 +1,33 @@
 //vaishvi.sisodiya28@gmail.com
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
-import axios from "axios";
 import { UserIcon } from "@heroicons/react/24/solid";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import api from "../api/axios";
 import { getProjectById } from "../app/slices/project/projectThunk";
+import { jwtDecode } from "jwt-decode";
 
 const AcceptInvite = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
   const { user } = useSelector((state) => state.auth);
+
+  let decoded = {};
+  if (token) {
+    decoded = jwtDecode(token);
+    console.log(decoded);
+  }
+
   const [email, setEmail] = useState("");
-  const [inviter, setInviter] = useState("Someone");
-  const [projectName, setProjectName] = useState("a Project");
+  const [inviter, setInviter] = useState(() => decoded.inviter);
+  const [projectName, setProjectName] = useState(() => decoded.projectName);
   const [message, setMessage] = useState("You're invited to collaborate!");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!token) {
       toast.error("Invalid or missing invitation token.");

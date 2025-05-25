@@ -21,8 +21,8 @@ export default function Overview() {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
 
-  const [members, setMembers] = useState(["Akash Kumar"]);
   const [newMember, setNewMember] = useState("");
+  const [isInviting, setIsInviting] = useState(false);
 
   const [isMembersOpen, setIsMembersOpen] = useState(true);
   const [isResourcesOpen, setIsResourcesOpen] = useState(true);
@@ -39,19 +39,24 @@ export default function Overview() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [prompt, setPrompt] = useState("");
   const handleAddMember = async () => {
+    setIsInviting(true);
+
     const memberData = {
       email: newMember.trim(),
     };
+
     console.log(currentProject);
-    const res = await api.post(
-      `/projects/${currentProject._id}/invite`,
-      memberData
-    );
-    if (res.status === 200) {
+
+    try {
+      const res = await api.post(
+        `/projects/${currentProject._id}/invite`,
+        memberData
+      );
       toast.success(res.data.message);
-    } else {
-      toast.error(res.response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
+    setIsInviting(false);
   };
 
   const handleGenerateWithAI = async () => {
@@ -205,8 +210,9 @@ export default function Overview() {
                   <button
                     onClick={handleAddMember}
                     className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+                    disabled={isInviting}
                   >
-                    Invite
+                    {isInviting ? "Inviting..." : "Invite"}
                   </button>
                 </div>
               </motion.div>
