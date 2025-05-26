@@ -16,6 +16,7 @@ import { delay } from "../../../utils/delay";
 import api from "../../../api/axios";
 import toast from "react-hot-toast";
 import { marked } from "marked";
+import { updateProjectDescription } from "../../../app/slices/project/projectThunk";
 
 export default function Overview() {
   const dispatch = useDispatch();
@@ -28,7 +29,6 @@ export default function Overview() {
   const [isResourcesOpen, setIsResourcesOpen] = useState(true);
   const [isMilestonesOpen, setIsMilestonesOpen] = useState(true);
 
-  const [isGeneratingWithAI, setIsGeneratingWithAI] = useState(false);
   const [resources] = useState([
     { label: "GitHub Repo", url: "https://github.com/example/repo" },
     { label: "Figma Design", url: "https://figma.com/file/xyz" },
@@ -36,16 +36,19 @@ export default function Overview() {
 
   const { currentProject } = useSelector((state) => state.project);
   const [description, setDescription] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
   const [prompt, setPrompt] = useState("");
+
+  const [openGenerateInput, setOpenGenerateInput] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerated, setIsGenerated] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleAddMember = async () => {
     setIsInviting(true);
 
     const memberData = {
       email: newMember.trim(),
     };
-
-    console.log(currentProject);
 
     try {
       const res = await api.post(
@@ -59,6 +62,25 @@ export default function Overview() {
     setIsInviting(false);
   };
 
+  const handleSaveDescription = async () => {
+    setIsSaving(true);
+    dispatch(
+      updateProjectDescription({
+        projectId: currentProject._id,
+        description,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        setOpenGenerateInput((prev) => !prev);
+        setIsGenerated(false);
+        setIsSaving(false);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        setIsSaving(false);
+      });
+  };
   const handleGenerateWithAI = async () => {
     setDescription("");
     setIsGenerating(true);
@@ -82,6 +104,7 @@ export default function Overview() {
       setDescription((prev) => prev + chunk);
     }
     setIsGenerating(false);
+    setIsGenerated(true);
   };
 
   return (
@@ -93,23 +116,25 @@ export default function Overview() {
           {/* Description */}
           <div className="flex gap-4">
             <button
-              onClick={() => setIsGeneratingWithAI((prev) => !prev)}
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+              onClick={() => setOpenGenerateInput((prev) => !prev)}
+              className="px-4 py-2 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
             >
-              {!isGeneratingWithAI
+              {!openGenerateInput
                 ? "Generate project description with AI"
                 : "Cancel"}
             </button>
-            {isGeneratingWithAI && (
+
+            {openGenerateInput && (
               <button
                 onClick={handleGenerateWithAI}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+                className="px-4 py-2 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
               >
                 {isGenerating ? "Generating..." : "Generate"}
               </button>
             )}
           </div>
-          {isGeneratingWithAI && (
+
+          {openGenerateInput && (
             <input
               type="text"
               placeholder="Enter project idea..."
@@ -119,17 +144,23 @@ export default function Overview() {
             />
           )}
 
-          {isGeneratingWithAI && (
+          {openGenerateInput && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="bg-[#2A2A2A] border border-gray-700 p-6 rounded-2xl"
             >
-              <div className="flex items-start justify-between">
-                <h2 className="text-lg font-semibold mb-2">
-                  Project Description
-                </h2>
+              <div className="flex items-end justify-end">
+                {isGenerating && <p1>...</p1>}
+                {isGenerated && (
+                  <button
+                    onClick={handleSaveDescription}
+                    className="px-4 py-1 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+                  >
+                    {isSaving ? "Saving" : "Save  "}
+                  </button>
+                )}
               </div>
               <div
                 className="prose text-gray-300 prose-invert max-w-none"

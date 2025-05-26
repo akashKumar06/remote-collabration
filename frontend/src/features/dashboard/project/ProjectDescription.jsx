@@ -35,7 +35,7 @@ const ProjectDescription = ({}) => {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Write a detailed description about the project..."
-        className="w-full h-40 p-4 bg-gray-900 text-white border border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-600"
+        className=" scrollbar-hide w-full h-96 p-4 bg-background text-white border border-gray-700 rounded-lg resize-none focus:outline-none  "
       />
       <div className="mt-4 flex justify-end gap-3">
         <button

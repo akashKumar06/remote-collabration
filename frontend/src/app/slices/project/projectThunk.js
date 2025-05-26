@@ -34,7 +34,6 @@ export const getProjectById = createAsyncThunk(
   async (projectId, thunkApi) => {
     try {
       const res = await api.get(`/projects/${projectId}`);
-      console.log(res.data);
       return res.data.project;
     } catch (error) {
       console.log(error);

@@ -52,7 +52,7 @@ function ProjectPageLayout() {
             }
           >
             <div className="flex items-center gap-2">
-              <List size={16} /> List
+              <List size={16} /> Tasks
             </div>
           </NavLink>
           <NavLink
@@ -64,7 +64,7 @@ function ProjectPageLayout() {
             }
           >
             <div className="flex items-center gap-2">
-              <LayoutDashboard size={16} /> Dashboard
+              <LayoutDashboard size={16} /> Analytics
             </div>
           </NavLink>
           <NavLink

@@ -16,7 +16,7 @@ function Modal() {
 
   return (
     <div
-      className={`fixed right-0 top-0 z-10 h-screen transition duration-700 ease-in-out  ${
+      className={`fixed right-0 top-0 z-50 h-screen transition duration-700 ease-in-out  ${
         state ? "translate-0" : "translate-x-full"
       }`}
     >
