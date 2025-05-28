@@ -20,7 +20,6 @@ import { useEffect } from "react";
 import { fetchCurrentUser } from "./app/slices/auth/authThunks";
 import SplashScreen from "./components/SplashScreen";
 import AcceptInvite from "./components/AcceptInvite";
-import { getUserProjects } from "./app/slices/project/projectThunk";
 
 function App() {
   const dispatch = useDispatch();

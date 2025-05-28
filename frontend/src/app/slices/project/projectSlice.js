@@ -59,11 +59,8 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // UPDATE_PROJECT_DESCRIPTION
-      .addCase(updateProjectDescription.pending, (state) => {
-        state.loading = true;
-      })
+      .addCase(updateProjectDescription.pending, (state) => {})
       .addCase(updateProjectDescription.fulfilled, (state, action) => {
-        state.loading = false;
         const index = state.projects.findIndex(
           (project) => project._id === action.payload._id
         );
@@ -71,7 +68,6 @@ const projectSlice = createSlice({
         state.currentProject = action.payload;
       })
       .addCase(updateProjectDescription.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       });
     // ASSIGN_TASK_TO_MEMBER

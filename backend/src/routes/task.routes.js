@@ -9,13 +9,14 @@ import {
   addTaskActivity,
 } from "../controllers/task.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
+import { isProjectOwner } from "../middlewares/project-owner.middlware.js";
 const router = express.Router();
 
 // All routes require authentication
 router.use(checkAuth);
 
 // Create a new task
-router.post("/", createTask);
+router.post("/", isProjectOwner, createTask);
 
 // Get all tasks with optional filters (project, team, assignee, etc.)
 router.get("/", getAllTasks);

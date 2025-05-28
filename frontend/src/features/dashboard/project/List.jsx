@@ -16,6 +16,7 @@ function List() {
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
 
+  const { user } = useSelector((state) => state.auth);
   const { currentProject } = useSelector((state) => state.project);
   const { projectTasks, loading } = useSelector((state) => state.task);
   const dispatch = useDispatch();
@@ -43,6 +44,9 @@ function List() {
       .unwrap()
       .then(() => {
         toast.success("task created");
+      })
+      .catch((err) => {
+        toast.error(err);
       });
   };
 
@@ -71,23 +75,25 @@ function List() {
           </button>
         </nav>
       </div>
-      <div className="mb-4">
-        {!isAdddingTask ? (
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-            onClick={() => setIsAddingTask(true)}
-          >
-            Create new task
-          </button>
-        ) : (
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-            onClick={handleAddTask}
-          >
-            Add
-          </button>
-        )}
-      </div>
+      {user._id === currentProject.owner._id && (
+        <div className="mb-4">
+          {!isAdddingTask ? (
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+              onClick={() => setIsAddingTask(true)}
+            >
+              Create new task
+            </button>
+          ) : (
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+              onClick={handleAddTask}
+            >
+              Add
+            </button>
+          )}
+        </div>
+      )}
       <table className="table-auto w-full border-collapse">
         <thead>
           <tr className="bg-[#2B2C2E] text-white/80">

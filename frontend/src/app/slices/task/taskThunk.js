@@ -19,6 +19,7 @@ export const createTask = createAsyncThunk(
   "task/createTask",
   async (task, thunkApi) => {
     try {
+      console.log(task);
       const res = await api.post("/tasks", task);
       return res.data.task;
     } catch (error) {

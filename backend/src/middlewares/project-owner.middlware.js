@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 
 export const isProjectOwner = async (req, res, next) => {
   try {
-    const { projectId } = req.params;
+    const { project: projectId } = req.body;
 
     if (!projectId) {
       throw new ApiError(400, "Project ID is required.");
@@ -25,6 +25,13 @@ export const isProjectOwner = async (req, res, next) => {
 
     next();
   } catch (error) {
-    next(error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
   }
+  return res
+    .status(500)
+    .json({ success: false, message: "Internal server error." });
 };

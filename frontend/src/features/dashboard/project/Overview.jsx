@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   User,
-  Plus,
   Link,
   ClipboardList,
   CalendarCheck,
@@ -106,7 +105,6 @@ export default function Overview() {
     setIsGenerating(false);
     setIsGenerated(true);
   };
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
       {/* Layout */}
@@ -194,7 +192,12 @@ export default function Overview() {
                 <Pencil size={16} /> Edit
               </button>
             </div>
-            <p className="text-gray-300">{currentProject.description}</p>
+            <div
+              className="prose text-gray-300 prose-invert max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: marked(currentProject.description),
+              }}
+            />
           </motion.div>
 
           {/* Members */}
@@ -289,7 +292,7 @@ export default function Overview() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.25 }}
-            className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700"
+            className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700 max-h-90 overflow-y-scroll no-scrollbar"
           >
             <h2 className="text-lg font-semibold mb-4">Activity Timeline</h2>
             <div className="border-l border-gray-600 pl-4 space-y-6 text-sm text-gray-300">
