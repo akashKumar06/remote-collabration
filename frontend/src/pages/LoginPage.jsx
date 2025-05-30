@@ -1,7 +1,6 @@
 import { FcGoogle } from "react-icons/fc";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-// import axios from 'axios'
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,11 +17,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = {
-      email,
-      password,
-    };
-    dispatch(loginUser(formData));
+    dispatch(loginUser({ email, password }));
   };
 
   useEffect(() => {
@@ -40,14 +35,14 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-4 sm:mb-6">
           Login to Your Account
         </h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-600 mb-2">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-gray-600 mb-1">
               Email Address
             </label>
             <Input
@@ -57,14 +52,15 @@ const LoginPage = () => {
               className="w-full"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             {fieldErrors.email && (
               <p className="text-red-500 text-sm">{fieldErrors.email}</p>
             )}
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-600 mb-2">
+          <div>
+            <label htmlFor="password" className="block text-gray-600 mb-1">
               Password
             </label>
             <Input
@@ -74,6 +70,7 @@ const LoginPage = () => {
               className="w-full"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
             {fieldErrors.password && (
               <p className="text-red-500 text-sm">{fieldErrors.password}</p>
@@ -82,13 +79,13 @@ const LoginPage = () => {
 
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 mb-4"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2"
           >
             Login
           </Button>
         </form>
 
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center my-4">
           <hr className="flex-grow border-gray-300" />
           <span className="px-2 text-gray-500 text-sm">OR</span>
           <hr className="flex-grow border-gray-300" />
