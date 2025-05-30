@@ -40,15 +40,6 @@ function App() {
         <Route path="accept-invite" element={<AcceptInvite />}></Route>
 
         <Route path="signup" element={<SignupPage />} />
-        {/* <Route
-          path="account_setup"
-          element={
-            <AccountSetupProvider>
-              <AccountSetup />
-            </AccountSetupProvider>
-          }
-        /> */}
-        {/* dashboard routes */}
 
         <Route
           path="dashboard"
