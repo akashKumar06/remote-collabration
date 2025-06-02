@@ -9,14 +9,24 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    console.log("💥💥💥error💥💥💥");
-    if (error.response?.status === 401 && !originalRequest._retry) {
+
+    console.log("💥💥💥 Interceptor error 💥💥💥");
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/users/refresh-token")
+    ) {
       originalRequest._retry = true;
+
       try {
-        const res = await api.post("/users/refresh-token");
-        console.log(res);
+        // Refresh the access token via cookie (httpOnly)
+        await api.post("/users/refresh-token");
+
+        // Retry the original request (cookies will be sent automatically)
         return api(originalRequest);
       } catch (refreshError) {
+        // Optionally logout on failure
         await api.post("/users/logout");
         return Promise.reject(refreshError);
       }
