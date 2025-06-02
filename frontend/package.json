@@ -44,8 +44,5 @@
     "globals": "^15.14.0",
     "postcss": "^8.5.1",
     "vite": "^6.0.5"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }

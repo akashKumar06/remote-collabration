@@ -84,7 +84,7 @@ export default function Overview() {
     setDescription("");
     setIsGenerating(true);
     const response = await fetch(
-      "http://localhost:8000/api/v1/projects/ai/generate-project",
+      `${import.meta.env.VITE_SERVER_URI}/api/v1/projects/ai/generate-project`,
       {
         method: "POST",
         credentials: "include",

@@ -12,6 +12,7 @@ export default function MyTasks() {
   useEffect(() => {
     dispatch(getUserTasks({ userId: user._id }));
   }, [dispatch, user]);
+
   if (loading) return <SplashScreen />;
   return (
     <div className="px-8 py-6 text-sm text-white/90">
