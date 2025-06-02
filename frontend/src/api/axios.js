@@ -5,38 +5,38 @@ const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
 
-    console.log("💥💥💥 Interceptor error 💥💥💥");
+//     console.log("💥💥💥 Interceptor error 💥💥💥");
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url.includes("/users/refresh-token")
-    ) {
-      originalRequest._retry = true;
+//     if (
+//       error.response?.status === 401 &&
+//       !originalRequest._retry &&
+//       !originalRequest.url.includes("/users/refresh-token")
+//     ) {
+//       originalRequest._retry = true;
 
-      try {
-        // Refresh the access token via cookie (httpOnly)
-        await api.post("/users/refresh-token");
+//       try {
+//         // Refresh the access token via cookie (httpOnly)
+//         await api.post("/users/refresh-token");
 
-        // Retry the original request (cookies will be sent automatically)
-        return api(originalRequest);
-      } catch (refreshError) {
-        // Optionally logout on failure
-        // await api.post("/users/logout");
-        // logoutUser();
-        // window.location.href = "/login";
-        console.log(refreshError);
-        return Promise.reject(refreshError);
-      }
-    }
+//         // Retry the original request (cookies will be sent automatically)
+//         return api(originalRequest);
+//       } catch (refreshError) {
+//         // Optionally logout on failure
+//         // await api.post("/users/logout");
+//         // logoutUser();
+//         // window.location.href = "/login";
+//         console.log(refreshError);
+//         return Promise.reject(refreshError);
+//       }
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;
