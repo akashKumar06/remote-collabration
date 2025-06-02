@@ -17,7 +17,7 @@ api.interceptors.response.use(
         console.log(res);
         return api(originalRequest);
       } catch (refreshError) {
-        await api.post("/logout");
+        await api.post("/users/logout");
         return Promise.reject(refreshError);
       }
     }
