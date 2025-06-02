@@ -1,6 +1,4 @@
 import axios from "axios";
-import { logout } from "../app/slices/auth/authSlice";
-import { store } from "../app/store";
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_SERVER_URI}/api/v1`,
@@ -30,7 +28,9 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Optionally logout on failure
         // await api.post("/users/logout");
-        store.dispatch(logout());
+        // logoutUser();
+        // window.location.href = "/login";
+        console.log(refreshError);
         return Promise.reject(refreshError);
       }
     }
