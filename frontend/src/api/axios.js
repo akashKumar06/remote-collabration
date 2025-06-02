@@ -5,37 +5,37 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// let isRefreshing = false;
+
 // api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
+//   (res) => res,
+//   async (err) => {
+//     const originalRequest = err.config;
 
-//     console.log("💥💥💥 Interceptor error 💥💥💥");
-
-//     if (
-//       error.response?.status === 401 &&
-//       !originalRequest._retry &&
-//       !originalRequest.url.includes("/users/refresh-token")
-//     ) {
+//     // If 401 and this is not already a retry
+//     if (err.response?.status === 401 && !originalRequest._retry) {
 //       originalRequest._retry = true;
 
-//       try {
-//         // Refresh the access token via cookie (httpOnly)
-//         await api.post("/users/refresh-token");
+//       if (!isRefreshing) {
+//         isRefreshing = true;
+//         try {
+//           // Attempt to refresh the token
+//           await api.post("/users/refresh-token");
+//           isRefreshing = false;
 
-//         // Retry the original request (cookies will be sent automatically)
-//         return api(originalRequest);
-//       } catch (refreshError) {
-//         // Optionally logout on failure
-//         // await api.post("/users/logout");
-//         // logoutUser();
-//         // window.location.href = "/login";
-//         console.log(refreshError);
-//         return Promise.reject(refreshError);
+//           // Retry the original request after refresh
+//           return api(originalRequest);
+//         } catch (refreshErr) {
+//           isRefreshing = false;
+
+//           // Refresh failed: logout user
+//           window.location.href = "/login"; // or redirect properly
+//           return Promise.reject(refreshErr);
+//         }
 //       }
 //     }
 
-//     return Promise.reject(error);
+//     return Promise.reject(err);
 //   }
 // );
 

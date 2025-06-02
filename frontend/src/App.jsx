@@ -27,15 +27,16 @@ function App() {
     dispatch(fetchCurrentUser());
   }, [dispatch]);
 
-  const { status } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
 
-  if (status === "loading" || status === "idle") return <SplashScreen />;
+  if (loading) return <SplashScreen />;
 
   return (
     <BrowserRouter>
       <Routes>
         {/* public routes */}
         <Route path="/" element={<HomePage />} />
+
         <Route path="login" element={<LoginPage />} />
         <Route path="accept-invite" element={<AcceptInvite />}></Route>
 

@@ -4,8 +4,11 @@ import { CheckCircle } from "lucide-react";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { CardContent } from "../components/CardContent";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans overflow-hidden">
       {/* Header */}
@@ -15,12 +18,20 @@ const HomePage = () => {
             CollabTrack
           </h1>
           <div className="space-x-2">
-            <Button className="text-white bg-gray-600 hover:bg-gray-700 transition text-sm px-4 py-2">
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button className="text-white bg-gray-600 hover:bg-gray-700 transition text-sm px-4 py-2">
-              <Link to="/signup">Sign Up</Link>
-            </Button>
+            {!user ? (
+              <>
+                <Button className="text-white bg-gray-600 hover:bg-gray-700 transition text-sm px-4 py-2">
+                  <Link to="/login">Login</Link>
+                </Button>
+                <Button className="text-white bg-gray-600 hover:bg-gray-700 transition text-sm px-4 py-2">
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </>
+            ) : (
+              <Button className="text-white bg-gray-600 hover:bg-gray-700 transition text-sm px-4 py-2">
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -98,7 +109,9 @@ const HomePage = () => {
                         {feature.title}
                       </h4>
                     </div>
-                    <p className="text-xs text-gray-600">{feature.description}</p>
+                    <p className="text-xs text-gray-600">
+                      {feature.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -110,8 +123,9 @@ const HomePage = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-4 text-sm">
         <div className="container mx-auto px-4 text-center">
-          &copy; {new Date().getFullYear()} {" "}
-          <span className="text-gray-400 font-semibold">CollabTrack</span>. All rights reserved.
+          &copy; {new Date().getFullYear()}{" "}
+          <span className="text-gray-400 font-semibold">CollabTrack</span>. All
+          rights reserved.
         </div>
       </footer>
     </div>

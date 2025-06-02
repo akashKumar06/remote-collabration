@@ -8,9 +8,9 @@ import {
 
 const initialState = {
   user: null,
-  status: "idle", // idle | loading | succeeded | failed
   error: null,
   fieldErrors: {},
+  loading: false,
 };
 
 const authSlice = createSlice({
@@ -25,65 +25,65 @@ const authSlice = createSlice({
       state.user = null;
       state.error = null;
       state.fieldErrors = {};
-      state.status = "idle";
+      state.loading = "idle";
     },
   },
   extraReducers: (builder) => {
     builder
       // REGISTER USER
       .addCase(registerUser.pending, (state) => {
-        state.status = "loading";
         state.error = null;
         state.fieldErrors = {};
+        state.loading = true;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.loading = false;
         state.user = action.payload;
         state.fieldErrors = {};
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.status = "failed";
+        state.loading = false;
         state.error = action.payload?.error || null;
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
       // LOGIN USER
       .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
+        state.loading = true;
         state.error = null;
         state.fieldErrors = {};
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.loading = false;
         state.user = action.payload;
         state.fieldErrors = {};
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
+        state.loading = false;
         state.error = action.payload?.error || null;
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
       // FETCH_CURRENT_USER
       .addCase(fetchCurrentUser.pending, (state) => {
-        state.status = "loading";
+        state.loading = true;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.loading = false;
         state.user = action.payload;
       })
       .addCase(fetchCurrentUser.rejected, (state) => {
-        state.status = "failed";
+        state.loading = false;
         state.user = null;
       })
       // LOGOUT_USER
       .addCase(logoutUser.pending, (state) => {
-        state.status = "loading";
+        state.loading = true;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        state.status = "succeeded";
+        state.loading = false;
         state.user = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
-        state.status = "failed";
+        state.loading = false;
         state.error = action.payload || "Logout failed";
       });
   },

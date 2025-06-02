@@ -7,6 +7,7 @@ const initialState = {
   loading: false,
   error: null,
 };
+
 const taskSlice = createSlice({
   name: "task",
   initialState,

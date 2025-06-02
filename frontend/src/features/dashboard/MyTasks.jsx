@@ -10,7 +10,8 @@ export default function MyTasks() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUserTasks({ userId: user._id }));
+    console.log(user.id);
+    dispatch(getUserTasks({ userId: user.id }));
   }, [dispatch, user]);
 
   if (loading) return <SplashScreen />;
