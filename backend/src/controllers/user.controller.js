@@ -257,5 +257,12 @@ export async function logoutUser(req, res) {
 }
 
 export async function getUser(req, res) {
-  return res.status(200).json({ user: req.user });
+  const user = {
+    id: req.user._id,
+    firstname: req.user.firstname,
+    lastname: req.user.lastname,
+    email: req.user.email,
+    avatar: req.user.avatar,
+  };
+  return res.status(200).json({ user });
 }

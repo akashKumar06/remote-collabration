@@ -81,6 +81,9 @@ export async function getAllTasks(req, res) {
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
 
+    const isEmpty = Object.keys(filter).length === 0;
+    if (isEmpty) throw new Error(400, "No filters.");
+
     const tasks = await Task.find(filter)
       .populate("assignee", "firstname lastname email")
       .populate("createdBy", "firstname lastname email")
