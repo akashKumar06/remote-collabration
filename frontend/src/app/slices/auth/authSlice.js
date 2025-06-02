@@ -21,6 +21,12 @@ const authSlice = createSlice({
       state.error = null;
       state.fieldErrors = {};
     },
+    logout: (state) => {
+      state.user = null;
+      state.error = null;
+      state.fieldErrors = {};
+      state.status = "idle";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -41,7 +47,7 @@ const authSlice = createSlice({
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
       // LOGIN USER
-      .addCase(loginUser.pending, (state, _) => {
+      .addCase(loginUser.pending, (state) => {
         state.status = "loading";
         state.error = null;
         state.fieldErrors = {};
@@ -57,22 +63,22 @@ const authSlice = createSlice({
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
       // FETCH_CURRENT_USER
-      .addCase(fetchCurrentUser.pending, (state, _) => {
+      .addCase(fetchCurrentUser.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload;
       })
-      .addCase(fetchCurrentUser.rejected, (state, action) => {
+      .addCase(fetchCurrentUser.rejected, (state) => {
         state.status = "failed";
         state.user = null;
       })
       // LOGOUT_USER
-      .addCase(logoutUser.pending, (state, _) => {
+      .addCase(logoutUser.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(logoutUser.fulfilled, (state, action) => {
+      .addCase(logoutUser.fulfilled, (state) => {
         state.status = "succeeded";
         state.user = null;
       })
@@ -83,5 +89,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearErrors } = authSlice.actions;
+export const { clearErrors, logout } = authSlice.actions;
 export default authSlice.reducer;
