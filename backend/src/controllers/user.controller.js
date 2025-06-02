@@ -3,6 +3,13 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: true, // ✅ required in production (HTTPS)
+  sameSite: "None", // ✅ needed for cross-site cookies
+  maxAge: 1000 * 60 * 15, // 15 minutes (example)
+};
+
 // /api/users/register        POST
 // /api/users/login           POST
 // /api/users/refresh-token   POST
@@ -62,10 +69,14 @@ export async function registerUser(req, res) {
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None", // ✅ needed for cross-site cookies
       })
       .cookie("access_token", accessToken, {
         httpOnly: true,
         maxAge: 15 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None", // ✅ needed for cross-site cookies
       })
       .json({
         success: true,
@@ -126,10 +137,14 @@ export async function loginUser(req, res) {
       .status(200)
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None", // ✅ needed for cross-site cookies
+        maxAge: 1000 * 60 * 15, // 15 minutes (example)
       })
       .cookie("access_token", accessToken, {
         httpOnly: true,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None", // ✅ needed for cross-site cookies
         maxAge: 15 * 60 * 1000,
       })
       .json({
@@ -194,10 +209,14 @@ export async function refreshTokenHandler(req, res) {
       .cookie("refresh_token", newRefreshToken, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None",
       })
       .cookie("access_token", newAccessToken, {
         httpOnly: true,
         maxAge: 15 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None",
       })
       .json({
         success: true,
@@ -234,10 +253,14 @@ export async function logoutUser(req, res) {
       .clearCookie("access_token", {
         httpOnly: true,
         maxAge: 15 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None",
       })
       .clearCookie("refresh_token", {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: true, // ✅ required in production (HTTPS)
+        sameSite: "None",
       })
       .json({
         success: true,

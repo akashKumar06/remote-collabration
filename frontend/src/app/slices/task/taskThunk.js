@@ -34,7 +34,7 @@ export const getUserTasks = createAsyncThunk(
   async (data, thunkApi) => {
     const { userId } = data;
     try {
-      const res = await api(`/tasks?assignee=${userId}`);
+      const res = await api.get(`/tasks?assignee=${userId}`);
       return res.data.tasks;
     } catch (error) {
       console.log(error);
