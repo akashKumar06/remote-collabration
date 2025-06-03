@@ -16,39 +16,31 @@ import api from "../../../api/axios";
 import toast from "react-hot-toast";
 import { marked } from "marked";
 import { updateProjectDescription } from "../../../app/slices/project/projectThunk";
+import MileStones from "./MileStones";
 
 export default function Overview() {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
-
   const [newMember, setNewMember] = useState("");
   const [isInviting, setIsInviting] = useState(false);
-
   const [isMembersOpen, setIsMembersOpen] = useState(true);
   const [isResourcesOpen, setIsResourcesOpen] = useState(true);
-  const [isMilestonesOpen, setIsMilestonesOpen] = useState(true);
-
   const [resources] = useState([
     { label: "GitHub Repo", url: "https://github.com/example/repo" },
     { label: "Figma Design", url: "https://figma.com/file/xyz" },
   ]);
-
   const { currentProject } = useSelector((state) => state.project);
   const [description, setDescription] = useState("");
   const [prompt, setPrompt] = useState("");
-
   const [openGenerateInput, setOpenGenerateInput] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
   const handleAddMember = async () => {
     setIsInviting(true);
-
     const memberData = {
       email: newMember.trim(),
     };
-
     try {
       const res = await api.post(
         `/projects/${currentProject._id}/invite`,
@@ -60,7 +52,6 @@ export default function Overview() {
     }
     setIsInviting(false);
   };
-
   const handleSaveDescription = async () => {
     setIsSaving(true);
     dispatch(
@@ -105,6 +96,7 @@ export default function Overview() {
     setIsGenerating(false);
     setIsGenerated(true);
   };
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
       {/* Layout */}
@@ -121,7 +113,6 @@ export default function Overview() {
                 ? "Generate project description with AI"
                 : "Cancel"}
             </button>
-
             {openGenerateInput && (
               <button
                 onClick={handleGenerateWithAI}
@@ -131,7 +122,6 @@ export default function Overview() {
               </button>
             )}
           </div>
-
           {openGenerateInput && (
             <input
               type="text"
@@ -141,7 +131,6 @@ export default function Overview() {
               className="flex-1 w-full p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
             />
           )}
-
           {openGenerateInput && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -167,7 +156,6 @@ export default function Overview() {
               {/* <p className="text-gray-300">{description}</p> */}
             </motion.div>
           )}
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -199,7 +187,6 @@ export default function Overview() {
               }}
             />
           </motion.div>
-
           {/* Members */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -214,7 +201,6 @@ export default function Overview() {
               <h2 className="text-lg font-semibold">Project Members</h2>
               {isMembersOpen ? <ChevronDown /> : <ChevronRight />}
             </div>
-
             {isMembersOpen && (
               <motion.div
                 initial={{ height: 0 }}
@@ -252,7 +238,6 @@ export default function Overview() {
               </motion.div>
             )}
           </motion.div>
-
           {/* Resources */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -284,7 +269,6 @@ export default function Overview() {
             )}
           </motion.div>
         </div>
-
         {/* Right Sidebar */}
         <div className="w-full lg:w-[300px] space-y-6">
           {/* Timeline */}
@@ -310,40 +294,8 @@ export default function Overview() {
                 ))}
             </div>
           </motion.div>
-
           {/* Milestones */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700"
-          >
-            <div
-              className="flex items-center justify-between cursor-pointer"
-              onClick={() => setIsMilestonesOpen(!isMilestonesOpen)}
-            >
-              <h2 className="text-lg font-semibold">Milestones</h2>
-              {isMilestonesOpen ? <ChevronDown /> : <ChevronRight />}
-            </div>
-
-            {isMilestonesOpen && (
-              <div className="space-y-2 mt-4">
-                <div className="flex items-center gap-2">
-                  <CalendarCheck size={16} className="text-green-400" />
-                  <span>UI Design - Completed</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CalendarCheck size={16} className="text-yellow-400" />
-                  <span>Backend API - In Progress</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CalendarCheck size={16} className="text-gray-400" />
-                  <span>Testing - Pending</span>
-                </div>
-              </div>
-            )}
-          </motion.div>
-
+          <MileStones />
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}

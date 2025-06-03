@@ -7,14 +7,14 @@ import {
   Plus,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { close, open, setActiveComponent } from "../../app/slices/modal";
 import { delay } from "../../utils/delay";
-import { getProjectById } from "../../app/slices/project/projectThunk";
 
 export default function Sidebar({ projects }) {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
+  const navigate = useNavigate();
 
   async function handleNew(activeComponent) {
     if (state) {
@@ -54,11 +54,9 @@ export default function Sidebar({ projects }) {
                 key={project._id}
                 icon={<FolderKanban size={18} />}
                 label={project.name}
-                to="projects"
-                onClick={() => dispatch(getProjectById(project._id))}
+                to={`projects/${project._id}`}
               />
             ))}
-            {/* Add more dynamically if needed */}
           </div>
         </div>
 

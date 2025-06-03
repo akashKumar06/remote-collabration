@@ -1,17 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTask, getProjectTasks, getUserTasks } from "./taskThunk";
-
+import {
+  changeTaskStatus,
+  createTask,
+  getProjectTasks,
+  getUserTasks,
+} from "./taskThunk";
 const initialState = {
   projectTasks: [],
   userTasks: [],
   loading: false,
   error: null,
+  currentTask: null,
+  isUpdatingStatus: false,
 };
 
 const taskSlice = createSlice({
   name: "task",
   initialState,
-  reducers: {},
+  reducers: {
+    getCurrentTask: (state, action) => {
+      const taskId = action.payload;
+      const task = state.userTasks.find((task) => task._id === taskId);
+      state.currentTask = task;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // GET_USER_TASKS
@@ -49,8 +61,25 @@ const taskSlice = createSlice({
       .addCase(createTask.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // CHANGE TASK STATUS
+      .addCase(changeTaskStatus.pending, (state) => {
+        state.isUpdatingStatus = true;
+      })
+      .addCase(changeTaskStatus.fulfilled, (state, action) => {
+        state.isUpdatingStatus = false;
+        const index = state.userTasks.findIndex(
+          (task) => task._id === action.payload._id
+        );
+        state.currentTask = action.payload;
+        state.userTasks.splice(index, 1, action.payload);
+      })
+      .addCase(changeTaskStatus.rejected, (state, action) => {
+        state.isUpdatingStatus = false;
+        state.error = action.payload;
       });
   },
 });
 
+export const { getCurrentTask } = taskSlice.actions;
 export default taskSlice.reducer;

@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { fetchCurrentUser } from "./app/slices/auth/authThunks";
 import SplashScreen from "./components/SplashScreen";
 import AcceptInvite from "./components/AcceptInvite";
+import TaskPage from "./features/dashboard/tasks/TaskPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -53,11 +54,12 @@ function App() {
           <Route index element={<Navigate to="home" />} />
           <Route path="home" element={<DashboardHome />} />
           <Route path="my-tasks" element={<MyTasks />} />
+          <Route path="my-tasks/:taskId" element={<TaskPage />} />
           <Route path="inbox" element={<Inbox />} />
 
           {/* nested projects route */}
-          <Route path="projects" element={<ProjectPage />}>
-            <Route index element={<Navigate to="overview" />} />
+          <Route path="projects/:projectId" element={<ProjectPage />}>
+            <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<Overview />} />
             <Route path="list" element={<List />} />
             <Route path="files" element={<Files />} />

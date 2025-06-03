@@ -17,7 +17,14 @@ const initialState = {
 const projectSlice = createSlice({
   name: "project",
   initialState,
-  reducers: {},
+  reducers: {
+    getCurrentProject: (state, action) => {
+      const project = state.projects.find(
+        (project) => project._id === action.payload
+      );
+      state.currentProject = project;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // GET_USER_PROJECTS
@@ -59,7 +66,6 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // UPDATE_PROJECT_DESCRIPTION
-      .addCase(updateProjectDescription.pending, (state) => {})
       .addCase(updateProjectDescription.fulfilled, (state, action) => {
         const index = state.projects.findIndex(
           (project) => project._id === action.payload._id
@@ -77,5 +83,5 @@ const projectSlice = createSlice({
   },
 });
 
-export const { setCurrentProject } = projectSlice.actions;
+export const { getCurrentProject } = projectSlice.actions;
 export default projectSlice.reducer;

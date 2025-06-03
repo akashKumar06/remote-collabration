@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { NavLink, Outlet, useParams } from "react-router";
 import {
   ClipboardList,
   FilesIcon,
@@ -6,21 +6,25 @@ import {
   List,
   MessagesSquare,
 } from "lucide-react";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
 import SplashScreen from "../../components/SplashScreen";
+import { getCurrentProject } from "../../app/slices/project/projectSlice";
+import { useEffect } from "react";
+import { getProjectTasks } from "../../app/slices/task/taskThunk";
 
 function ProjectPageLayout() {
+  const { projectId } = useParams();
   const { currentProject } = useSelector((state) => state.project);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    if (!currentProject) {
-      navigate("/dashboard");
-      return;
-    }
-  }, [currentProject, navigate]);
+    dispatch(getCurrentProject(projectId));
+    dispatch(getProjectTasks({ projectId }));
+  }, [dispatch, projectId]);
 
   if (!currentProject) return <SplashScreen />;
+
   return (
     <div className="relative h-screen font-roboto  text-gray-300">
       {/* Header */}
@@ -93,7 +97,6 @@ function ProjectPageLayout() {
           </NavLink>
         </nav>
       </header>
-
       <main className="px-10 py-6">
         <Outlet />
       </main>

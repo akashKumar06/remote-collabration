@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Select from "react-select";
-import {
-  createTask,
-  getProjectTasks,
-} from "../../../app/slices/task/taskThunk";
-import SplashScreen from "../../../components/SplashScreen";
+import { createTask } from "../../../app/slices/task/taskThunk";
+import { useNavigate } from "react-router";
+import clsx from "clsx";
+
+const statusColors = {
+  "Not Started": "bg-zinc-700 text-zinc-300",
+  "In Progress": "bg-blue-600 text-white",
+  Completed: "bg-green-600 text-white",
+};
+
+const priorityColors = {
+  Low: "bg-green-600 text-white",
+  Medium: "bg-yellow-500 text-black",
+  High: "bg-red-500 text-white",
+};
 
 function List() {
   const [isAdddingTask, setIsAddingTask] = useState(false);
@@ -15,14 +25,12 @@ function List() {
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
-
   const { user } = useSelector((state) => state.auth);
   const { currentProject } = useSelector((state) => state.project);
-  const { projectTasks, loading } = useSelector((state) => state.task);
+  const { projectTasks } = useSelector((state) => state.task);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const members = currentProject.members;
-
   const options = [];
   members.forEach((member) => {
     if (member.role !== "owner") {
@@ -30,7 +38,6 @@ function List() {
       options.push({ label: name, value: member.user._id });
     }
   });
-
   const handleAddTask = () => {
     const task = {
       title,
@@ -49,13 +56,11 @@ function List() {
         toast.error(err);
       });
   };
-
-  useEffect(() => {
-    // fetch the tasks belonging to the current project
-    dispatch(getProjectTasks({ projectId: currentProject._id }));
-  }, [dispatch, currentProject]);
-
-  if (loading) return <SplashScreen />;
+  // useEffect(() => {
+  //   // fetch the tasks belonging to the current project
+  //   dispatch(getProjectTasks({ projectId: currentProject._id }));
+  // }, [dispatch, currentProject]);
+  // if (loading) return <SplashScreen />;
   return (
     <div className="px-4 py-2 text-sm text-white/90">
       <div className="flex justify-between items-center mb-4">
@@ -96,22 +101,12 @@ function List() {
       )}
       <table className="table-auto w-full border-collapse">
         <thead>
-          <tr className="bg-[#2B2C2E] text-white/80">
-            <th className="py-3 px-4 border-b border-white/30 text-left">
-              Name
-            </th>
-            <th className="py-3 px-4 border-b border-white/30 text-left">
-              Assignee
-            </th>
-            <th className="py-3 px-4 border-b border-white/30 text-left">
-              Due Date
-            </th>
-            <th className="py-3 px-4 border-b border-white/30 text-left">
-              Priority
-            </th>
-            <th className="py-3 px-4 border-b border-white/30 text-left">
-              Status
-            </th>
+          <tr className="bg-[#2B2C2E] text-white/80 text-left">
+            <th className="py-3 px-4 border-b border-white/30">Task</th>
+            <th className="py-3 px-4 border-b border-white/30">Project</th>
+            <th className="py-3 px-4 border-b border-white/30">Due Date</th>
+            <th className="py-3 px-4 border-b border-white/30">Priority</th>
+            <th className="py-3 px-4 border-b border-white/30">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -244,9 +239,12 @@ function List() {
               </td>
             </tr>
           )}
-
           {projectTasks.map((task) => (
-            <tr className="hover:bg-[#2B2C2E] transition" key={task._id}>
+            <tr
+              key={task._id}
+              onClick={() => navigate(`/dashboard/my-tasks/${task._id}`)}
+              className="hover:bg-[#2B2C2E] cursor-pointer transition"
+            >
               <td className="py-3 px-4 border-b border-white/20">
                 {task.title}
               </td>
@@ -254,13 +252,27 @@ function List() {
                 {task.assignee.firstname}
               </td>
               <td className="py-3 px-4 border-b border-white/20">
-                {task.deadline}
+                {new Date(task.deadline).toLocaleDateString()}
               </td>
               <td className="py-3 px-4 border-b border-white/20">
-                {task.priority}
+                <span
+                  className={clsx(
+                    "px-2 py-1 rounded-full text-xs font-medium",
+                    priorityColors[task.priority] || "bg-gray-600 text-white"
+                  )}
+                >
+                  {task.priority}
+                </span>
               </td>
               <td className="py-3 px-4 border-b border-white/20">
-                {task.status}
+                <span
+                  className={clsx(
+                    "px-2 py-1 rounded-full text-xs font-medium",
+                    statusColors[task.status] || "bg-gray-700 text-white"
+                  )}
+                >
+                  {task.status}
+                </span>
               </td>
             </tr>
           ))}

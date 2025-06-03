@@ -1,20 +1,11 @@
 import TaskStatusChart from "../../../components/TaskStatusChart";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getProjectTasks } from "../../../app/slices/task/taskThunk";
-import SplashScreen from "../../../components/SplashScreen";
 import TaskPriorityChart from "../../../components/TaskPriorityChart";
 import TasksPerMemberChart from "../../../components/TaskPerMemberChart";
+import { useSelector } from "react-redux";
 
 function ProjectDashboard() {
-  const { projectTasks, loading } = useSelector((state) => state.task);
-  const { currentProject } = useSelector((state) => state.project);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getProjectTasks({ projectId: currentProject._id }));
-  }, [dispatch, currentProject]);
+  const { projectTasks } = useSelector((state) => state.task);
 
-  if (loading) return <SplashScreen />;
   return (
     <div className="min-h-screen p-2  text-white">
       <h1 className="text-3xl font-bold mb-6">Project Analytics</h1>

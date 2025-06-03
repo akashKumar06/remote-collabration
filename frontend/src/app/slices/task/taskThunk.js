@@ -42,3 +42,17 @@ export const getUserTasks = createAsyncThunk(
     }
   }
 );
+
+export const changeTaskStatus = createAsyncThunk(
+  "task/changeTaskStatus",
+  async (taskData, thunkApi) => {
+    const { taskId, status } = taskData;
+    try {
+      const res = await api.patch(`tasks/${taskId}/status`, { status });
+      return res.data.task;
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(error.response.data);
+    }
+  }
+);

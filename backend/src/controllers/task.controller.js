@@ -255,6 +255,9 @@ export async function changeTaskStatus(req, res) {
       throw new ApiError(404, "Task not found");
     }
 
+    if (task.status === status)
+      throw new ApiError(400, "Cannot update to same status.");
+
     task.status = status;
 
     task.activityLogs.push({
@@ -267,7 +270,7 @@ export async function changeTaskStatus(req, res) {
     return res.status(200).json({
       success: true,
       message: "Task status updated successfully",
-      data: task,
+      task,
     });
   } catch (error) {
     console.error("Error changing task status:", error);
