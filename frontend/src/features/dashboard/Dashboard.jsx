@@ -9,37 +9,51 @@ import SplashScreen from "../../components/SplashScreen";
 import { getUserTasks } from "../../app/slices/task/taskThunk";
 
 const Dashboard = () => {
-  const [isSidebarToggled, setIsSidebarToggled] = useState(false);
-  function handleToggleSidebar() {
-    setIsSidebarToggled((prev) => !prev);
-  }
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
   const { projects, loading, error } = useSelector((state) => state.project);
   const { user } = useSelector((state) => state.auth);
+
   useEffect(() => {
     dispatch(getUserProjects());
     dispatch(getUserTasks({ userId: user.id }));
   }, [dispatch, user]);
 
   if (loading) return <SplashScreen />;
-  if (error) return <h1>error</h1>;
+  if (error) return <h1>Error loading dashboard</h1>;
 
   return (
     <div className="h-screen font-roboto flex flex-col">
-      {/* Fixed Navbar */}
+      {/* Navbar */}
       <div className="flex-shrink-0">
-        <Navbar onToggleSidbar={handleToggleSidebar} />
+        <Navbar onToggleSidbar={() => setIsSidebarOpen(!isSidebarOpen)} />
       </div>
 
-      {/* Main Content Wrapper */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Fixed Sidebar */}
-        <div className="flex-shrink-0">
-          <Sidebar isToggled={isSidebarToggled} projects={projects} />
+      {/* Main Layout */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Sidebar - mobile (absolute) */}
+        <div
+          className={`fixed inset-y-0 left-0 z-40 transition-transform transform md:relative md:translate-x-0 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:flex-shrink-0 w-64`}
+        >
+          <Sidebar
+            isToggled={isSidebarOpen}
+            projects={projects}
+            onClose={() => setIsSidebarOpen(false)}
+          />
         </div>
 
-        {/* Scrollable Main Content */}
+        {/* Backdrop for mobile */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black opacity-50 z-30 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Main content */}
         <main className="flex-1 overflow-y-auto bg-[#1E1F21] text-white">
           <Modal />
           <Outlet />

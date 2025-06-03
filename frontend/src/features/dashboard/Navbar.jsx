@@ -1,21 +1,33 @@
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings, User, Menu } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../app/slices/auth/authThunks";
 
-function Navbar() {
+function Navbar({ onToggleSidbar }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="bg-[#2e2e30] p-3 border border-[#424244] flex justify-between items-center px-6">
-      {/* App Logo / Title (optional) */}
-      <h1 className="text-white text-lg font-semibold">RemoteSync</h1>
+    <div className="bg-[#2e2e30] p-3 border-b border-[#424244] flex justify-between items-center px-4 md:px-6">
+      {/* Left Section: Hamburger + Logo */}
+      <div className="flex items-center gap-4">
+        {/* Hamburger for Mobile */}
+        <button
+          className="text-white md:hidden"
+          onClick={onToggleSidbar}
+          aria-label="Toggle Sidebar"
+        >
+          <Menu size={22} />
+        </button>
 
-      {/* User Info & Options */}
+        {/* Logo / Title */}
+        <h1 className="text-white text-lg font-semibold">RemoteSync</h1>
+      </div>
+
+      {/* Right Section: User Info & Actions */}
       <div className="flex items-center gap-6">
         {/* User Info */}
-        <div className="flex items-center gap-2">
-          <p className=" flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-sm text-center">
+        <div className="hidden sm:flex items-center gap-2">
+          <p className="flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-sm">
             {user.avatar}
           </p>
           <span className="text-white font-medium text-sm">
@@ -23,8 +35,8 @@ function Navbar() {
           </span>
         </div>
 
-        {/* Options */}
-        <div className="flex items-center gap-6 text-white text-sm font-medium">
+        {/* Actions */}
+        <div className="hidden sm:flex items-center gap-6 text-white text-sm font-medium">
           <div className="flex items-center gap-2 cursor-pointer hover:text-indigo-400 transition">
             <User size={16} />
             <span>Profile</span>
@@ -35,9 +47,7 @@ function Navbar() {
           </div>
           <div
             className="flex items-center gap-2 cursor-pointer hover:text-red-400 transition"
-            onClick={() => {
-              dispatch(logoutUser());
-            }}
+            onClick={() => dispatch(logoutUser())}
           >
             <LogOut size={16} />
             <span>Logout</span>
