@@ -9,7 +9,7 @@ function Navbar() {
   return (
     <div className="bg-[#2e2e30] p-3 border border-[#424244] flex justify-between items-center px-6">
       {/* App Logo / Title (optional) */}
-      <h1 className="text-white text-lg font-semibold">REMOTE COLLAB</h1>
+      <h1 className="text-white text-lg font-semibold">RemoteSync</h1>
 
       {/* User Info & Options */}
       <div className="flex items-center gap-6">
