@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 
-// Dummy data for project members
 const projectMembers = [
   { id: 1, name: "Alice", avatar: "https://i.pravatar.cc/150?img=1" },
   { id: 2, name: "Bob", avatar: "https://i.pravatar.cc/150?img=2" },
@@ -25,7 +24,7 @@ function MessagesPage() {
       setMessages({
         ...messages,
         [selectedMember.id]: [
-          ...messages[selectedMember.id],
+          ...(messages[selectedMember.id] || []),
           { text: newMessage, type: "sent" },
         ],
       });
@@ -34,11 +33,11 @@ function MessagesPage() {
   };
 
   return (
-    <div className="h-[26rem] bg-[#1A1A1A] text-gray-200 font-roboto flex">
-      {/* Left - Project Members List */}
-      <div className="w-[260px] bg-[#222] border-r border-white/10 p-3 rounded-l-xl flex flex-col">
+    <div className="h-[100dvh] bg-[#1A1A1A] text-gray-200 font-roboto flex flex-col md:flex-row">
+      {/* Members List */}
+      <div className="md:w-[260px] w-full bg-[#222] border-b md:border-b-0 md:border-r border-white/10 p-3 md:rounded-l-xl">
         <h2 className="text-lg font-bold text-white mb-4">Members</h2>
-        <div className="flex-1 overflow-y-auto">
+        <div className="overflow-y-auto max-h-[200px] md:max-h-full">
           {projectMembers.map((member) => (
             <div
               key={member.id}
@@ -60,9 +59,9 @@ function MessagesPage() {
         </div>
       </div>
 
-      {/* Right - Messages Area */}
-      <div className="flex-1 bg-[#222] p-4 flex flex-col rounded-r-xl">
-        {/* Header for selected member */}
+      {/* Chat Section */}
+      <div className="flex-1 flex flex-col bg-[#222] p-4 md:rounded-r-xl">
+        {/* Header */}
         <div className="flex items-center gap-3 mb-3">
           <img
             src={selectedMember.avatar}
@@ -74,9 +73,9 @@ function MessagesPage() {
           </h2>
         </div>
 
-        {/* Messages Area */}
+        {/* Messages */}
         <div className="flex-1 overflow-y-auto bg-[#333] p-3 rounded-md mb-4">
-          {messages[selectedMember.id].map((message, index) => (
+          {(messages[selectedMember.id] || []).map((message, index) => (
             <div
               key={index}
               className={`flex ${
@@ -96,7 +95,7 @@ function MessagesPage() {
           ))}
         </div>
 
-        {/* Message Input Area */}
+        {/* Input */}
         <div className="bg-[#222] px-3 py-2 flex items-center gap-3 rounded-md border-t border-white/10">
           <input
             type="text"
