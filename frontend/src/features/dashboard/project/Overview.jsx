@@ -219,22 +219,25 @@ export default function Overview() {
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-2 pt-6">
-                  <input
-                    type="email"
-                    placeholder="Enter email"
-                    value={newMember}
-                    onChange={(e) => setNewMember(e.target.value)}
-                    className="flex-1 p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
-                  />
-                  <button
-                    onClick={handleAddMember}
-                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
-                    disabled={isInviting}
-                  >
-                    {isInviting ? "Inviting..." : "Invite"}
-                  </button>
-                </div>
+                  <div className="flex gap-2 flex-col sm:flex-row">
+  <input
+    type="email"
+    placeholder="Enter email"
+    value={newMember}
+    onChange={(e) => setNewMember(e.target.value)}
+    className="w-full sm:w-64 p-1.5 sm:p-2.5 text-sm sm:text-base rounded-md border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
+  />
+
+  <button
+    onClick={handleAddMember}
+    className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-1"
+    disabled={isInviting}
+  >
+    {isInviting ? "Inviting..." : "Invite"}
+  </button>
+</div>
+
+
               </motion.div>
             )}
           </motion.div>

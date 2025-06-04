@@ -7,15 +7,19 @@ function ProjectDashboard() {
   const { projectTasks } = useSelector((state) => state.task);
 
   return (
-    <div className="min-h-screen p-2  text-white">
-      <h1 className="text-3xl font-bold mb-6">Project Analytics</h1>
+    <div className="min-h-screen p-4 md:p-8 text-white bg-gray-900">
+      <h1 className="text-3xl font-bold mb-8 text-center md:text-left">
+        Project Analytics
+      </h1>
 
-      {/* Responsive Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Responsive Grid for status and priority */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
         <TaskStatusChart tasks={projectTasks} />
         <TaskPriorityChart tasks={projectTasks} />
       </div>
-      <div>
+
+      {/* Full width chart for tasks per member */}
+      <div className="max-w-4xl mx-auto">
         <TasksPerMemberChart tasks={projectTasks} />
       </div>
     </div>

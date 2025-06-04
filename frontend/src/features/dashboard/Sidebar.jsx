@@ -5,13 +5,14 @@ import {
   FolderKanban,
   Users2,
   Plus,
+  X,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { close, open, setActiveComponent } from "../../app/slices/modal";
 import { delay } from "../../utils/delay";
 
-export default function Sidebar({ projects }) {
+export default function Sidebar({ projects, onClose }) {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
   const navigate = useNavigate();
@@ -23,20 +24,42 @@ export default function Sidebar({ projects }) {
     }
     dispatch(open());
     dispatch(setActiveComponent(activeComponent));
+    if (onClose) onClose(); // Close sidebar on mobile after opening modal
   }
 
   return (
-    <aside className="w-64 h-screen bg-[#1A1A1A] text-white flex flex-col">
+    <aside className="w-64 h-full bg-[#1A1A1A] text-white flex flex-col z-30">
+      {/* Top bar for mobile to close */}
+      <div className="flex items-center justify-between p-4 md:hidden border-b border-white/10">
+        <h2 className="text-white text-lg font-semibold">Menu</h2>
+        <X
+          size={20}
+          className="cursor-pointer hover:text-white text-white/70"
+          onClick={onClose}
+        />
+      </div>
+
       {/* Fixed Section */}
       <div className="p-4 border-b border-white/10">
         <nav className="flex flex-col gap-2">
-          <SidebarItem icon={<Home size={18} />} label="Home" to="/dashboard" />
+          <SidebarItem
+            icon={<Home size={18} />}
+            label="Home"
+            to="/dashboard"
+            onClose={onClose}
+          />
           <SidebarItem
             icon={<ListTodo size={18} />}
             label="My Tasks"
             to="my-tasks"
+            onClose={onClose}
           />
-          <SidebarItem icon={<Inbox size={18} />} label="Inbox" to="inbox" />
+          <SidebarItem
+            icon={<Inbox size={18} />}
+            label="Inbox"
+            to="inbox"
+            onClose={onClose}
+          />
         </nav>
       </div>
 
@@ -55,6 +78,7 @@ export default function Sidebar({ projects }) {
                 icon={<FolderKanban size={18} />}
                 label={project.name}
                 to={`projects/${project._id}`}
+                onClose={onClose}
               />
             ))}
           </div>
@@ -71,8 +95,13 @@ export default function Sidebar({ projects }) {
               icon={<Users2 size={18} />}
               label="Akash's First Team"
               to="teams"
+              onClose={onClose}
             />
-            <SidebarItem icon={<Users2 size={18} />} label="Dev Team" />
+            <SidebarItem
+              icon={<Users2 size={18} />}
+              label="Dev Team"
+              onClose={onClose}
+            />
             {/* Add more dynamically if needed */}
           </div>
         </div>
@@ -82,11 +111,14 @@ export default function Sidebar({ projects }) {
 }
 
 // Reusable Item
-const SidebarItem = ({ icon, label, to, onClick }) => (
+const SidebarItem = ({ icon, label, to, onClick, onClose }) => (
   <Link
     to={to}
     className="flex items-center gap-2 text-sm px-2 py-2 rounded hover:bg-[#2B2C2E] cursor-pointer transition"
-    onClick={onClick}
+    onClick={() => {
+      if (onClick) onClick();
+      if (onClose) onClose(); // close sidebar on mobile
+    }}
   >
     {icon}
     <span>{label}</span>

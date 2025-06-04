@@ -15,7 +15,7 @@ const HomePage = () => {
       <header className="bg-white shadow-sm py-4">
         <div className="container mx-auto flex justify-between items-center px-6">
           <h1 className="text-2xl font-extrabold text-gray-700 tracking-tight">
-            CollabTrack
+            RemoteSync
           </h1>
           <div className="space-x-2">
             {!user ? (
