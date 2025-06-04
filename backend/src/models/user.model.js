@@ -25,12 +25,10 @@ const userSchema = new mongoose.Schema(
 
     phoneNo: {
       type: String,
-      required: true,
     },
 
     password: {
       type: String,
-      required: true,
     },
 
     avatar: {
@@ -41,6 +39,11 @@ const userSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
       default: null,
+    },
+
+    isGoogleUser: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

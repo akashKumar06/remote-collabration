@@ -22,11 +22,11 @@ const cookieOptions = {
 
 export async function registerUser(req, res) {
   try {
-    const { firstname, lastname, email, password, phoneNo } = req.body;
+    const { firstname, lastname, email, password } = req.body;
 
     // 1. check all the fields are valid
     if (
-      [firstname, lastname, email, password, phoneNo].some(
+      [firstname, lastname, email, password].some(
         (field) => !field || field.trim() === ""
       )
     ) {

@@ -1,37 +1,21 @@
 import Team from "../models/team.model.js";
+import { ApiError } from "../utils/ApiError.js";
 
 export async function createTeam(req, res) {
   try {
-    const { name, description = "", project, members = [] } = req.body;
-
+    const { name, description } = req.body;
+    const user = req.user;
     if (!name?.trim()) throw new ApiError(400, "Team name is required");
-    if (!project) throw new ApiError(400, "Project ID is required");
-
-    // Validate members array (optional)
-    if (!Array.isArray(members))
-      throw new ApiError(400, "Members must be an array");
-
-    for (const member of members) {
-      if (!member.user)
-        throw new ApiError(400, "Each member must have a user ID");
-      if (
-        member.role &&
-        !["lead", "developer", "designer", "qa", "support"].includes(
-          member.role
-        )
-      )
-        throw new ApiError(400, `Invalid role for member: ${member.role}`);
-    }
 
     const team = new Team({
       name: name.trim(),
       description,
-      project,
-      members,
     });
 
-    await team.save();
+    team.activityLogs.push({ message: `Team created by ${user.firstname}` });
+    team.members.push({ user: user._id, role: "Owner" });
 
+    await team.save();
     res.status(201).json({ success: true, data: team });
   } catch (error) {
     if (error instanceof ApiError) {
@@ -49,9 +33,12 @@ export async function createTeam(req, res) {
 
 export async function getAllTeams(req, res) {
   try {
-    const teams = await Team.find()
-      .populate("project", "name")
+    const userId = req.user._id;
+    const teams = await Team.find({
+      $or: [{ owner: userId }, { "members.user": userId }],
+    })
       .populate("members.user", "name email")
+      .populate("project")
       .sort({ createdAt: -1 });
 
     res.status(200).json({

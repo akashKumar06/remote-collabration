@@ -27,6 +27,9 @@ const authSlice = createSlice({
       state.fieldErrors = {};
       state.loading = "idle";
     },
+    setCurrentUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -89,5 +92,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearErrors, logout } = authSlice.actions;
+export const { clearErrors, logout, setCurrentUser } = authSlice.actions;
 export default authSlice.reducer;

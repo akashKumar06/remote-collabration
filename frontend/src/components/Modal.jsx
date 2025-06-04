@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import NewProject from "../features/dashboard/project/NewProject";
-import CreateTeam from "../features/dashboard/project/CreateTeam";
+import CreateTeam from "../features/dashboard/teams/CreateTeam";
 import ProjectDescription from "../features/dashboard/project/ProjectDescription";
 
 const components = new Map([

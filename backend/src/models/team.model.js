@@ -16,7 +16,6 @@ const teamSchema = new mongoose.Schema(
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
-      required: true,
     },
 
     members: [
@@ -28,8 +27,8 @@ const teamSchema = new mongoose.Schema(
         },
         role: {
           type: String,
-          enum: ["lead", "developer", "designer", "qa", "support"],
-          default: "developer",
+          enum: ["Owner", "Contributor", "Developer", "Designer", "QA"],
+          default: "Developer",
         },
       },
     ],

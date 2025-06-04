@@ -1,4 +1,3 @@
-import { FcGoogle } from "react-icons/fc";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { useNavigate } from "react-router";
@@ -7,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../app/slices/auth/authThunks";
 import toast from "react-hot-toast";
 import { clearErrors } from "../app/slices/auth/authSlice";
+import GoogleAuth from "../components/Google";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -91,13 +91,7 @@ const LoginPage = () => {
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        <Button
-          variant="outline"
-          className="w-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 border border-gray-300"
-        >
-          <FcGoogle className="mr-2 text-lg" />
-          Continue with Google
-        </Button>
+        <GoogleAuth />
 
         <p className="text-sm text-gray-600 text-center mt-4">
           Don’t have an account?{" "}

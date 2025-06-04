@@ -9,12 +9,13 @@ import {
   addTeamMember,
   removeTeamMember,
   updateTeamMemberRole,
-} from "../controllers/teamController.js";
+} from "../controllers/team.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 router.use(checkAuth);
+
 // Create a new team
 router.post("/", createTeam);
 

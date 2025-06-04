@@ -9,6 +9,7 @@ import {
 } from "../controllers/user.controller.js";
 import { validateRequest } from "../middlewares/validate-request.middleware.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
+import { googleAuth } from "../controllers/google-auth.controller.js";
 
 const router = express.Router();
 
@@ -34,6 +35,7 @@ router.post(
 );
 
 router.post("/refresh-token", refreshTokenHandler);
+router.post("/google", googleAuth);
 
 router.post("/logout", checkAuth, logoutUser);
 router.get("/profile", checkAuth, getUser);
