@@ -124,7 +124,7 @@ const HomePage = () => {
       <footer className="bg-gray-900 text-gray-300 py-4 text-sm">
         <div className="container mx-auto px-4 text-center">
           &copy; {new Date().getFullYear()}{" "}
-          <span className="text-gray-400 font-semibold">CollabTrack</span>. All
+          <span className="text-gray-400 font-semibold">RemoteSync</span>. All
           rights reserved.
         </div>
       </footer>
