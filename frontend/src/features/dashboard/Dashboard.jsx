@@ -7,21 +7,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserProjects } from "../../app/slices/project/projectThunk";
 import SplashScreen from "../../components/SplashScreen";
 import { getUserTasks } from "../../app/slices/task/taskThunk";
+import { getAllTeams } from "../../app/slices/team/teamThunk";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
-  const { projects, loading, error } = useSelector((state) => state.project);
+  const {
+    projects,
+    loading: isLoadingProjects,
+    error: projectError,
+  } = useSelector((state) => state.project);
+  const {
+    teams,
+    loading: isLoadingTeams,
+    error: teamError,
+  } = useSelector((state) => state.team);
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getUserProjects());
+    dispatch(getAllTeams());
     dispatch(getUserTasks({ userId: user.id }));
   }, [dispatch, user]);
 
-  if (loading) return <SplashScreen />;
-  if (error) return <h1>Error loading dashboard</h1>;
+  if (isLoadingProjects || isLoadingTeams) return <SplashScreen />;
+  if (projectError) return <h1>Project Error : Error loading dashboard</h1>;
+  if (teamError) return <h1>Project Error : Error loading dashboard</h1>;
 
   return (
     <div className="h-screen font-roboto flex flex-col">
@@ -41,6 +53,7 @@ const Dashboard = () => {
           <Sidebar
             isToggled={isSidebarOpen}
             projects={projects}
+            teams={teams}
             onClose={() => setIsSidebarOpen(false)}
           />
         </div>

@@ -9,6 +9,8 @@ import {
   addTeamMember,
   removeTeamMember,
   updateTeamMemberRole,
+  inviteUserToTeam,
+  acceptTeamInvite,
 } from "../controllers/team.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 
@@ -16,11 +18,15 @@ const router = express.Router();
 
 router.use(checkAuth);
 
-// Create a new team
 router.post("/", createTeam);
 
-// Get all teams
 router.get("/", getAllTeams);
+
+router.post("/accept-invite", acceptTeamInvite);
+
+router.post("/:teamId/invite", inviteUserToTeam);
+
+// ----- NOT TESTED ------------
 
 // Get a team by ID
 router.get("/:teamId", getTeamById);

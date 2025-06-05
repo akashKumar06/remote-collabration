@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router";
 import { close, open, setActiveComponent } from "../../app/slices/modal";
 import { delay } from "../../utils/delay";
 
-export default function Sidebar({ projects, onClose }) {
+export default function Sidebar({ projects, teams, onClose }) {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
   const navigate = useNavigate();
@@ -91,18 +91,15 @@ export default function Sidebar({ projects, onClose }) {
             onClick={() => handleNew("new_team_form")}
           />
           <div className="flex flex-col gap-2 mt-2">
-            <SidebarItem
-              icon={<Users2 size={18} />}
-              label="Akash's First Team"
-              to="teams"
-              onClose={onClose}
-            />
-            <SidebarItem
-              icon={<Users2 size={18} />}
-              label="Dev Team"
-              onClose={onClose}
-            />
-            {/* Add more dynamically if needed */}
+            {teams.map((team) => (
+              <SidebarItem
+                key={team._id}
+                icon={<FolderKanban size={18} />}
+                label={team.name}
+                to={`teams/${team._id}`}
+                onClose={onClose}
+              />
+            ))}
           </div>
         </div>
       </div>

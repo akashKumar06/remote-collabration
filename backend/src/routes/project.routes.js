@@ -29,6 +29,7 @@ router
 
 // acceptInvite POST  /api/projects/accept-invite
 router.route("/accept-invite").post(checkAuth, acceptProjectInvite);
+
 router.route("/ai/generate-project").post(checkAuth, generateProjectDetails);
 // getProjectById   GET   /api/projects/:projectId
 // deleteProject    DELETE  /api/projects/:projectId

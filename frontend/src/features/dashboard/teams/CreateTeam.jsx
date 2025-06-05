@@ -1,8 +1,23 @@
 import { useDispatch } from "react-redux";
 import { close } from "../../../app/slices/modal";
-
+import { useState } from "react";
+import { createTeam } from "../../../app/slices/team/teamThunk";
+import { toast } from "react-hot-toast";
 export default function CreateTeam() {
   const dispatch = useDispatch();
+  const [teamName, setTeamName] = useState("");
+  const [teamDesc, setTeamDesc] = useState("");
+
+  const handleTeamCreation = async () => {
+    await dispatch(createTeam({ name: teamName, description: teamDesc }))
+      .unwrap()
+      .then(() => toast.success("Team created successfully"))
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.message);
+      });
+    dispatch(close());
+  };
 
   return (
     <div className="min-h-screen bg-[#121212] px-4 py-10">
@@ -20,6 +35,8 @@ export default function CreateTeam() {
             id="teamName"
             className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             placeholder='For example: "My first Team" or "Backend Team'
+            value={teamName}
+            onChange={(e) => setTeamName(e.target.value)}
           />
         </div>
         <div className="mb-6">
@@ -30,6 +47,8 @@ export default function CreateTeam() {
             type="text"
             id="teamName"
             className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            value={teamDesc}
+            onChange={(e) => setTeamDesc(e.target.value)}
           />
         </div>
 
@@ -81,7 +100,10 @@ export default function CreateTeam() {
           >
             Cancel
           </button>
-          <button className=" cursor-pointer w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-5 rounded-lg transition-all">
+          <button
+            onClick={handleTeamCreation}
+            className=" cursor-pointer w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-5 rounded-lg transition-all"
+          >
             Create Team
           </button>
         </div>

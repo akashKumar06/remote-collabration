@@ -30,6 +30,10 @@ const teamSchema = new mongoose.Schema(
           enum: ["Owner", "Contributor", "Developer", "Designer", "QA"],
           default: "Developer",
         },
+        joined: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
 

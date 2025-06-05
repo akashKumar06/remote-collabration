@@ -21,7 +21,7 @@ export const getAllTeams = createAsyncThunk(
       const res = await api.get("/teams");
       return res.data.data;
     } catch (error) {
-      console.lof(error);
+      console.log(error);
       return thunkApi.rejectWithValue(error.response.data.message);
     }
   }

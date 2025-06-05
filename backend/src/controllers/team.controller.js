@@ -1,5 +1,7 @@
 import Team from "../models/team.model.js";
 import { ApiError } from "../utils/ApiError.js";
+import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export async function createTeam(req, res) {
   try {
@@ -37,7 +39,7 @@ export async function getAllTeams(req, res) {
     const teams = await Team.find({
       $or: [{ owner: userId }, { "members.user": userId }],
     })
-      .populate("members.user", "name email")
+      .populate("members.user", "firstname lastname email")
       .populate("project")
       .sort({ createdAt: -1 });
 
@@ -58,6 +60,120 @@ export async function getAllTeams(req, res) {
     }
   }
 }
+
+export async function inviteUserToTeam(req, res) {
+  try {
+    const { email, role = "Developer" } = req.body;
+    const { teamId } = req.params;
+
+    const team = await Team.findById(teamId);
+    if (!team) throw new ApiError(404, "Team does not exist");
+
+    const user = req.user;
+    if (user.email === email)
+      throw new ApiError(400, "You are already a part of this project.");
+
+    const token = jwt.sign(
+      { inviter: user.firstname, teamName: team.name, email, teamId, role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2d",
+      }
+    );
+    if (!token) throw new ApiError(400, "Token not generated.");
+
+    const inviteLink = `${process.env.CLIENT_URL}/team-invite?token=${token}`;
+
+    await sendEmail({
+      to: email,
+      subject: "You are invited to join a team",
+      html: `
+        <div style="font-family: Arial, sans-serif; background-color: #f4f4f7; padding: 30px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+            <h1 style="color: #333333; font-size: 24px; margin-bottom: 10px;">
+              ${user.firstname} has invited you to join a team!
+            </h1>
+            <h2 style="color: #555555; font-size: 18px; margin-top: 0;">
+              Are you ready to being a part to <em style="color: #1a73e8;">${team.name}</em>?
+            </h2>
+            <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+              You have been invited to join a team. This is your chance to make an impact and work with a great team.
+            </p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${inviteLink}" style="display: inline-block; background-color: #1a73e8; color: #ffffff; padding: 12px 20px; font-size: 16px; text-decoration: none; border-radius: 6px;">
+                Accept Invitation
+              </a>
+            </div>
+            <p style="color: #999999; font-size: 14px; text-align: center;">
+              If the button above doesn't work, copy and paste this link into your browser:<br/>
+              <a href="${inviteLink}" style="color: #1a73e8;">${inviteLink}</a>
+            </p>
+          </div>
+        </div>
+      `,
+    });
+    return res.status(200).json({ message: "Invitation sent" });
+  } catch (error) {
+    console.log("Error in inviteUserToTeam", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export async function acceptTeamInvite(req, res) {
+  try {
+    const user = req.user;
+    const { token } = req.body;
+    const { email, teamId, role } = jwt.decode(token);
+
+    if (user.email !== email)
+      throw new ApiError(403, "Invite email does not match with your account");
+
+    const team = await Team.findById(teamId);
+    if (!team) throw new ApiError(404, "Team not found.");
+
+    // check if user is already a member
+    const alreadyMember = team.members.some(
+      (member) => member.user.toString() === user._id.toString()
+    );
+
+    if (alreadyMember)
+      throw new ApiError(400, "User is already member of team");
+
+    team.members.push({ user: user._id, role });
+
+    team.activityLogs.push({
+      message: `${user.firstname} ${user.lastname} has joined as a ${role}`,
+      createdBy: req.user._id,
+    });
+
+    await team.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Member added successfully.",
+      teamId,
+    });
+  } catch (error) {
+    console.log("Error in acceptTeamInvite", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+// ------ NOT TESTED ------------------
 
 export async function getTeamById(req, res) {
   try {

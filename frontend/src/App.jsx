@@ -15,9 +15,10 @@ import Inbox from "./features/dashboard/Inbox";
 import ProjectDasboard from "./features/dashboard/project/ProjectDasboard";
 import TeamsPage from "./features/dashboard/teams/TeamsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import AcceptInvite from "./components/AcceptInvite";
 import TaskPage from "./features/dashboard/tasks/TaskPage";
 import AuthWrapper from "./components/AuthWrapper";
+import TeamInvitePage from "./features/dashboard/teams/TeamInvitePage";
+import ProjectInvitePage from "./features/dashboard/project/ProjectInvitePage";
 
 function App() {
   return (
@@ -25,7 +26,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="accept-invite" element={<AcceptInvite />} />
+        <Route path="project-invite" element={<ProjectInvitePage />} />
+        <Route path="team-invite" element={<TeamInvitePage />} />
         <Route path="signup" element={<SignupPage />} />
 
         <Route
@@ -55,7 +57,7 @@ function App() {
           </Route>
 
           {/* teams route */}
-          <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/:teamId" element={<TeamsPage />} />
         </Route>
       </Routes>
 
