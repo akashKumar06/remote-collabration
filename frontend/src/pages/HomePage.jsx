@@ -125,7 +125,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4 text-center">
           &copy; {new Date().getFullYear()}{" "}
           <span className="text-gray-400 font-semibold">RemoteSync</span>. All
-          rights.
+          rights reserved.
         </div>
       </footer>
     </div>
