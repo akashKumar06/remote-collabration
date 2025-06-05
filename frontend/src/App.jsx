@@ -15,40 +15,27 @@ import Inbox from "./features/dashboard/Inbox";
 import ProjectDasboard from "./features/dashboard/project/ProjectDasboard";
 import TeamsPage from "./features/dashboard/teams/TeamsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchCurrentUser } from "./app/slices/auth/authThunks";
-import SplashScreen from "./components/SplashScreen";
 import AcceptInvite from "./components/AcceptInvite";
 import TaskPage from "./features/dashboard/tasks/TaskPage";
+import AuthWrapper from "./components/AuthWrapper";
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchCurrentUser());
-  }, [dispatch]);
-
-  const { loading } = useSelector((state) => state.auth);
-
-  if (loading) return <SplashScreen />;
-
   return (
     <BrowserRouter>
       <Routes>
-        {/* public routes */}
         <Route path="/" element={<HomePage />} />
-
         <Route path="login" element={<LoginPage />} />
-        <Route path="accept-invite" element={<AcceptInvite />}></Route>
-
+        <Route path="accept-invite" element={<AcceptInvite />} />
         <Route path="signup" element={<SignupPage />} />
 
         <Route
           path="dashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
+            <AuthWrapper>
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            </AuthWrapper>
           }
         >
           <Route index element={<Navigate to="home" />} />

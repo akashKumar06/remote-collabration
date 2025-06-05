@@ -3,22 +3,22 @@ import SplashScreen from "../../components/SplashScreen";
 import { useNavigate } from "react-router";
 import clsx from "clsx";
 
+const statusColors = {
+  "To Do": "bg-zinc-700 text-zinc-300",
+  "In Progress": "bg-blue-600 text-white",
+  Blocked: "bg-red-600 text-white",
+  Completed: "bg-green-600 text-white",
+};
+
+const priorityColors = {
+  Low: "bg-green-600 text-white",
+  Medium: "bg-yellow-500 text-black",
+  High: "bg-red-500 text-white",
+};
+
 export default function MyTasks() {
   const { userTasks, loading } = useSelector((state) => state.task);
   const navigate = useNavigate();
-
-  const statusColors = {
-    "To Do": "bg-zinc-700 text-zinc-300",
-    "In Progress": "bg-blue-600 text-white",
-    Blocked: "bg-red-600 text-white",
-    Completed: "bg-green-600 text-white",
-  };
-
-  const priorityColors = {
-    Low: "bg-green-600 text-white",
-    Medium: "bg-yellow-500 text-black",
-    High: "bg-red-500 text-white",
-  };
 
   if (loading) return <SplashScreen />;
 

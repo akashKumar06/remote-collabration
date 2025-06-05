@@ -38,34 +38,33 @@ function MileStones() {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-[#2A2A2A] p-4 md:p-6 rounded-2xl border border-gray-700 w-full min-h-[100px]"
+      className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700"
     >
       <div
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsMilestonesOpen(!isMilestonesOpen)}
       >
-        <h2 className="text-base md:text-lg font-semibold">Milestones</h2>
+        <h2 className="text-lg font-semibold">Milestones</h2>
         {isMilestonesOpen ? <ChevronDown /> : <ChevronRight />}
       </div>
-
       {isMilestonesOpen && (
-        <div className="space-y-3 mt-4 text-sm md:text-base">
+        <div className="space-y-2 mt-4">
           {completed.length !== 0 && (
-            <div className="flex items-start gap-2 flex-wrap">
-              <CalendarCheck size={16} className="text-green-400 mt-0.5" />
-              <span className="break-words">{completed.at(-1).title} - <span className="text-green-300">Completed</span></span>
+            <div className="flex items-center gap-2">
+              <CalendarCheck size={16} className="text-green-400" />
+              <span>{completed.at(-1).title} - Completed</span>
             </div>
           )}
           {inProgress.length !== 0 && (
-            <div className="flex items-start gap-2 flex-wrap">
-              <CalendarCheck size={16} className="text-yellow-400 mt-0.5" />
-              <span className="break-words">{inProgress[0].title} - <span className="text-yellow-300">In Progress</span></span>
+            <div className="flex items-center gap-2">
+              <CalendarCheck size={16} className="text-yellow-400" />
+              <span>{inProgress[0].title} - In Progress</span>
             </div>
           )}
           {notStarted.length !== 0 && (
-            <div className="flex items-start gap-2 flex-wrap">
-              <CalendarCheck size={16} className="text-gray-400 mt-0.5" />
-              <span className="break-words">{notStarted[0].title} - <span className="text-gray-300">Pending</span></span>
+            <div className="flex items-center gap-2">
+              <CalendarCheck size={16} className="text-gray-400" />
+              <span>{notStarted[0].title}- Pending</span>
             </div>
           )}
         </div>

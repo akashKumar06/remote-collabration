@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../app/slices/auth/authThunks";
 import { clearErrors } from "../app/slices/auth/authSlice";
+import GoogleAuth from "../components/Google";
 
 const SignupPage = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,9 @@ const SignupPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <Card className="w-full max-w-md md:max-w-lg shadow-lg p-4 sm:p-6">
         <CardContent>
-          <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Sign Up</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">
+            Sign Up
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
               <div className="w-full">
@@ -66,7 +69,9 @@ const SignupPage = () => {
                   required
                 />
                 {fieldErrors.firstname && (
-                  <p className="text-red-500 text-sm">{fieldErrors.firstname}</p>
+                  <p className="text-red-500 text-sm">
+                    {fieldErrors.firstname}
+                  </p>
                 )}
               </div>
               <div className="w-full">
@@ -99,7 +104,7 @@ const SignupPage = () => {
                   <p className="text-red-500 text-sm">{fieldErrors.email}</p>
                 )}
               </div>
-              <div className="w-full">
+              {/* <div className="w-full">
                 <Input
                   type="tel"
                   placeholder="Phone Number"
@@ -112,7 +117,7 @@ const SignupPage = () => {
                 {fieldErrors.phoneNo && (
                   <p className="text-red-500 text-sm">{fieldErrors.phoneNo}</p>
                 )}
-              </div>
+              </div> */}
               <div className="w-full">
                 <Input
                   type="password"
@@ -134,9 +139,7 @@ const SignupPage = () => {
             </Button>
           </form>
           <div className="text-center mt-4">
-            <Button variant="outline" className="w-full py-2">
-              Continue with Google
-            </Button>
+            <GoogleAuth />
           </div>
           <div className="text-center mt-4">
             <p className="text-sm">
