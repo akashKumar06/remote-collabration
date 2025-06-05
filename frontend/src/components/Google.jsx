@@ -9,12 +9,15 @@ const GoogleAuth = () => {
     const handleGoogleResponse = async (response) => {
       const token = response.credential;
 
-      const res = await fetch("http://localhost:8000/api/v1/users/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ token }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_SERVER_URI}/api/v1/users/google`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ token }),
+        }
+      );
 
       const data = await res.json();
       const user = data.user;
