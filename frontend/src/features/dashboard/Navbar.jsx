@@ -2,7 +2,7 @@ import { LogOut, Settings, User, Menu } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../app/slices/auth/authThunks";
 
-function Navbar({ onToggleSidbar }) {
+function Navbar({onToggleSidbar}) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
