@@ -7,11 +7,14 @@ import { loginUser } from "../app/slices/auth/authThunks";
 import toast from "react-hot-toast";
 import { clearErrors } from "../app/slices/auth/authSlice";
 import GoogleAuth from "../components/Google";
+import CircularLoader from "../components/CircularLoader";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { user, error, fieldErrors } = useSelector((state) => state.auth);
+  const { user, error, fieldErrors, loading } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -79,9 +82,9 @@ const LoginPage = () => {
 
           <Button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2"
+            className="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white py-2 cursor-pointer"
           >
-            Login
+            <span>{loading ? <CircularLoader /> : "Login"}</span>
           </Button>
         </form>
 

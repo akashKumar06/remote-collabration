@@ -5,6 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/sendEmail.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 export async function createProject(req, res) {
   try {
@@ -260,6 +261,45 @@ export async function acceptProjectInvite(req, res) {
     });
   } catch (error) {
     console.log("Error in acceptProjectInvite", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+
+export async function uploadFiles(req, res) {
+  try {
+    const { projectId } = req.params;
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project is not found.");
+
+    const files = req.files;
+
+    const results = await Promise.all(
+      files.map((file) => uploadOnCloudinary(file.path))
+    );
+
+    const filteredResult = results.map((result) => ({
+      url: result.url,
+      secure_url: result.secure_url,
+      resource_type: result.resource_type,
+      format: result.format,
+    }));
+
+    project.files.push(...filteredResult);
+
+    await project.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Files uploaded successfully", project });
+  } catch (error) {
+    console.log("Error in upload files", error);
     if (error instanceof ApiError) {
       return res
         .status(error.statusCode)

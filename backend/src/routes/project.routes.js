@@ -11,8 +11,11 @@ import {
   getUserProjects,
   inviteUserToProject,
   updateProjectDescription,
+  uploadFiles,
 } from "../controllers/project.controller.js";
 import { generateProjectDetails } from "../controllers/ai.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
+
 const router = express.Router();
 
 // createProject    POST    /api/projects
@@ -29,14 +32,21 @@ router
 
 // acceptInvite POST  /api/projects/accept-invite
 router.route("/accept-invite").post(checkAuth, acceptProjectInvite);
-
+router
+  .route("/:projectId/uploads")
+  .post(checkAuth, upload.array("files"), uploadFiles);
 router.route("/ai/generate-project").post(checkAuth, generateProjectDetails);
+
 // getProjectById   GET   /api/projects/:projectId
 // deleteProject    DELETE  /api/projects/:projectId
 router
   .route("/:projectId")
   .get(checkAuth, getProjectById)
   .delete(checkAuth, deleteProject);
+
+router
+  .route("/:projectId/uploads")
+  .post(checkAuth, upload.array("files"), uploadFiles);
 
 // addMemberToProject   POST    /api/projects/:projectId/members
 router.route("/:projectId/members").post(checkAuth, addMemberToProject);

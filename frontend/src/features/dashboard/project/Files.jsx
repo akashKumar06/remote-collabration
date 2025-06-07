@@ -1,5 +1,6 @@
 import { Download, FileText, Image, File } from "lucide-react";
-
+import { useSelector } from "react-redux";
+import FileUpload from "./FileUpload";
 const files = [
   {
     id: 1,
@@ -41,6 +42,10 @@ const getFileIcon = (type) => {
 };
 
 const FilesPage = () => {
+  const { currentProject } = useSelector((state) => state.project);
+  const { user } = useSelector((state) => state.auth);
+
+  const { owner } = currentProject;
   return (
     <div className="min-h-screen bg-space-900 text-white px-6 py-10">
       <div className="max-w-screen-xl mx-auto">
@@ -72,6 +77,7 @@ const FilesPage = () => {
             </div>
           ))}
         </div>
+        {user.id === owner._id && <FileUpload />}
       </div>
     </div>
   );

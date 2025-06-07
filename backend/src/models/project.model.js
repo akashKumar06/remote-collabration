@@ -58,6 +58,27 @@ const projectSchema = new mongoose.Schema(
         },
       },
     ],
+
+    files: [
+      {
+        url: {
+          type: String,
+          default: "",
+        },
+        secure_url: {
+          type: String,
+          default: "",
+        },
+        resource_type: {
+          type: String,
+          default: "",
+        },
+        format: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
