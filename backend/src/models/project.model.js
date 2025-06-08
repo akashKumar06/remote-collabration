@@ -77,6 +77,16 @@ const projectSchema = new mongoose.Schema(
           type: String,
           default: "",
         },
+        name: {
+          type: String,
+          default: "",
+        },
+        size: {
+          type: Number,
+        },
+        uploadedAt: {
+          type: Date,
+        },
       },
     ],
   },

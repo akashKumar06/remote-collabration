@@ -4,6 +4,7 @@ import {
   getProjectById,
   getUserProjects,
   updateProjectDescription,
+  uploadFiles,
 } from "./projectThunk";
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   loading: false,
   error: null,
   tasks: [],
+  isUploadingFiles: false,
 };
 
 const projectSlice = createSlice({
@@ -75,11 +77,24 @@ const projectSlice = createSlice({
       })
       .addCase(updateProjectDescription.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      // UPLOAD FILES
+      .addCase(uploadFiles.pending, (state) => {
+        state.isUploadingFiles = true;
+      })
+      .addCase(uploadFiles.fulfilled, (state, action) => {
+        const newProject = action.payload;
+        const projectIndex = state.projects.findIndex(
+          (project) => project._id === newProject._id
+        );
+        state.projects.splice(projectIndex, 1, newProject);
+        state.currentProject = newProject;
+        state.isUploadingFiles = false;
+      })
+      .addCase(uploadFiles.rejected, (state, action) => {
+        state.error = action.payload;
+        state.isUploadingFiles = false;
       });
-    // ASSIGN_TASK_TO_MEMBER
-    // .addCase()
-    // .addCase()
-    // .addCase();
   },
 });
 

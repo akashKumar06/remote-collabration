@@ -1,9 +1,14 @@
 import { useState } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { uploadFiles } from "../../../app/slices/project/projectThunk";
+import CircularLoader from "../../../components/CircularLoader";
 
 const FileUpload = () => {
-  const { currentProject } = useSelector((state) => state.project);
+  const { currentProject, isUploadingFiles } = useSelector(
+    (state) => state.project
+  );
+  const dispatch = useDispatch();
 
   const [files, setFiles] = useState([]);
 
@@ -16,22 +21,15 @@ const FileUpload = () => {
 
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
-
-    try {
-      const res = await axios.post(
-        `/projects/${currentProject._id}/uploads`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Uploaded files:", res.data);
-      toast.success("Files uploaded successfully");
-    } catch (err) {
-      console.error(err);
-    }
+    dispatch(uploadFiles({ projectId: currentProject._id, formData }))
+      .unwrap()
+      .then((data) => {
+        console.log(data);
+        toast.success("Files uploaded successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -66,7 +64,7 @@ const FileUpload = () => {
         onClick={handleUpload}
         className="mt-6 w-full px-4 py-2 mb-2 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
       >
-        Upload Files
+        {isUploadingFiles ? <CircularLoader color="#fff" /> : "Upload Files"}
       </button>
     </div>
   );

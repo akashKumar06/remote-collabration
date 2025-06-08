@@ -1,25 +1,58 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import path from "path";
 
 // Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET, // Click 'View API Keys' above to copy your API secret
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
-async function uploadOnCloudinary(localFilePath) {
+const getResourceType = (mimetype = "") => {
+  if (mimetype.startsWith("image/")) return "image";
+  if (mimetype.startsWith("video/")) return "video";
+  return "raw"; // default for PDF, ZIP, DOCX, etc.
+};
+
+const extractOrginalName = (name) => {
+  const findIndex = name.lastIndexOf("_");
+  const newName = name.slice(0, findIndex);
+  return newName;
+};
+
+async function uploadOnCloudinary(file) {
   try {
-    if (!localFilePath) throw new Error("local file path not provided.");
-    const uploadResult = await cloudinary.uploader.upload(localFilePath, {
+    console.log(file);
+    if (!file) throw new Error("file not found.");
+    const resourceType = getResourceType(file.mimetype);
+    console.log(file);
+    const originalName = path.parse(file.originalname).name;
+    const ext = path.extname(file.originalname).slice(1); // without dot
+
+    const publicId = `${originalName}_${Date.now()}`;
+
+    const uploadResult = await cloudinary.uploader.upload(file.path, {
       folder: "RemoteSync",
+      resource_type: resourceType,
+      public_id: publicId,
+      format: ext, // ensures correct extension
     });
 
-    fs.unlinkSync(localFilePath);
-
-    return uploadResult;
+    fs.unlinkSync(file.path);
+    console.log(uploadResult);
+    return {
+      url: uploadResult.url,
+      secure_url: uploadResult.secure_url,
+      resource_type: uploadResult.resource_type,
+      format: ext,
+      name: extractOrginalName(uploadResult.original_filename),
+      size: uploadResult.bytes,
+      uploadedAt: uploadResult.created_at,
+    };
   } catch (error) {
-    if (localFilePath) fs.unlinkSync(localFilePath);
+    if (file) fs.unlinkSync(file.path);
     throw error;
   }
 }

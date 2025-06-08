@@ -279,19 +279,11 @@ export async function uploadFiles(req, res) {
     if (!project) throw new ApiError(404, "Project is not found.");
 
     const files = req.files;
-
     const results = await Promise.all(
-      files.map((file) => uploadOnCloudinary(file.path))
+      files.map((file) => uploadOnCloudinary(file))
     );
 
-    const filteredResult = results.map((result) => ({
-      url: result.url,
-      secure_url: result.secure_url,
-      resource_type: result.resource_type,
-      format: result.format,
-    }));
-
-    project.files.push(...filteredResult);
+    project.files.push(...results);
 
     await project.save();
 

@@ -61,3 +61,21 @@ export const updateProjectDescription = createAsyncThunk(
     }
   }
 );
+
+export const uploadFiles = createAsyncThunk(
+  "project/uploadFiles",
+  async (data, thunkApi) => {
+    const { projectId, formData } = data;
+    try {
+      const res = await api.post(`/projects/${projectId}/uploads`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data.project;
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(error.response.data.message);
+    }
+  }
+);

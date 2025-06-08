@@ -84,7 +84,7 @@ const LoginPage = () => {
             type="submit"
             className="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white py-2 cursor-pointer"
           >
-            <span>{loading ? <CircularLoader /> : "Login"}</span>
+            <span>{loading ? <CircularLoader color="#fff" /> : "Login"}</span>
           </Button>
         </form>
 
