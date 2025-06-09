@@ -23,11 +23,13 @@ const projectSchema = new mongoose.Schema(
       type: Date,
     },
 
-    team: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
-      default: null,
-    },
+    teams: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Team",
+        default: null,
+      },
+    ],
 
     members: [
       {
