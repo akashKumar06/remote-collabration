@@ -31,6 +31,12 @@ const projectSchema = new mongoose.Schema(
       },
     ],
 
+    tags: [
+      {
+        type: String,
+      },
+    ],
+
     members: [
       {
         user: {

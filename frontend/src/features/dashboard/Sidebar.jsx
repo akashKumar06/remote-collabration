@@ -72,15 +72,19 @@ export default function Sidebar({ projects, teams, onClose }) {
             onClick={() => handleNew("new_project_form")}
           />
           <div className="flex flex-col gap-2 mt-2">
-            {projects.map((project) => (
-              <SidebarItem
-                key={project._id}
-                icon={<FolderKanban size={18} />}
-                label={project.name}
-                to={`projects/${project._id}`}
-                onClose={onClose}
-              />
-            ))}
+            {projects.length === 0 ? (
+              <h1>No Projects</h1>
+            ) : (
+              projects.map((project) => (
+                <SidebarItem
+                  key={project._id}
+                  icon={<FolderKanban size={18} />}
+                  label={project.name}
+                  to={`projects/${project._id}`}
+                  onClose={onClose}
+                />
+              ))
+            )}
           </div>
         </div>
 
@@ -91,15 +95,19 @@ export default function Sidebar({ projects, teams, onClose }) {
             onClick={() => handleNew("new_team_form")}
           />
           <div className="flex flex-col gap-2 mt-2">
-            {teams.map((team) => (
-              <SidebarItem
-                key={team._id}
-                icon={<FolderKanban size={18} />}
-                label={team.name}
-                to={`teams/${team._id}`}
-                onClose={onClose}
-              />
-            ))}
+            {teams.length === 0 ? (
+              <h1>No teams. Start by creating one.</h1>
+            ) : (
+              teams.map((team) => (
+                <SidebarItem
+                  key={team._id}
+                  icon={<FolderKanban size={18} />}
+                  label={team.name}
+                  to={`teams/${team._id}`}
+                  onClose={onClose}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>

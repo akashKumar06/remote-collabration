@@ -3,14 +3,61 @@ import { close } from "../../../app/slices/modal";
 import { useState } from "react";
 import { createProject } from "../../../app/slices/project/projectThunk";
 import Select from "react-select";
+
+const projectTags = [
+  // --- Technical Tags ---
+  { label: "React", value: "React" },
+  { label: "Node.js", value: "Node.js" },
+  { label: "Python", value: "Python" },
+  { label: "JavaScript", value: "JavaScript" },
+  { label: "TypeScript", value: "TypeScript" },
+  { label: "AWS", value: "AWS" },
+  { label: "Docker", value: "Docker" },
+  { label: "Firebase", value: "Firebase" },
+  { label: "API", value: "API" },
+  { label: "Machine Learning", value: "Machine Learning" },
+  { label: "CSS3", value: "CSS3" },
+  { label: "HTML5", value: "HTML5" },
+  { label: "GraphQL", value: "GraphQL" },
+  { label: "MongoDB", value: "MongoDB" },
+  { label: "PostgreSQL", value: "PostgreSQL" },
+  { label: "Vue.js", value: "Vue.js" },
+  { label: "Angular", value: "Angular" },
+  { label: "CI/CD", value: "CI/CD" },
+  { label: "Blockchain", value: "Blockchain" },
+  { label: "Mobile App", value: "Mobile App" },
+
+  // --- Non-Technical Tags ---
+  { label: "UX Design", value: "UX Design" },
+  { label: "UI Design", value: "UI Design" },
+  { label: "Agile", value: "Agile" },
+  { label: "Scrum", value: "Scrum" },
+  { label: "Project Management", value: "Project Management" },
+  { label: "User Research", value: "User Research" },
+  { label: "Marketing", value: "Marketing" },
+  { label: "Analytics", value: "Analytics" },
+  { label: "E-commerce", value: "E-commerce" },
+  { label: "SaaS", value: "SaaS" },
+  { label: "Prototyping", value: "Prototyping" },
+  { label: "Leadership", value: "Leadership" },
+  { label: "Collaboration", value: "Collaboration" },
+  { label: "Innovation", value: "Innovation" },
+  { label: "Content Strategy", value: "Content Strategy" },
+  { label: "Fintech", value: "Fintech" },
+  { label: "Healthcare", value: "Healthcare" },
+  { label: "EdTech", value: "EdTech" },
+  { label: "SEO", value: "SEO" },
+  { label: "Customer Support", value: "Customer Support" },
+];
+
 export default function NewProject() {
   const dispatch = useDispatch();
   const [projectName, setProjectName] = useState("");
-  const { loading } = useSelector((state) => state.project);
+  const [tags, setTags] = useState([]);
   const [teamSelected, setTeamSelected] = useState([]);
 
+  const { loading } = useSelector((state) => state.project);
   const { teams } = useSelector((state) => state.team);
-
   const options = [];
 
   teams.forEach((team) => {
@@ -21,6 +68,7 @@ export default function NewProject() {
     const projectData = {
       name: projectName,
       teamId: teamSelected,
+      tags,
     };
 
     dispatch(createProject(projectData));
@@ -42,6 +90,70 @@ export default function NewProject() {
           placeholder="Enter project name"
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
+        />
+      </div>
+
+      <div className="mb-6">
+        <label className="block text-gray-300 mb-2" htmlFor="projectName">
+          Project tags
+        </label>
+        <Select
+          isMulti={true}
+          options={projectTags}
+          onChange={(selectedOptions) =>
+            setTags(selectedOptions.map((opt) => opt.value))
+          }
+          placeholder="Select Team"
+          styles={{
+            control: (base) => ({
+              ...base,
+              backgroundColor: "transparent",
+              boxShadow: "none",
+              borderColor: "#4a5565",
+              color: "white",
+              minHeight: "2.5rem",
+            }),
+            menu: (base) => ({
+              ...base,
+              backgroundColor: "#2B2C2E",
+              color: "white",
+              border: "#4a5565",
+            }),
+            option: (base, state) => ({
+              ...base,
+              backgroundColor: state.isFocused ? "#3a3b3d" : "transparent",
+              color: "white",
+              cursor: "pointer",
+            }),
+            multiValue: (base) => ({
+              ...base,
+              backgroundColor: "#3a3b3d",
+            }),
+            multiValueLabel: (base) => ({
+              ...base,
+              color: "white",
+            }),
+            multiValueRemove: (base) => ({
+              ...base,
+              color: "#aaa",
+              ":hover": {
+                backgroundColor: "#555",
+                color: "white",
+              },
+            }),
+            placeholder: (base) => ({
+              ...base,
+              color: "#ccc",
+            }),
+            input: (base) => ({
+              ...base,
+              color: "white",
+            }),
+            singleValue: (base) => ({
+              ...base,
+              color: "white",
+            }),
+          }}
         />
       </div>
 

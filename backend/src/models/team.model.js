@@ -13,6 +13,11 @@ const teamSchema = new mongoose.Schema(
       default: "",
     },
 
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",

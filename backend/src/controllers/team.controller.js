@@ -12,6 +12,7 @@ export async function createTeam(req, res) {
     const team = new Team({
       name: name.trim(),
       description,
+      owner: req.user._id,
     });
 
     team.activityLogs.push({ message: `Team created by ${user.firstname}` });

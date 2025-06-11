@@ -60,7 +60,7 @@ async function sendMailToTeam(inviter, receiver, project) {
 
 export async function createProject(req, res) {
   try {
-    const { name, teamId } = req.body;
+    const { name, teamId, tags } = req.body;
     if (!name) throw new ApiError(400, "Project name is required.");
     const user = req.user;
 
@@ -73,6 +73,7 @@ export async function createProject(req, res) {
           role: "owner",
         },
       ],
+      tags,
       activityLogs: [
         {
           message: `Project created by ${req.user.firstname}`,
