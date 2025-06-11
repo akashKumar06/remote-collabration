@@ -2,7 +2,6 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import path from "path";
 
-// Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -13,7 +12,7 @@ cloudinary.config({
 const getResourceType = (mimetype = "") => {
   if (mimetype.startsWith("image/")) return "image";
   if (mimetype.startsWith("video/")) return "video";
-  return "raw"; // default for PDF, ZIP, DOCX, etc.
+  return "raw";
 };
 
 const extractOrginalName = (name) => {
@@ -29,7 +28,7 @@ async function uploadOnCloudinary(file) {
     const resourceType = getResourceType(file.mimetype);
     console.log(file);
     const originalName = path.parse(file.originalname).name;
-    const ext = path.extname(file.originalname).slice(1); // without dot
+    const ext = path.extname(file.originalname).slice(1);
 
     const publicId = `${originalName}_${Date.now()}`;
 
@@ -37,7 +36,7 @@ async function uploadOnCloudinary(file) {
       folder: "RemoteSync",
       resource_type: resourceType,
       public_id: publicId,
-      format: ext, // ensures correct extension
+      format: ext,
     });
 
     fs.unlinkSync(file.path);

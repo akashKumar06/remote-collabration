@@ -19,8 +19,6 @@ import TaskPage from "./features/dashboard/tasks/TaskPage";
 import AuthWrapper from "./components/AuthWrapper";
 import TeamInvitePage from "./features/dashboard/teams/TeamInvitePage";
 import ProjectInvitePage from "./features/dashboard/project/ProjectInvitePage";
-import TeamSettings from "./features/dashboard/teams/TeamSettings";
-import ProjectSettings from "./features/dashboard/project/ProjectSettings";
 
 function App() {
   return (
@@ -48,6 +46,7 @@ function App() {
           <Route path="my-tasks" element={<MyTasks />} />
           <Route path="my-tasks/:taskId" element={<TaskPage />} />
           <Route path="inbox" element={<Inbox />} />
+          <Route path="projects" element={<Projects />} />
 
           {/* nested projects route */}
           <Route path="projects/:projectId" element={<ProjectPage />}>

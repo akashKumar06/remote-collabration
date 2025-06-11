@@ -32,12 +32,14 @@ function List() {
   const navigate = useNavigate();
   const members = currentProject.members;
   const options = [];
+
   members.forEach((member) => {
     if (member.role !== "owner") {
       const name = member.user.firstname + " " + member.user.lastname;
       options.push({ label: name, value: member.user._id });
     }
   });
+
   const handleAddTask = () => {
     const task = {
       title,

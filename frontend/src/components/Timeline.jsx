@@ -1,6 +1,8 @@
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
 function Timeline({ activities }) {
+  console.log(activities);
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -16,6 +18,14 @@ function Timeline({ activities }) {
           .map((activity) => (
             <div key={activity._id} className="relative">
               <span className="w-2 h-2 bg-pink-400 rounded-full absolute -left-5 top-1" />
+              {activity.name && (
+                <Link
+                  to={`/dashboard/teams/${activity.id}`}
+                  className="font-bold underline"
+                >
+                  {activity.name}
+                </Link>
+              )}
               <p>{activity.message}</p>
               <p className="text-xs text-gray-500">
                 {format(new Date(activity.createdAt), "MMM d, yyyy")}

@@ -7,27 +7,73 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/sendEmail.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
+async function sendMailToTeam(inviter, receiver, project) {
+  try {
+    const token = jwt.sign(
+      {
+        inviter: inviter.firstname,
+        projectName: project.name,
+        email: receiver.email,
+        projectId: project.id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2d",
+      }
+    );
+
+    if (!token) throw new ApiError(400, "Token could not be created.");
+
+    const inviteLink = `${process.env.CLIENT_URL}/project-invite?token=${token}`;
+    await sendEmail({
+      to: receiver.email,
+      subject: "You are invited to join a project",
+      html: `
+    <div style="font-family: Arial, sans-serif; background-color: #f4f4f7; padding: 30px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+        <h1 style="color: #333333; font-size: 24px; margin-bottom: 10px;">
+          ${inviter.firstname} has invited you to join a project!
+        </h1>
+        <h2 style="color: #555555; font-size: 18px; margin-top: 0;">
+          Are you ready to contribute to <em style="color: #1a73e8;">${project.name}</em>?
+        </h2>
+        <p style="color: #555555; font-size: 16px; line-height: 1.5;">
+          You have been invited to collaborate on an exciting project. This is your chance to make an impact and work with a great team.
+        </p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${inviteLink}" style="display: inline-block; background-color: #1a73e8; color: #ffffff; padding: 12px 20px; font-size: 16px; text-decoration: none; border-radius: 6px;">
+            Accept Invitation
+          </a>
+        </div>
+        <p style="color: #999999; font-size: 14px; text-align: center;">
+          If the button above doesn't work, copy and paste this link into your browser:<br/>
+          <a href="${inviteLink}" style="color: #1a73e8;">${inviteLink}</a>
+        </p>
+      </div>
+    </div>
+  `,
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function createProject(req, res) {
   try {
-    const { name, teamId } = req.body;
+    const { name, teamId, tags } = req.body;
     if (!name) throw new ApiError(400, "Project name is required.");
-
-    let team = null;
-    if (teamId) {
-      team = await Team.findById(teamId);
-      if (!team) throw new ApiError(404, "Team not found.");
-    }
+    const user = req.user;
 
     const project = await Project.create({
       name,
       owner: req.user._id,
-      team: team ? team._id : undefined,
       members: [
         {
-          user: req.user._id,
+          user: user._id,
           role: "owner",
         },
       ],
+      tags,
       activityLogs: [
         {
           message: `Project created by ${req.user.firstname}`,
@@ -35,6 +81,32 @@ export async function createProject(req, res) {
         },
       ],
     });
+
+    if (teamId) {
+      const team = await Team.findById(teamId).populate(
+        "members.user",
+        "email firstname"
+      );
+      if (!team) throw new ApiError(404, "Team not found.");
+
+      const { members } = team;
+
+      const emailPromises = members
+        .filter((member) => member.user._id.toString() !== user._id.toString())
+        .map((member) =>
+          sendMailToTeam(
+            { firstname: user.firstname },
+            { email: member.user.email },
+            { id: project._id, name: project.name }
+          )
+        );
+      await Promise.all(emailPromises);
+      console.log("all mails are sent.");
+
+      project.teams.push(teamId);
+      await project.save();
+    }
+
     return res.status(201).json({
       success: true,
       message: "Project created successfully.",
@@ -62,7 +134,7 @@ export async function getUserProjects(req, res) {
     })
       .populate("owner", "firstname lastname avatar")
       .populate("members.user", "firstname lastname avatar")
-      .populate("team");
+      .populate("teams");
 
     return res.status(200).json({
       success: true,
