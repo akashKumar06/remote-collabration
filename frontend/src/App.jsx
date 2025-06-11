@@ -19,6 +19,8 @@ import TaskPage from "./features/dashboard/tasks/TaskPage";
 import AuthWrapper from "./components/AuthWrapper";
 import TeamInvitePage from "./features/dashboard/teams/TeamInvitePage";
 import ProjectInvitePage from "./features/dashboard/project/ProjectInvitePage";
+import TeamSettings from "./features/dashboard/teams/TeamSettings";
+import ProjectSettings from "./features/dashboard/project/ProjectSettings";
 
 function App() {
   return (
@@ -29,7 +31,8 @@ function App() {
         <Route path="project-invite" element={<ProjectInvitePage />} />
         <Route path="team-invite" element={<TeamInvitePage />} />
         <Route path="signup" element={<SignupPage />} />
-
+        <Route path="teamSetting" element={<TeamSettings/>}/>
+        <Route path="projectSetting" element={<ProjectSettings/>}/>
         <Route
           path="dashboard"
           element={
