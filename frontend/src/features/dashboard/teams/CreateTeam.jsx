@@ -1,17 +1,23 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { close } from "../../../app/slices/modal";
 import { useState } from "react";
 import { createTeam } from "../../../app/slices/team/teamThunk";
 import { toast } from "react-hot-toast";
+import CircularLoader from "../../../components/CircularLoader";
+import { useNavigate } from "react-router";
 export default function CreateTeam() {
   const dispatch = useDispatch();
   const [teamName, setTeamName] = useState("");
   const [teamDesc, setTeamDesc] = useState("");
-
+  const navigate = useNavigate();
+  const { isCreating } = useSelector((state) => state.team);
   const handleTeamCreation = async () => {
     await dispatch(createTeam({ name: teamName, description: teamDesc }))
       .unwrap()
-      .then(() => toast.success("Team created successfully"))
+      .then((team) => {
+        toast.success("Team created successfully");
+        navigate(`/dashboard/teams/${team._id}`);
+      })
       .catch((err) => {
         console.log(err);
         toast.error(err.message);
@@ -102,9 +108,9 @@ export default function CreateTeam() {
           </button>
           <button
             onClick={handleTeamCreation}
-            className=" cursor-pointer w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-5 rounded-lg transition-all"
+            className=" cursor-pointer w-xl sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-5 rounded-lg transition-all"
           >
-            Create Team
+            {isCreating ? <CircularLoader /> : "Create Team"}
           </button>
         </div>
       </div>

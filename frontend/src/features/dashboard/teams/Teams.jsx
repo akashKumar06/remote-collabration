@@ -29,23 +29,22 @@ const getRandomColor = () => {
   return colors[randomIndex];
 };
 
-const ProjectCard = ({ project }) => {
-  console.log(project);
+const TeamCard = ({ team }) => {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate(`/dashboard/projects/${project._id}/overview`)}
+      onClick={() => navigate(`/dashboard/teams/${team._id}`)}
       className="bg-[#2A2B2D] rounded-xl p-6 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-transparent hover:border-cyan-500/50 flex flex-col justify-between"
     >
       <div>
         <div className="flex items-start justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-100">{project.name}</h3>
+          <h3 className="text-xl font-bold text-gray-100">{team.name}</h3>
           <img
             src={`https://placehold.co/100x100/${getRandomColor()}/fff?text=${getAvatar(
-              project.owner.firstname,
-              project.owner.lastname
+              team.owner.firstname,
+              team.owner.lastname
             )}`}
-            alt={`${project.owner.firstname}'s avatar`}
+            alt={`${team.owner.firstname}'s avatar`}
             className="w-12 h-12 rounded-full border-2 border-gray-600 object-cover"
             onError={(e) => {
               e.target.onerror = null;
@@ -56,7 +55,7 @@ const ProjectCard = ({ project }) => {
         <p
           className="text-gray-400 mb-5 text-sm leading-relaxed min-h-[60px]"
           dangerouslySetInnerHTML={{
-            __html: marked(project.description.slice(0, 100) + "..."),
+            __html: marked(team.description.slice(0, 100) + "..."),
           }}
         ></p>
       </div>
@@ -64,10 +63,10 @@ const ProjectCard = ({ project }) => {
         <div className="flex items-center text-gray-400 text-sm mb-4">
           <UserIcon />
           <span className="ml-2">
-            {project.owner.firstname} {project.owner.lastname}
+            {team.owner.firstname} {team.owner.lastname}
           </span>
         </div>
-        <div className="flex flex-wrap gap-2">
+        {/* <div className="flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -76,35 +75,33 @@ const ProjectCard = ({ project }) => {
               {tag}
             </span>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
 };
 
-function Projects() {
-  const { projects } = useSelector((state) => state.project);
+function Teams() {
+  const { teams } = useSelector((state) => state.team);
   return (
     <div className="container mx-auto px-8 py-12">
       <header className="text-center mb-12 animate-fade-in">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-          Projects
+          Teams
         </h1>
-        <p className="text-gray-400 mt-2 text-lg">
-          Explore your innovative work you're passionate about.
-        </p>
+        <p className="text-gray-400 mt-2 text-lg">Explore your teams.</p>
       </header>
-      {projects.length === 0 ? (
+      {teams.length === 0 ? (
         <h1 className=" text-center text-2xl md:text-3xl font-extrabold text-white">
-          No Projects 🙃.
+          No teams 🙃.
         </h1>
       ) : (
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in"
           style={{ animationDelay: "0.2s" }}
         >
-          {projects.map((project) => (
-            <ProjectCard key={project._id} project={project} />
+          {teams.map((team) => (
+            <TeamCard key={team._id} team={team} />
           ))}
         </div>
       )}
@@ -112,4 +109,4 @@ function Projects() {
   );
 }
 
-export default Projects;
+export default Teams;

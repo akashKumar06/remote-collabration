@@ -40,6 +40,7 @@ export async function getAllTeams(req, res) {
     const teams = await Team.find({
       $or: [{ owner: userId }, { "members.user": userId }],
     })
+      .populate("owner", "firstname lastname email")
       .populate("members.user", "firstname lastname email")
       .populate("project")
       .sort({ createdAt: -1 });

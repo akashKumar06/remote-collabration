@@ -20,6 +20,7 @@ import AuthWrapper from "./components/AuthWrapper";
 import TeamInvitePage from "./features/dashboard/teams/TeamInvitePage";
 import ProjectInvitePage from "./features/dashboard/project/ProjectInvitePage";
 import Projects from "./features/dashboard/project/Projects";
+import Teams from "./features/dashboard/teams/Teams";
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           </Route>
 
           {/* teams route */}
+          <Route path="teams" element={<Teams />} />
           <Route path="teams/:teamId" element={<TeamsPage />} />
         </Route>
       </Routes>

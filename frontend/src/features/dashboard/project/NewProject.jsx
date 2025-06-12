@@ -3,6 +3,7 @@ import { close } from "../../../app/slices/modal";
 import { useState } from "react";
 import { createProject } from "../../../app/slices/project/projectThunk";
 import Select from "react-select";
+import CircularLoader from "../../../components/CircularLoader";
 
 const projectTags = [
   // --- Technical Tags ---
@@ -58,6 +59,7 @@ export default function NewProject() {
 
   const { loading } = useSelector((state) => state.project);
   const { teams } = useSelector((state) => state.team);
+
   const options = [];
 
   teams.forEach((team) => {
@@ -103,7 +105,7 @@ export default function NewProject() {
           onChange={(selectedOptions) =>
             setTags(selectedOptions.map((opt) => opt.value))
           }
-          placeholder="Select Team"
+          placeholder="Select Project tags"
           styles={{
             control: (base) => ({
               ...base,
@@ -162,9 +164,9 @@ export default function NewProject() {
         <label className="block text-gray-300 mb-2">Select a team</label>
         <Select
           options={options}
-          onChange={(selectedOptions) =>
-            setTeamSelected(selectedOptions.map((opt) => opt.value))
-          }
+          onChange={(selectedOption) => {
+            setTeamSelected(selectedOption.value);
+          }}
           placeholder="Select Team"
           styles={{
             control: (base) => ({
@@ -229,17 +231,17 @@ export default function NewProject() {
 
       <div className="flex gap-4 justify-end">
         <button
-          className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md"
+          className="cursor-pointer bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md"
           onClick={() => dispatch(close())}
         >
           Cancel
         </button>
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+          className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
           onClick={handleNewProject}
           disabled={loading}
         >
-          {loading ? "Creating.." : "Continue"}
+          {loading ? <CircularLoader /> : "Create"}
         </button>
       </div>
     </div>

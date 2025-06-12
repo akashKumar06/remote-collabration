@@ -202,7 +202,10 @@ export async function updateProjectDescription(req, res) {
       throw new ApiError(400, "Valid description is required.");
 
     // check if project exists;
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId)
+      .populate("owner", "firstname lastname avatar")
+      .populate("members.user", "firstname lastname avatar")
+      .populate("teams");
     if (!project) throw new ApiError(404, "Project not found.");
 
     // check if user is member of the project or not

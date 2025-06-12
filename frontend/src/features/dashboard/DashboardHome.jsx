@@ -105,7 +105,10 @@ export default function DashboardHome() {
           >
             <FolderKanban size={18} /> Browse Projects
           </Link>
-          <Link className=" flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium">
+          <Link
+            to="/dashboard/teams"
+            className=" flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
+          >
             <Settings2 size={18} /> Browse Team
           </Link>
         </div>

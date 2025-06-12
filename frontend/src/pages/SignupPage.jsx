@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../app/slices/auth/authThunks";
 import { clearErrors } from "../app/slices/auth/authSlice";
 import GoogleAuth from "../components/Google";
+import CircularLoader from "../components/CircularLoader";
 
 const SignupPage = () => {
   const dispatch = useDispatch();
@@ -134,8 +135,12 @@ const SignupPage = () => {
               </div>
             </div>
 
-            <Button type="submit" className="w-full py-2 mt-2">
-              {status === "loading" ? "Registering" : "Sign Up"}
+            <Button type="submit" className="w-full py-2 mt-2 cursor-pointer">
+              {status === "loading" ? (
+                <CircularLoader color="#fff" />
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </form>
           <div className="text-center mt-4">

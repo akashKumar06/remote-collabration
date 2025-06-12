@@ -46,7 +46,6 @@ export async function registerUser(req, res) {
       lastname,
       email,
       password,
-      phoneNo,
       avatar,
     });
 

@@ -8,7 +8,7 @@ export const createTeam = createAsyncThunk(
       const res = await api.post("/teams", team);
       return res.data.data;
     } catch (error) {
-      console.lof(error);
+      console.log(error);
       return thunkApi.rejectWithValue(error.response.data.message);
     }
   }

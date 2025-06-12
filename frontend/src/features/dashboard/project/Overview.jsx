@@ -59,6 +59,7 @@ export default function Overview() {
     }
 
     setIsInviting(false);
+    setNewMember("");
   };
   const handleSaveDescription = async () => {
     setIsSaving(true);
@@ -233,11 +234,11 @@ export default function Overview() {
                     placeholder="Enter email"
                     value={newMember}
                     onChange={(e) => setNewMember(e.target.value)}
-                    className="flex-1 p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
+                    className="cursor-pointer flex-1 p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
                   />
                   <button
                     onClick={handleAddMember}
-                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
+                    className="cursor-pointer px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
                     disabled={isInviting}
                   >
                     {isInviting ? "Inviting..." : "Invite"}
