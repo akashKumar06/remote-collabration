@@ -66,14 +66,14 @@ const ProjectCard = ({ project }) => {
           </span>
         </div>
         <div className="flex flex-wrap gap-2">
-          {/* {project.tags.map((tag) => (
+          {project.tags.map((tag) => (
             <span
               key={tag}
               className="bg-gray-600/50 text-cyan-300 text-xs font-semibold px-3 py-1 rounded-full"
             >
               {tag}
             </span>
-          ))} */}
+          ))}
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ import TaskPage from "./features/dashboard/tasks/TaskPage";
 import AuthWrapper from "./components/AuthWrapper";
 import TeamInvitePage from "./features/dashboard/teams/TeamInvitePage";
 import ProjectInvitePage from "./features/dashboard/project/ProjectInvitePage";
-import Projects from "./features/dashboard/project/Projects"; 
+import Projects from "./features/dashboard/project/Projects";
 
 function App() {
   return (
@@ -30,8 +30,8 @@ function App() {
         <Route path="project-invite" element={<ProjectInvitePage />} />
         <Route path="team-invite" element={<TeamInvitePage />} />
         <Route path="signup" element={<SignupPage />} />
-        {/* <Route path="teamSetting" element={<TeamSettings/>}/>
-        <Route path="projectSetting" element={<ProjectSettings/>}/> */}
+        {/* <Route path="teamSetting" element={<TeamSettings/>}/> */}
+        {/* <Route path="projectSetting" element={<ProjectSettings/>}/> */}
         <Route
           path="dashboard"
           element={
