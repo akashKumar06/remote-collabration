@@ -1,128 +1,138 @@
-import { useState } from 'react';
-import { Switch } from '@headlessui/react';
-import { Trash2, Save, Moon } from 'lucide-react';
+import { useState } from "react";
+import { Trash2, Save } from "lucide-react";
 
 const ProjectSettings = () => {
-  const [projectName, setProjectName] = useState('Remote Collab');
-  const [projectDescription, setProjectDescription] = useState('Team collaboration made easy.');
+  const [projectName, setProjectName] = useState("Remote Collab");
   const [members, setMembers] = useState([
-    { id: 1, name: 'Vaishnavi', role: 'Admin' },
-    { id: 2, name: 'Akash', role: 'Editor' },
+    { id: 1, name: "Vaishnavi", role: "Admin" },
+    { id: 2, name: "Akash", role: "Editor" },
+    { id: 3, name: "Priya", role: "Viewer" },
   ]);
-  const [darkMode, setDarkMode] = useState(false);
 
   const handleRoleChange = (id, newRole) => {
-    setMembers(prev =>
-      prev.map(m => (m.id === id ? { ...m, role: newRole } : m))
+    setMembers((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, role: newRole } : m))
     );
   };
 
   const removeMember = (id) => {
-    setMembers(prev => prev.filter(m => m.id !== id));
+    if (
+      window.confirm(
+        `Are you sure you want to remove ${
+          members.find((m) => m.id === id)?.name
+        }?`
+      )
+    ) {
+      setMembers((prev) => prev.filter((m) => m.id !== id));
+      console.log(`Member ${id} removed`);
+    }
   };
 
   const deleteProject = () => {
-    if (window.confirm('Are you sure you want to delete the project?')) {
-      console.log('Project deleted');
+    if (
+      window.confirm(
+        "ARE YOU ABSOLUTELY SURE YOU WANT TO DELETE THIS PROJECT? This action cannot be undone and all data will be lost."
+      )
+    ) {
+      console.log("Project deleted");
+      // In a real application, you'd typically redirect or perform an API call here
     }
   };
 
   const updateProject = () => {
-    console.log('Project updated:', { projectName, projectDescription });
-  };
-
-  const toggleTheme = () => {
-    setDarkMode(prev => !prev);
-    document.documentElement.classList.toggle('dark');
+    console.log("Project updated:", { projectName, members });
+    // In a real application, you'd typically perform an API call here to save changes
+    alert("Project settings saved successfully!");
   };
 
   return (
-    <div className="min-h-screen p-4 bg-gradient-to-br from-gray-100 to-blue-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-white transition overflow-hidden">
-      <div className="max-w-6xl mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 space-y-6 text-sm border dark:border-gray-700 mt-2">
+    <div className="min-h-screen p-6 bg-[#121212] text-gray-100 transition duration-300 ease-in-out">
+      <div className="max-w-4xl mx-auto bg-[#1a1a1a] rounded-3xl shadow-xl p-8 space-y-8 border border-[#2a2a2a]">
         {/* Header */}
-        <div className="flex justify-between items-center border-b pb-3">
-          <h2 className="text-2xl font-bold tracking-tight">Project Settings</h2>
-          <div className="flex items-center space-x-2">
-            <Moon className="w-4 h-4" />
-            <Switch
-              checked={darkMode}
-              onChange={toggleTheme}
-              className={`${
-                darkMode ? 'bg-blue-600' : 'bg-gray-300'
-              } relative inline-flex h-5 w-10 items-center rounded-full`}
-            >
-              <span
-                className={`${
-                  darkMode ? 'translate-x-5' : 'translate-x-1'
-                } inline-block h-4 w-4 transform bg-white rounded-full transition`}
-              />
-            </Switch>
-          </div>
+        <div className="flex justify-between items-center border-b border-[#2a2a2a] pb-4">
+          <h2 className="text-3xl font-extrabold text-white tracking-tight">
+            Project Settings
+          </h2>
         </div>
 
-        <section className="space-y-2">
-          <h3 className="text-lg font-semibold">Project Details</h3>
+        {/* Project Details */}
+        <section className="space-y-5">
+          <h3 className="text-xl font-bold text-gray-50">Project Name</h3>
           <input
             type="text"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
-            className="w-180 p-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700"
-            placeholder="Project Name"
+            className="w-full p-3 rounded-lg border border-[#3a3a3a] bg-[#222222] text-white focus:outline-none focus:ring-3 focus:ring-blue-500 text-base shadow-sm"
+            placeholder="Enter Project Name"
           />
-          <br></br>
-          <textarea
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
-            className="w-180 p-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-700"
-            placeholder="Project Description"
-          />
-          <br></br>
           <button
             onClick={updateProject}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md font-medium"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <Save className="w-4 h-4" /> Save Changes
+            <Save className="w-5 h-5" /> Save Changes
           </button>
         </section>
 
-        <section className="space-y-3">
-          <h3 className="text-lg font-semibold">Team Members</h3>
-          <ul className="space-y-3">
+        <hr className="border-[#2a2a2a]" />
+
+        {/* Team Members */}
+        <section className="space-y-6">
+          <h3 className="text-xl font-bold text-gray-50">Team Members</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {members.map((member) => (
-              <li
+              <div
                 key={member.id}
-                className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 max-w-180"
+                className="flex flex-col items-start p-5 bg-[#222222] rounded-xl shadow-sm border border-[#3a3a3a] hover:shadow-md transition duration-200 ease-in-out"
               >
-                <div className="space-y-1">
-                  <p className="font-medium text-sm">{member.name}</p>
+                <p className="font-semibold text-lg text-white mb-2">
+                  {member.name}
+                </p>
+                <div className="flex items-center w-full justify-between">
                   <select
                     value={member.role}
-                    onChange={(e) => handleRoleChange(member.id, e.target.value)}
-                    className="p-1.5 rounded-md border text-sm dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      handleRoleChange(member.id, e.target.value)
+                    }
+                    className="p-2.5 rounded-md border border-[#3a3a3a] text-sm bg-[#2a2a2a] text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
-                    <option>Admin</option>
-                    <option>Editor</option>
-                    <option>Viewer</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Editor">Editor</option>
+                    <option value="Viewer">Viewer</option>
                   </select>
+                  <button
+                    onClick={() => removeMember(member.id)}
+                    className="text-red-500 hover:text-red-700 font-medium text-sm ml-4 py-1 px-2 rounded-md transition duration-200"
+                    title="Remove Member"
+                  >
+                    Remove
+                  </button>
                 </div>
-                <button
-                  onClick={() => removeMember(member.id)}
-                  className="text-red-500 hover:underline text-xs"
-                >
-                  Remove
-                </button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
 
-        <section className="border-t pt-4">
-          <h3 className="text-lg font-semibold text-white">Delete Project</h3>
+        <hr className="border-[#2a2a2a]" />
+
+        {/* Danger Zone: Delete Project */}
+        <section className="pt-4 bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-inner">
+          {" "}
+          {/* Changed from red */}
+          <h3 className="text-xl font-bold text-gray-300 mb-3">
+            Danger Zone
+          </h3>{" "}
+          {/* Changed from red */}
+          <p className="text-gray-400 mb-4 text-sm">
+            {" "}
+            {/* Changed from red */}
+            Permanently delete this project and all its associated data. This
+            action cannot be undone.
+          </p>
           <button
             onClick={deleteProject}
-            className="mt-2 inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md font-medium"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
-            <Trash2 className="w-4 h-4" /> Delete Project
+            <Trash2 className="w-5 h-5" /> Delete Project
           </button>
         </section>
       </div>

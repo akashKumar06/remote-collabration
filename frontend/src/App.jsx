@@ -21,6 +21,8 @@ import TeamInvitePage from "./features/dashboard/teams/TeamInvitePage";
 import ProjectInvitePage from "./features/dashboard/project/ProjectInvitePage";
 import Projects from "./features/dashboard/project/Projects";
 import Teams from "./features/dashboard/teams/Teams";
+import ProjectSettings from "./features/dashboard/project/ProjectSettings";
+import TeamSettings from "./features/dashboard/teams/TeamSettings";
 
 function App() {
   return (
@@ -58,11 +60,13 @@ function App() {
             <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="project-dashboard" element={<ProjectDasboard />} />
+            <Route path="settings" element={<ProjectSettings />} />
           </Route>
 
           {/* teams route */}
           <Route path="teams" element={<Teams />} />
           <Route path="teams/:teamId" element={<TeamsPage />} />
+          <Route path="teams/settings" element={<TeamSettings />} />
         </Route>
       </Routes>
 

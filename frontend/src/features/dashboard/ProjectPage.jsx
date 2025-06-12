@@ -7,6 +7,7 @@ import {
   MessagesSquare,
   Menu,
   X,
+  Settings,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import SplashScreen from "../../components/SplashScreen";
@@ -50,11 +51,28 @@ function ProjectPageLayout() {
             isNavOpen ? "block" : "hidden"
           } md:flex flex-col md:flex-row gap-4 mt-4 text-sm font-medium`}
         >
-          <NavItem to="overview" icon={<ClipboardList size={16} />} label="Overview" />
+          <NavItem
+            to="overview"
+            icon={<ClipboardList size={16} />}
+            label="Overview"
+          />
           <NavItem to="list" icon={<List size={16} />} label="Tasks" />
-          <NavItem to="project-dashboard" icon={<LayoutDashboard size={16} />} label="Analytics" />
-          <NavItem to="messages" icon={<MessagesSquare size={16} />} label="Messages" />
+          <NavItem
+            to="project-dashboard"
+            icon={<LayoutDashboard size={16} />}
+            label="Analytics"
+          />
+          <NavItem
+            to="messages"
+            icon={<MessagesSquare size={16} />}
+            label="Messages"
+          />
           <NavItem to="files" icon={<FilesIcon size={16} />} label="Files" />
+          <NavItem
+            to="settings"
+            icon={<Settings size={16} />}
+            label="Settings"
+          />
         </nav>
       </header>
 
@@ -74,7 +92,9 @@ const NavItem = ({ to, icon, label }) => (
         : "text-gray-400 hover:text-white pb-1 transition-all"
     }
   >
-    <div className="flex items-center gap-2">{icon} {label}</div>
+    <div className="flex items-center gap-2">
+      {icon} {label}
+    </div>
   </NavLink>
 );
 
