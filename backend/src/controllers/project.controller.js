@@ -165,7 +165,7 @@ export async function getProjectById(req, res) {
     const project = await Project.findById(projectId)
       .populate("owner", "firstname lastname avatar")
       .populate("members.user", "firstname lastname avatar")
-      .populate("team", "name")
+      .populate("teams")
       .populate("activityLogs.createdBy", "firstname lastname avatar");
 
     if (!project) {
@@ -350,7 +350,10 @@ export async function acceptProjectInvite(req, res) {
 export async function uploadFiles(req, res) {
   try {
     const { projectId } = req.params;
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId)
+      .populate("owner", "firstname lastname avatar")
+      .populate("members.user", "firstname lastname avatar")
+      .populate("teams");
     if (!project) throw new ApiError(404, "Project is not found.");
 
     const files = req.files;

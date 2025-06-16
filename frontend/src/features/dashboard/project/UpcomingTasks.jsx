@@ -1,10 +1,15 @@
+import { format } from "date-fns";
 import { motion } from "framer-motion";
 
 const getTasks = (tasks) => {
-  return tasks.filter((tasks) => tasks.deadline > Date.now());
+  const now = new Date();
+
+  return tasks.filter((task) => new Date(task.deadline) > now);
 };
+
 function UpcomingTasks({ userTasks }) {
   const upcomingTasks = getTasks(userTasks);
+  console.log(upcomingTasks);
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -21,7 +26,8 @@ function UpcomingTasks({ userTasks }) {
             <div key={task._id} className="flex flex-col gap-1">
               <span className="font-medium">{task.title}</span>
               <span className="text-sm text-gray-400">
-                {task.project.name} • Due {task.deadline}
+                {task.project.name} • Due{" "}
+                {format(new Date(task.deadline), "MMM d, yyyy")}
               </span>
             </div>
           ))

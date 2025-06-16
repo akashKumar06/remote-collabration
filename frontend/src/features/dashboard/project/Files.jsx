@@ -27,9 +27,8 @@ function formatBytes(bytes) {
 const FilesPage = () => {
   const { currentProject } = useSelector((state) => state.project);
   const { user } = useSelector((state) => state.auth);
-
   const { owner } = currentProject;
-  console.log(currentProject);
+  console.log(user.id, owner._id);
   return (
     <div className="min-h-screen bg-space-900 text-white px-6 py-10">
       <div className="max-w-screen-xl mx-auto">

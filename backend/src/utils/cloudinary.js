@@ -26,7 +26,6 @@ async function uploadOnCloudinary(file) {
     console.log(file);
     if (!file) throw new Error("file not found.");
     const resourceType = getResourceType(file.mimetype);
-    console.log(file);
     const originalName = path.parse(file.originalname).name;
     const ext = path.extname(file.originalname).slice(1);
 
@@ -40,7 +39,6 @@ async function uploadOnCloudinary(file) {
     });
 
     fs.unlinkSync(file.path);
-    console.log(uploadResult);
     return {
       url: uploadResult.url,
       secure_url: uploadResult.secure_url,

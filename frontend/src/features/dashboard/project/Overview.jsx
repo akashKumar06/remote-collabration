@@ -1,14 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  User,
-  Link,
-  ClipboardList,
-  CalendarCheck,
-  ChevronDown,
-  ChevronRight,
-  Pencil,
-} from "lucide-react";
+import { User, Link, ChevronDown, ChevronRight, Pencil } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { close, open, setActiveComponent } from "../../../app/slices/modal";
 import { delay } from "../../../utils/delay";
@@ -18,11 +10,15 @@ import { marked } from "marked";
 import { updateProjectDescription } from "../../../app/slices/project/projectThunk";
 import MileStones from "./MileStones";
 import Timeline from "../../../components/Timeline";
+import ProjectQuickStats from "./ProjectQuickStats";
+import SplashScreen from "../../../components/SplashScreen";
+import { useParams } from "react-router";
+import { getCurrentProject } from "../../../app/slices/project/projectSlice";
 
 export default function Overview() {
   const dispatch = useDispatch();
   const { state } = useSelector((state) => state.modal);
-
+  const { projectId } = useParams();
   const [newMember, setNewMember] = useState("");
 
   const [isInviting, setIsInviting] = useState(false);
@@ -106,6 +102,11 @@ export default function Overview() {
     setIsGenerated(true);
   };
 
+  useEffect(() => {
+    dispatch(getCurrentProject(projectId));
+  }, [dispatch, projectId]);
+
+  if (!currentProject) return <SplashScreen />;
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
       {/* Layout */}
@@ -282,28 +283,7 @@ export default function Overview() {
         <div className="w-full lg:w-[300px] space-y-6">
           <Timeline activities={currentProject.activityLogs} />
           <MileStones />
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35 }}
-            className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700"
-          >
-            <h2 className="text-lg font-semibold mb-2">Project Stats</h2>
-            <div className="flex items-center gap-3">
-              <ClipboardList size={18} className="text-blue-400" />
-              <span>12 / 20 tasks completed</span>
-            </div>
-            <div className="w-full mt-3 bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-green-500 h-2 rounded-full"
-                style={{ width: "60%" }}
-              ></div>
-            </div>
-            <div className="flex items-center gap-3 mt-4">
-              <CalendarCheck size={18} className="text-orange-400" />
-              <span>Deadline: April 20</span>
-            </div>
-          </motion.div>
+          <ProjectQuickStats />
         </div>
       </div>
     </div>
