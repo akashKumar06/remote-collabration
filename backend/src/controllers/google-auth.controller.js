@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 export async function googleAuth(req, res) {
   const { token } = req.body;
   try {

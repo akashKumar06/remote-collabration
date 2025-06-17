@@ -41,6 +41,33 @@ export default function Overview() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  
+    function stripMarkdown(md) {
+    return md
+      .replace(/!\[.*\]\(.*\)/g, "")
+      .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+      .replace(/[#_*~`>[\]()\-!\[\]]/g, "")
+      .replace(/<[^>]+>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  // Get description text and word count
+  const descriptionText = currentProject?.description || "";
+  const plainText = stripMarkdown(descriptionText);
+  const words = plainText.split(" ").filter(Boolean);
+  const wordLimit = 100;
+  const isLong = words.length > wordLimit;
+
+  // Get truncated markdown for preview
+  function getTruncatedMarkdown(md, limit) {
+    const plain = stripMarkdown(md);
+    const wordArr = plain.split(" ").filter(Boolean);
+    if (wordArr.length <= limit) return md;
+    const truncated = wordArr.slice(0, limit).join(" ") + "...";
+    return truncated;
+  }
 
   const handleAddMember = async () => {
     setIsInviting(true);
@@ -105,7 +132,6 @@ export default function Overview() {
     setIsGenerating(false);
     setIsGenerated(true);
   };
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
       {/* Layout */}
@@ -192,9 +218,21 @@ export default function Overview() {
             <div
               className="prose text-gray-300 prose-invert max-w-none"
               dangerouslySetInnerHTML={{
-                __html: marked(currentProject.description),
+                __html: marked(
+                  expanded || !isLong
+                    ? descriptionText
+                    : getTruncatedMarkdown(descriptionText, wordLimit)
+                ),
               }}
             />
+            {isLong && (
+              <button
+                className="mt-2 px-3 py-1 rounded bg-blue-700 text-white text-sm hover:bg-blue-800"
+                onClick={() => setExpanded((prev) => !prev)}
+              >
+                {expanded ? "Read Less" : "Read More"}
+              </button>
+            )}
           </motion.div>
           {/* Members */}
           <motion.div
