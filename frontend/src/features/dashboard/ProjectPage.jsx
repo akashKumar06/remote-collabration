@@ -56,7 +56,7 @@ function ProjectPageLayout() {
             icon={<ClipboardList size={16} />}
             label="Overview"
           />
-          <NavItem to="list" icon={<List size={16} />} label="Tasks" />
+          <NavItem to="tasks" icon={<List size={16} />} label="Tasks" />
           <NavItem
             to="project-dashboard"
             icon={<LayoutDashboard size={16} />}

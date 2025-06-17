@@ -21,7 +21,7 @@ const FileUpload = () => {
 
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
-    dispatch(uploadFiles({ projectId: currentProject._id, formData }))
+    await dispatch(uploadFiles({ projectId: currentProject._id, formData }))
       .unwrap()
       .then((data) => {
         console.log(data);
@@ -30,10 +30,11 @@ const FileUpload = () => {
       .catch((err) => {
         console.log(err);
       });
+    setFiles([]);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 border rounded-xl bg-gray-800 text-white">
+    <div className="max-w-sm mx-auto mt-10 p-4 border rounded-xl bg-gray-800 text-white">
       <label
         htmlFor="file-upload"
         className="block w-full text-center py-3 cursor-pointer border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500"

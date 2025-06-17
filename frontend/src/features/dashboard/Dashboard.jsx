@@ -32,8 +32,8 @@ const Dashboard = () => {
   }, [dispatch, user]);
 
   if (isLoadingProjects || isLoadingTeams) return <SplashScreen />;
-  if (projectError) return <h1>Project Error : Error loading dashboard</h1>;
-  if (teamError) return <h1>Project Error : Error loading dashboard</h1>;
+  // if (projectError) return <h1>Project Error : Error loading dashboard</h1>;
+  // if (teamError) return <h1>Project Error : Error loading dashboard</h1>;
 
   return (
     <div className="h-screen font-roboto flex flex-col">

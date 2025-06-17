@@ -20,7 +20,6 @@ export async function createTask(req, res) {
       throw new ApiError(400, "Missing required fields.");
     }
 
-    // Optional: Validate references exist
     const [assignedUser, foundProject] = await Promise.all([
       User.findById(assignee),
       Project.findById(project),
@@ -54,9 +53,10 @@ export async function createTask(req, res) {
       .populate("team", "name")
       .sort({ createdAt: -1 });
 
-    res.status(201).json({ success: true, task: newTask });
+    return res.status(201).json({ success: true, task: newTask });
   } catch (error) {
     console.error("Error creating task:", error);
+
     if (error instanceof ApiError) {
       return res
         .status(error.statusCode)

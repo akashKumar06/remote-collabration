@@ -12,7 +12,7 @@ import { UserIcon } from "lucide-react";
 export default function ProjectInvitePage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -22,14 +22,11 @@ export default function ProjectInvitePage() {
     console.log(decoded);
   }
 
-  const dispatch = useDispatch();
-
   const handleAccept = async () => {
     try {
       const res = await api.post("/projects/accept-invite", { token });
       const projectId = res.data.projectId;
-      dispatch(getProjectById(projectId));
-      navigate(`/dashboard/projects`);
+      navigate(`/dashboard/projects/${projectId}/overview`);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data?.message);
@@ -41,10 +38,11 @@ export default function ProjectInvitePage() {
       toast.error("Invalid or missing invitation token.");
       return;
     }
-    if (!user) {
-      navigate("/login");
-    }
-  }, [token, navigate, user]);
+    // if (!user) {
+    //   console.log("sending out because you are not logged in");
+    //   navigate("/login");
+    // }
+  }, [token]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -63,7 +61,7 @@ export default function ProjectInvitePage() {
 
           <button
             onClick={handleAccept}
-            className="mt-4 w-full bg-gray-800 hover:bg-gray-900 text-white py-2 px-6 rounded-lg transition"
+            className="cursor-pointer mt-4 w-full bg-gray-800 hover:bg-gray-900 text-white py-2 px-6 rounded-lg transition"
           >
             Accept Invite
           </button>

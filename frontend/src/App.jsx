@@ -10,7 +10,7 @@ import ProjectPage from "./features/dashboard/ProjectPage";
 import Overview from "./features/dashboard/project/Overview";
 import Files from "./features/dashboard/project/Files";
 import Messages from "./features/dashboard/project/Messages";
-import List from "./features/dashboard/project/List";
+import List from "./features/dashboard/project/ProjectTasks";
 import Inbox from "./features/dashboard/Inbox";
 import ProjectDasboard from "./features/dashboard/project/ProjectDasboard";
 import TeamsPage from "./features/dashboard/teams/TeamsPage";
@@ -23,6 +23,7 @@ import Projects from "./features/dashboard/project/Projects";
 import Teams from "./features/dashboard/teams/Teams";
 import ProjectSettings from "./features/dashboard/project/ProjectSettings";
 import TeamSettings from "./features/dashboard/teams/TeamSettings";
+import ProjectTasks from "./features/dashboard/project/ProjectTasks";
 
 function App() {
   return (
@@ -56,7 +57,7 @@ function App() {
           <Route path="projects/:projectId" element={<ProjectPage />}>
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<Overview />} />
-            <Route path="list" element={<List />} />
+            <Route path="tasks" element={<ProjectTasks />} />
             <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="project-dashboard" element={<ProjectDasboard />} />

@@ -18,7 +18,7 @@ const priorityColors = {
   High: "bg-red-500 text-white",
 };
 
-function List() {
+function ProjectTasks() {
   const [isAdddingTask, setIsAddingTask] = useState(false);
   const [assigness, setAssignees] = useState([]);
   const [title, setTitle] = useState("");
@@ -40,7 +40,7 @@ function List() {
     }
   });
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     const task = {
       title,
       deadline,
@@ -49,7 +49,7 @@ function List() {
       assignee: assigness[0],
       project: currentProject._id,
     };
-    dispatch(createTask(task))
+    await dispatch(createTask(task))
       .unwrap()
       .then(() => {
         toast.success("task created");
@@ -57,12 +57,18 @@ function List() {
       .catch((err) => {
         toast.error(err);
       });
+    setAssignees([]);
+    setTitle("");
+    setDeadline("");
+    setPriority("");
+    setStatus("");
+    setIsAddingTask(false);
   };
 
   return (
     <div className="px-4 py-2 text-sm text-white/90">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-white">Task List</h2>
+        <h2 className="text-2xl font-semibold text-white">Task ProjectTasks</h2>
         <nav className="flex gap-3 text-sm">
           <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
             Filter
@@ -280,4 +286,4 @@ function List() {
   );
 }
 
-export default List;
+export default ProjectTasks;

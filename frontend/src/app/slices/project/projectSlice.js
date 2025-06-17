@@ -36,6 +36,7 @@ const projectSlice = createSlice({
       .addCase(getUserProjects.fulfilled, (state, action) => {
         state.loading = false;
         state.projects = action.payload;
+        state.error = null;
       })
       .addCase(getUserProjects.rejected, (state, action) => {
         state.loading = false;
@@ -48,6 +49,7 @@ const projectSlice = createSlice({
       })
       .addCase(createProject.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.projects.push(action.payload);
       })
       .addCase(createProject.rejected, (state, action) => {
@@ -61,6 +63,7 @@ const projectSlice = createSlice({
       })
       .addCase(getProjectById.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.currentProject = action.payload;
       })
       .addCase(getProjectById.rejected, (state, action) => {
@@ -74,6 +77,7 @@ const projectSlice = createSlice({
         );
         state.projects[index] = action.payload;
         state.currentProject = action.payload;
+        state.error = null;
       })
       .addCase(updateProjectDescription.rejected, (state, action) => {
         state.error = action.payload;
@@ -90,6 +94,7 @@ const projectSlice = createSlice({
         state.projects.splice(projectIndex, 1, newProject);
         state.currentProject = newProject;
         state.isUploadingFiles = false;
+        state.error = null;
       })
       .addCase(uploadFiles.rejected, (state, action) => {
         state.error = action.payload;
