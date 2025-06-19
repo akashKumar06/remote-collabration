@@ -77,56 +77,59 @@ export default function DashboardHome() {
     dispatch(setActiveComponent(activeComponent));
   };
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-10">
-      {/* Welcome Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="flex justify-between"
-      >
-        <div>
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome back, {`${user.firstname}`}👋
-          </h1>
-          <p className="text-gray-400">Explore your projects and teams.</p>
-        </div>
-
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => handleNewProject("new_project_form")}
-            className="cursor-pointer flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
-          >
-            <Plus size={12} /> New Project
-          </button>
-          <Link
-            to="/dashboard/projects"
-            className=" flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
-          >
-            <FolderKanban size={12} /> Browse Projects
-          </Link>
-          <Link
-            to="/dashboard/teams"
-            className=" flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
-          >
-            <Settings2 size={12} /> Browse Team
-          </Link>
-        </div>
-      </motion.div>
-
-      {/* Project Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <ProjectOverviewCards projects={projectsData} teams={teamsData} />
-      </div>
-
-      {/* Tasks and Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Upcoming Tasks */}
-        <UpcomingTasks userTasks={userTasks} />
-
-        {/* Team Activity */}
-        <Timeline activities={activites} />
-      </div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 text-white space-y-10">
+  {/* Welcome Section */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3 }}
+    className="flex flex-col gap-4 sm:flex-row sm:justify-between"
+  >
+    <div>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">
+        Welcome back, {`${user.firstname}`} 👋
+      </h1>
+      <p className="text-gray-400 text-sm sm:text-base">
+        Explore your projects and teams.
+      </p>
     </div>
+
+    {/* Responsive Buttons */}
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 w-full sm:w-auto">
+      <button
+        onClick={() => handleNewProject("new_project_form")}
+        className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium text-sm sm:text-base"
+      >
+        <Plus size={14} /> New Project
+      </button>
+      <Link
+        to="/dashboard/projects"
+        className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium text-sm sm:text-base"
+      >
+        <FolderKanban size={14} /> Browse Projects
+      </Link>
+      <Link
+        to="/dashboard/teams"
+        className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium text-sm sm:text-base"
+      >
+        <Settings2 size={14} /> Browse Team
+      </Link>
+    </div>
+  </motion.div>
+
+  {/* Project Overview Cards */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+    <ProjectOverviewCards projects={projectsData} teams={teamsData} />
+  </div>
+
+  {/* Tasks and Activity */}
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+    <UpcomingTasks userTasks={userTasks} />
+    <Timeline activities={activites} />
+  </div>
+</div>
+
   );
 }
+
+
