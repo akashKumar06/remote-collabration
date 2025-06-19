@@ -11,10 +11,12 @@ import {
   getUserProjects,
   inviteUserToProject,
   updateProjectDescription,
+  updateProjectName,
   uploadFiles,
 } from "../controllers/project.controller.js";
 import { generateProjectDetails } from "../controllers/ai.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { isProjectOwner } from "../middlewares/project-owner.middlware.js";
 
 const router = express.Router();
 
@@ -43,6 +45,10 @@ router
   .route("/:projectId")
   .get(checkAuth, getProjectById)
   .delete(checkAuth, deleteProject);
+
+router
+  .route("/:projectId/update-name")
+  .patch(checkAuth, isProjectOwner, updateProjectName);
 
 router
   .route("/:projectId/uploads")

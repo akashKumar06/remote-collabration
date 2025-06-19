@@ -211,7 +211,7 @@ export async function updateProjectDescription(req, res) {
     // check if user is member of the project or not
     const userId = req.user._id;
     const isMember = project.members.some(
-      (member) => member.user.toString() === userId.toString()
+      (member) => member.user._id.toString() === userId.toString()
     );
     if (!isMember)
       throw new ApiError(403, "You are not a member of this project");
@@ -221,7 +221,9 @@ export async function updateProjectDescription(req, res) {
       message: `Project description was updated by ${req.user.firstname}.`,
       createdBy: req.user._id,
     });
+
     await project.save();
+
     return res.status(200).json({
       success: true,
       message: "Project description updated successfully.",
@@ -381,91 +383,27 @@ export async function uploadFiles(req, res) {
   }
 }
 
-// -------- NOT TESTED ----------------------
-
-export async function deleteProject(req, res) {
+export async function updateProjectName(req, res) {
   try {
+    const { name } = req.body;
     const { projectId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(projectId))
-      throw new ApiError(400, "Invalid project ID.");
+    if (!name) throw new ApiError(400, "Name is required.");
 
-    const project = await Project.findById(projectId);
+    let project = await Project.findById(projectId);
     if (!project) throw new ApiError(404, "Project not found.");
 
-    if (req.user._id.toString() !== project.owner.toString())
-      throw new ApiError(
-        403,
-        "Only the project owner can delete this project."
-      );
-
-    await Project.findByIdAndDelete(projectId);
-    return res
-      .status(200)
-      .json({ success: true, message: "Project deleted successfully." });
-  } catch (error) {
-    console.log("Error in deleteProject", error);
-    if (error instanceof ApiError) {
-      return res
-        .status(error.statusCode)
-        .json({ success: false, message: error.message });
-    }
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
-  }
-}
-export async function addMemberToProject(req, res) {
-  try {
-    const { projectId } = req.params;
-    const { userId, role } = req.body;
-
-    // validate inputs
-    if (
-      !mongoose.Types.ObjectId.isValid(userId) ||
-      !mongoose.Types.ObjectId.isValid(projectId)
-    )
-      throw new ApiError(400, "Invalid Project ID or User ID");
-
-    // find the project
-    const project = await Project.findById(projectId);
-    if (!project) throw new ApiError(404, "Project not found.");
-
-    // check if user exits
-    const user = await User.findById(userId);
-    if (!user) throw new ApiError(404, "User to add not found.");
-
-    // Check if the user is the owner
-    if (project.owner.toString() !== req.user._id.toString()) {
-      throw new ApiError(
-        403,
-        "Only the project owner is authorized to perform this action"
-      );
-    }
-
-    // check if user is already a member
-    const alreadyMember = project.members.some(
-      (member) => member.user.toString() === userId
-    );
-    if (alreadyMember)
-      throw new ApiError(400, "User is already member of project");
-
-    project.members.push({ user: userId, role });
-
-    // log the activity
-    project.activityLogs.push({
-      message: `${user.firstname} ${
-        user.lastname
-      } was added to the project as ${role || "member"}.`,
-      createdBy: req.user._id,
-    });
+    project.name = name;
 
     await project.save();
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Member added successfully." });
+    project = await Project.findById(projectId)
+      .populate("owner")
+      .populate("teams")
+      .populate("members.user");
+
+    return res.status(200).json({ success: true, project });
   } catch (error) {
-    console.log("Error in addMemberToProject", error);
+    console.log("Error in updateProjectName", error);
     if (error instanceof ApiError) {
       return res
         .status(error.statusCode)
@@ -476,7 +414,7 @@ export async function addMemberToProject(req, res) {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
-// removeMemberFromProject  DELETE  /api/projects/:projectId/members/:memberId
+
 export async function removeMemberFromProject(req, res) {
   try {
     // check does the requester is project owner
@@ -544,6 +482,106 @@ export async function removeMemberFromProject(req, res) {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+
+export async function changeProjectRole(req, res) {}
+export async function deleteProject(req, res) {
+  try {
+    const { projectId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(projectId))
+      throw new ApiError(400, "Invalid project ID.");
+
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found.");
+
+    if (req.user._id.toString() !== project.owner.toString())
+      throw new ApiError(
+        403,
+        "Only the project owner can delete this project."
+      );
+
+    await Project.findByIdAndDelete(projectId);
+    return res
+      .status(200)
+      .json({ success: true, message: "Project deleted successfully." });
+  } catch (error) {
+    console.log("Error in deleteProject", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+export async function leaveProject(req, res) {}
+
+// -------- NOT TESTED ----------------------
+
+export async function addMemberToProject(req, res) {
+  try {
+    const { projectId } = req.params;
+    const { userId, role } = req.body;
+
+    // validate inputs
+    if (
+      !mongoose.Types.ObjectId.isValid(userId) ||
+      !mongoose.Types.ObjectId.isValid(projectId)
+    )
+      throw new ApiError(400, "Invalid Project ID or User ID");
+
+    // find the project
+    const project = await Project.findById(projectId);
+    if (!project) throw new ApiError(404, "Project not found.");
+
+    // check if user exits
+    const user = await User.findById(userId);
+    if (!user) throw new ApiError(404, "User to add not found.");
+
+    // Check if the user is the owner
+    if (project.owner.toString() !== req.user._id.toString()) {
+      throw new ApiError(
+        403,
+        "Only the project owner is authorized to perform this action"
+      );
+    }
+
+    // check if user is already a member
+    const alreadyMember = project.members.some(
+      (member) => member.user.toString() === userId
+    );
+    if (alreadyMember)
+      throw new ApiError(400, "User is already member of project");
+
+    project.members.push({ user: userId, role });
+
+    // log the activity
+    project.activityLogs.push({
+      message: `${user.firstname} ${
+        user.lastname
+      } was added to the project as ${role || "member"}.`,
+      createdBy: req.user._id,
+    });
+
+    await project.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Member added successfully." });
+  } catch (error) {
+    console.log("Error in addMemberToProject", error);
+    if (error instanceof ApiError) {
+      return res
+        .status(error.statusCode)
+        .json({ success: false, message: error.message });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+}
+// removeMemberFromProject  DELETE  /api/projects/:projectId/members/:memberId
 
 // assignTeamToProject      POST    /api/projects/:projectId/assign-team
 export async function assignTeamToProject(req, res) {
@@ -647,6 +685,5 @@ export async function getProjectTimeline(req, res) {
 // getProjectAnalytics      GET     /api/projects/:projectId/analytics
 export async function getProjectAnalytics(req, res) {}
 // leaveProject             POST    /api/projects/:projectId/leave
-export async function leaveProject(req, res) {}
+
 // changeProjectRole        PATCH   /api/projects/:projectId/members/:memberId/role
-export async function changeProjectRole(req, res) {}

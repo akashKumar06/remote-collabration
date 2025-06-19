@@ -79,3 +79,18 @@ export const uploadFiles = createAsyncThunk(
     }
   }
 );
+
+export const updateProjectName = createAsyncThunk(
+  "project/updateProjectName",
+  async (payload, thunkApi) => {
+    const { name, projectId } = payload;
+    try {
+      const res = await api.patch(`/projects/${projectId}/update-name`, {
+        name,
+      });
+      return res.data.project;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error.response.data.message);
+    }
+  }
+);

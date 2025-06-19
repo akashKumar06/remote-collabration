@@ -5,38 +5,15 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// let isRefreshing = false;
-
-// api.interceptors.response.use(
-//   (res) => res,
-//   async (err) => {
-//     const originalRequest = err.config;
-
-//     // If 401 and this is not already a retry
-//     if (err.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-
-//       if (!isRefreshing) {
-//         isRefreshing = true;
-//         try {
-//           // Attempt to refresh the token
-//           await api.post("/users/refresh-token");
-//           isRefreshing = false;
-
-//           // Retry the original request after refresh
-//           return api(originalRequest);
-//         } catch (refreshErr) {
-//           isRefreshing = false;
-
-//           // Refresh failed: logout user
-//           window.location.href = "/login"; // or redirect properly
-//           return Promise.reject(refreshErr);
-//         }
-//       }
-//     }
-
-//     return Promise.reject(err);
-//   }
-// );
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const url = error.config.url;
+    if (error.response?.status === 401 && !url.includes("login")) {
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;

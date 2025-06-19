@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { Trash2, Save } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import CircularLoader from "../../../components/CircularLoader";
+import { toast } from "react-hot-toast";
+import { updateProjectName } from "../../../app/slices/project/projectThunk";
 
 const ProjectSettings = () => {
-  const [projectName, setProjectName] = useState("Remote Collab");
-  const [members, setMembers] = useState([
-    { id: 1, name: "Vaishnavi", role: "Admin" },
-    { id: 2, name: "Akash", role: "Editor" },
-    { id: 3, name: "Priya", role: "Viewer" },
-  ]);
+  const { currentProject, isUpdatingName } = useSelector(
+    (state) => state.project
+  );
+  const { members, _id: id, name } = currentProject;
+
+  const [projectName, setProjectName] = useState(() => name);
+  const dispatch = useDispatch();
 
   const handleRoleChange = (id, newRole) => {
     setMembers((prev) =>
@@ -39,10 +44,12 @@ const ProjectSettings = () => {
     }
   };
 
-  const updateProject = () => {
-    console.log("Project updated:", { projectName, members });
-    // In a real application, you'd typically perform an API call here to save changes
-    alert("Project settings saved successfully!");
+  const hanldeNameUpdate = async () => {
+    const payload = { projectId: id, name: projectName };
+    await dispatch(updateProjectName(payload))
+      .unwrap()
+      .then(() => toast.success("Name changed successfully."))
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -66,10 +73,17 @@ const ProjectSettings = () => {
             placeholder="Enter Project Name"
           />
           <button
-            onClick={updateProject}
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={hanldeNameUpdate}
+            className="min-w-36 cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition"
           >
-            <Save className="w-5 h-5" /> Save Changes
+            {isUpdatingName ? (
+              <CircularLoader />
+            ) : (
+              <>
+                {" "}
+                <Save className="w-5 h-5" /> Save Changes
+              </>
+            )}
           </button>
         </section>
 
@@ -81,17 +95,17 @@ const ProjectSettings = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {members.map((member) => (
               <div
-                key={member.id}
+                key={member._id}
                 className="flex flex-col items-start p-5 bg-[#222222] rounded-xl shadow-sm border border-[#3a3a3a] hover:shadow-md transition duration-200 ease-in-out"
               >
                 <p className="font-semibold text-lg text-white mb-2">
-                  {member.name}
+                  {`${member.user.firstname} ${member.user.lastname}`}
                 </p>
                 <div className="flex items-center w-full justify-between">
                   <select
                     value={member.role}
                     onChange={(e) =>
-                      handleRoleChange(member.id, e.target.value)
+                      handleRoleChange(member.user._id, e.target.value)
                     }
                     className="p-2.5 rounded-md border border-[#3a3a3a] text-sm bg-[#2a2a2a] text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
@@ -100,7 +114,7 @@ const ProjectSettings = () => {
                     <option value="Viewer">Viewer</option>
                   </select>
                   <button
-                    onClick={() => removeMember(member.id)}
+                    onClick={() => removeMember(member.user._id)}
                     className="text-red-500 hover:text-red-700 font-medium text-sm ml-4 py-1 px-2 rounded-md transition duration-200"
                     title="Remove Member"
                   >

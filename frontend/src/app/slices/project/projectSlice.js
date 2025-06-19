@@ -4,6 +4,7 @@ import {
   getProjectById,
   getUserProjects,
   updateProjectDescription,
+  updateProjectName,
   uploadFiles,
 } from "./projectThunk";
 
@@ -14,6 +15,7 @@ const initialState = {
   error: null,
   tasks: [],
   isUploadingFiles: false,
+  isUpdatingName: false,
 };
 
 const projectSlice = createSlice({
@@ -99,6 +101,18 @@ const projectSlice = createSlice({
       .addCase(uploadFiles.rejected, (state, action) => {
         state.error = action.payload;
         state.isUploadingFiles = false;
+      })
+      .addCase(updateProjectName.pending, (state) => {
+        state.isUpdatingName = true;
+      })
+      .addCase(updateProjectName.fulfilled, (state, action) => {
+        state.isUpdatingName = false;
+        const newProject = action.payload;
+        const index = state.projects.findIndex(
+          (project) => project._id === newProject._id
+        );
+        state.projects.splice(index, 1, newProject);
+        state.currentProject = newProject;
       });
   },
 });

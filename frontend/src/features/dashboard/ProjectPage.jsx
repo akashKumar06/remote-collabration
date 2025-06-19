@@ -18,6 +18,7 @@ import { getProjectTasks } from "../../app/slices/task/taskThunk";
 function ProjectPageLayout() {
   const { projectId } = useParams();
   const { currentProject } = useSelector((state) => state.project);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -68,11 +69,13 @@ function ProjectPageLayout() {
             label="Messages"
           />
           <NavItem to="files" icon={<FilesIcon size={16} />} label="Files" />
-          <NavItem
-            to="settings"
-            icon={<Settings size={16} />}
-            label="Settings"
-          />
+          {user.id === currentProject.owner._id && (
+            <NavItem
+              to="settings"
+              icon={<Settings size={16} />}
+              label="Settings"
+            />
+          )}
         </nav>
       </header>
 

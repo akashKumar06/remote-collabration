@@ -5,6 +5,8 @@ export const isProjectOwner = async (req, res, next) => {
   try {
     const { project: projectId } = req.body;
 
+    if (!projectId) projectId = req.params; // if not found in request body
+
     if (!projectId) {
       throw new ApiError(400, "Project ID is required.");
     }

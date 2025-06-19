@@ -9,7 +9,6 @@ const getTasks = (tasks) => {
 
 function UpcomingTasks({ userTasks }) {
   const upcomingTasks = getTasks(userTasks);
-  console.log(upcomingTasks);
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}

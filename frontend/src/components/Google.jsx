@@ -1,14 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "./Button";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../app/slices/auth/authSlice";
+import CircularLoader from "./CircularLoader";
 const GoogleAuth = () => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const handleGoogleResponse = async (response) => {
       const token = response.credential;
-
+      setIsLoading(true);
       const res = await fetch(
         `${import.meta.env.VITE_SERVER_URI}/api/v1/users/google`,
         {
@@ -21,8 +23,8 @@ const GoogleAuth = () => {
 
       const data = await res.json();
       const user = data.user;
-      console.log("Logged in:", user);
       dispatch(setCurrentUser(user));
+      setIsLoading(false);
     };
     /* global google */
     google.accounts.id.initialize({
@@ -41,8 +43,14 @@ const GoogleAuth = () => {
       variant="outline"
       className="w-full cursor-pointer flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 border border-gray-300"
     >
-      <FcGoogle className="mr-2 text-lg" />
-      Continue with Google
+      {isLoading ? (
+        <CircularLoader />
+      ) : (
+        <>
+          <FcGoogle className="mr-2 text-lg" />
+          <span>Continue with Google</span>
+        </>
+      )}
     </Button>
   );
 };
