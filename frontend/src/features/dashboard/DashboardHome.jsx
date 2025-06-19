@@ -97,19 +97,19 @@ export default function DashboardHome() {
             onClick={() => handleNewProject("new_project_form")}
             className="cursor-pointer flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
           >
-            <Plus size={18} /> New Project
+            <Plus size={12} /> New Project
           </button>
           <Link
             to="/dashboard/projects"
             className=" flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
           >
-            <FolderKanban size={18} /> Browse Projects
+            <FolderKanban size={12} /> Browse Projects
           </Link>
           <Link
             to="/dashboard/teams"
             className=" flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium"
           >
-            <Settings2 size={18} /> Browse Team
+            <Settings2 size={12} /> Browse Team
           </Link>
         </div>
       </motion.div>

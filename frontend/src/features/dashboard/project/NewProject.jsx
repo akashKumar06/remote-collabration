@@ -78,10 +78,10 @@ export default function NewProject() {
   };
 
   return (
-    <div className="min-h-screen w-xl bg-[#1E1E1E] text-white p-8">
-      <h1 className="text-3xl font-semibold mb-8">New project</h1>
+    <div className="min-h-screen bg-[#1E1E1E] text-white p-4 sm:p-8 w-full max-w-screen-xl mx-auto">
+      <h1 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 text-center sm:text-left">New project</h1>
 
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <label className="block text-gray-300 mb-2" htmlFor="projectName">
           Project name
         </label>
@@ -95,7 +95,7 @@ export default function NewProject() {
         />
       </div>
 
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <label className="block text-gray-300 mb-2" htmlFor="projectName">
           Project tags
         </label>
@@ -160,7 +160,7 @@ export default function NewProject() {
       </div>
 
       {/* <div className="flex gap-6 mb-6"> */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <label className="block text-gray-300 mb-2">Select a team</label>
         <Select
           options={options}
@@ -231,13 +231,13 @@ export default function NewProject() {
 
       <div className="flex gap-4 justify-end">
         <button
-          className="cursor-pointer bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md"
+          className="w-full sm:w-auto cursor-pointer bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm sm:text-base"
           onClick={() => dispatch(close())}
         >
           Cancel
         </button>
         <button
-          className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+          className="w-full sm:w-auto cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm sm:text-base"
           onClick={handleNewProject}
           disabled={loading}
         >
