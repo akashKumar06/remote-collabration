@@ -94,6 +94,7 @@ export default function Sidebar({ projects, teams, onClose }) {
             label="Teams"
             onClick={() => handleNew("new_team_form")}
           />
+
           <div className="flex flex-col gap-2 mt-2">
             {teams.length === 0 ? (
               <h1>No teams. Start by creating one.</h1>

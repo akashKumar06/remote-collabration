@@ -3,9 +3,9 @@ import { ApiError } from "../utils/ApiError.js";
 
 export const isProjectOwner = async (req, res, next) => {
   try {
-    const { project: projectId } = req.body;
+    let { project: projectId } = req.body;
 
-    if (!projectId) projectId = req.params; // if not found in request body
+    if (!projectId) projectId = req.params.projectId; // if not found in request body
 
     if (!projectId) {
       throw new ApiError(400, "Project ID is required.");
@@ -27,6 +27,7 @@ export const isProjectOwner = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log("Error in isProjectOwner", error);
     if (error instanceof ApiError) {
       return res
         .status(error.statusCode)

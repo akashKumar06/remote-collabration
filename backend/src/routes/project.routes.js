@@ -44,7 +44,7 @@ router.route("/ai/generate-project").post(checkAuth, generateProjectDetails);
 router
   .route("/:projectId")
   .get(checkAuth, getProjectById)
-  .delete(checkAuth, deleteProject);
+  .delete(checkAuth, isProjectOwner, deleteProject);
 
 router
   .route("/:projectId/update-name")

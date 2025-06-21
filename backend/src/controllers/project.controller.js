@@ -5,7 +5,11 @@ import { ApiError } from "../utils/ApiError.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/sendEmail.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
+import Task from "../models/task.model.js";
 
 async function sendMailToTeam(inviter, receiver, project) {
   try {
@@ -58,6 +62,17 @@ async function sendMailToTeam(inviter, receiver, project) {
   }
 }
 
+async function deleteFiles(files) {
+  try {
+    const deletePromises = files.map(
+      async (file) => await deleteFromCloudinary(file)
+    );
+    await Promise.allSettled(deletePromises);
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function createProject(req, res) {
   try {
     const { name, teamId, tags } = req.body;
@@ -101,11 +116,15 @@ export async function createProject(req, res) {
           )
         );
       await Promise.all(emailPromises);
-      console.log("all mails are sent.");
 
       project.teams.push(teamId);
       await project.save();
     }
+
+    project = await Project.findById(project._id)
+      .populate("owner")
+      .populate("teams")
+      .populate("members.user");
 
     return res.status(201).json({
       success: true,
@@ -353,8 +372,8 @@ export async function uploadFiles(req, res) {
   try {
     const { projectId } = req.params;
     const project = await Project.findById(projectId)
-      .populate("owner", "firstname lastname avatar")
-      .populate("members.user", "firstname lastname avatar")
+      .populate("owner")
+      .populate("members.user")
       .populate("teams");
     if (!project) throw new ApiError(404, "Project is not found.");
 
@@ -483,27 +502,35 @@ export async function removeMemberFromProject(req, res) {
   }
 }
 
-export async function changeProjectRole(req, res) {}
 export async function deleteProject(req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const { projectId } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(projectId))
       throw new ApiError(400, "Invalid project ID.");
 
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId).session(session);
     if (!project) throw new ApiError(404, "Project not found.");
 
-    if (req.user._id.toString() !== project.owner.toString())
-      throw new ApiError(
-        403,
-        "Only the project owner can delete this project."
-      );
+    await Task.deleteMany({ project: projectId }).session(session);
+    await Team.deleteMany({ project: projectId }).session(session);
+    await Project.findByIdAndDelete(projectId).session(session);
 
-    await Project.findByIdAndDelete(projectId);
-    return res
-      .status(200)
-      .json({ success: true, message: "Project deleted successfully." });
+    await session.commitTransaction();
+    session.endSession();
+
+    await deleteFiles(project.files);
+
+    return res.status(200).json({
+      success: true,
+      projectId,
+      message: "Project deleted successfully.",
+    });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     console.log("Error in deleteProject", error);
     if (error instanceof ApiError) {
       return res
@@ -515,6 +542,8 @@ export async function deleteProject(req, res) {
       .json({ success: false, message: "Internal Server Error" });
   }
 }
+
+export async function changeProjectRole(req, res) {}
 export async function leaveProject(req, res) {}
 
 // -------- NOT TESTED ----------------------

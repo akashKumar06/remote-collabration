@@ -19,7 +19,6 @@ function Modal() {
       }`}
     >
       {components.get(activeComponent)}
-      {/* {children} */}
     </div>
   );
 }

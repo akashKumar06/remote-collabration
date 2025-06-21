@@ -95,6 +95,15 @@ const projectSchema = new mongoose.Schema(
         uploadedAt: {
           type: Date,
         },
+        public_id: {
+          type: String,
+          default: "",
+        },
+        asset_id: {
+          type: Date,
+          default: String,
+          default: "",
+        },
       },
     ],
   },

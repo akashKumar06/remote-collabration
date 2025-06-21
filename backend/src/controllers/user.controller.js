@@ -251,13 +251,11 @@ export async function logoutUser(req, res) {
       .status(200)
       .clearCookie("access_token", {
         httpOnly: true,
-        maxAge: 15 * 60 * 1000,
         secure: true, // ✅ required in production (HTTPS)
         sameSite: "None",
       })
       .clearCookie("refresh_token", {
         httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: true, // ✅ required in production (HTTPS)
         sameSite: "None",
       })

@@ -39,6 +39,7 @@ async function uploadOnCloudinary(file) {
     });
 
     fs.unlinkSync(file.path);
+    console.log(uploadResult);
     return {
       url: uploadResult.url,
       secure_url: uploadResult.secure_url,
@@ -47,6 +48,8 @@ async function uploadOnCloudinary(file) {
       name: extractOrginalName(uploadResult.original_filename),
       size: uploadResult.bytes,
       uploadedAt: uploadResult.created_at,
+      public_id: uploadResult.public_id,
+      asset_id: uploadResult.asset_id,
     };
   } catch (error) {
     if (file) fs.unlinkSync(file.path);
@@ -54,4 +57,14 @@ async function uploadOnCloudinary(file) {
   }
 }
 
-export { uploadOnCloudinary };
+async function deleteFromCloudinary(file) {
+  try {
+    await cloudinary.uploader.destroy(file.public_id, {
+      resource_type: file.resource_type,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { uploadOnCloudinary, deleteFromCloudinary };

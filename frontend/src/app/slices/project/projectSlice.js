@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createProject,
+  deleteProject,
   getProjectById,
   getUserProjects,
   updateProjectDescription,
@@ -113,6 +114,12 @@ const projectSlice = createSlice({
         );
         state.projects.splice(index, 1, newProject);
         state.currentProject = newProject;
+      })
+      .addCase(deleteProject.fulfilled, (state, action) => {
+        state.projects = state.projects.filter(
+          (project) => project._id !== action.payload
+        );
+        state.currentProject = null;
       });
   },
 });

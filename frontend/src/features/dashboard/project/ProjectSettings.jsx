@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { Trash2, Save } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import CircularLoader from "../../../components/CircularLoader";
 import { toast } from "react-hot-toast";
-import { updateProjectName } from "../../../app/slices/project/projectThunk";
+import {
+  deleteProject,
+  updateProjectName,
+} from "../../../app/slices/project/projectThunk";
 
 const ProjectSettings = () => {
   const { currentProject, isUpdatingName } = useSelector(
     (state) => state.project
   );
   const { members, _id: id, name } = currentProject;
-
+  const navigate = useNavigate();
   const [projectName, setProjectName] = useState(() => name);
   const dispatch = useDispatch();
-
+  const [isDeletingProject, setIsDeletingProject] = useState(false);
   const handleRoleChange = (id, newRole) => {
     setMembers((prev) =>
       prev.map((m) => (m.id === id ? { ...m, role: newRole } : m))
@@ -33,14 +37,21 @@ const ProjectSettings = () => {
     }
   };
 
-  const deleteProject = () => {
+  const handleDeleteProject = async () => {
     if (
       window.confirm(
         "ARE YOU ABSOLUTELY SURE YOU WANT TO DELETE THIS PROJECT? This action cannot be undone and all data will be lost."
       )
     ) {
-      console.log("Project deleted");
-      // In a real application, you'd typically redirect or perform an API call here
+      setIsDeletingProject(true);
+      await dispatch(deleteProject({ projectId: id }))
+        .unwrap()
+        .then(() => {
+          toast.success("Projected deleted successfully");
+          navigate("/dashboard/projects");
+        })
+        .catch((err) => toast.error(err?.message || err));
+      setIsDeletingProject(false);
     }
   };
 
@@ -93,16 +104,19 @@ const ProjectSettings = () => {
         <section className="space-y-6">
           <h3 className="text-xl font-bold text-gray-50">Team Members</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {members.map((member) => (
-              <div
-                key={member._id}
-                className="flex flex-col items-start p-5 bg-[#222222] rounded-xl shadow-sm border border-[#3a3a3a] hover:shadow-md transition duration-200 ease-in-out"
-              >
-                <p className="font-semibold text-lg text-white mb-2">
-                  {`${member.user.firstname} ${member.user.lastname}`}
-                </p>
-                <div className="flex items-center w-full justify-between">
-                  <select
+            {members.map(
+              (member) =>
+                member.role !== "owner" && (
+                  <div
+                    key={member._id}
+                    className="flex flex-col items-start p-5 bg-[#222222] rounded-xl shadow-sm border border-[#3a3a3a] hover:shadow-md transition duration-200 ease-in-out"
+                  >
+                    <p className="font-semibold text-lg text-white mb-2">
+                      {`${member.user.firstname} ${member.user.lastname}`}
+                    </p>
+                    <div className="flex items-center w-full justify-between">
+                      <p>{member.role}</p>
+                      {/* <select
                     value={member.role}
                     onChange={(e) =>
                       handleRoleChange(member.user._id, e.target.value)
@@ -112,24 +126,25 @@ const ProjectSettings = () => {
                     <option value="Admin">Admin</option>
                     <option value="Editor">Editor</option>
                     <option value="Viewer">Viewer</option>
-                  </select>
-                  <button
-                    onClick={() => removeMember(member.user._id)}
-                    className="text-red-500 hover:text-red-700 font-medium text-sm ml-4 py-1 px-2 rounded-md transition duration-200"
-                    title="Remove Member"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
+                  </select> */}
+                      <button
+                        onClick={() => removeMember(member.user._id)}
+                        className="text-red-500 hover:text-red-700 font-medium text-sm ml-4 py-1 px-2 rounded-md transition duration-200"
+                        title="Remove Member"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )
+            )}
           </div>
         </section>
 
         <hr className="border-[#2a2a2a]" />
 
         {/* Danger Zone: Delete Project */}
-        <section className="pt-4 bg-gray-900 p-6 rounded-xl border border-gray-700 shadow-inner">
+        <section className="pt-4 bg-gray-900 p-6 rounded-xl border border-red-900 shadow-inner">
           {" "}
           {/* Changed from red */}
           <h3 className="text-xl font-bold text-gray-300 mb-3">
@@ -143,10 +158,15 @@ const ProjectSettings = () => {
             action cannot be undone.
           </p>
           <button
-            onClick={deleteProject}
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            onClick={handleDeleteProject}
+            className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition transform focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
-            <Trash2 className="w-5 h-5" /> Delete Project
+            {isDeletingProject && <CircularLoader />}
+            {!isDeletingProject && (
+              <>
+                <Trash2 className="w-5 h-5" /> Delete Project
+              </>
+            )}
           </button>
         </section>
       </div>

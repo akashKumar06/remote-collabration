@@ -10,7 +10,6 @@ import ProjectPage from "./features/dashboard/ProjectPage";
 import Overview from "./features/dashboard/project/Overview";
 import Files from "./features/dashboard/project/Files";
 import Messages from "./features/dashboard/project/Messages";
-import List from "./features/dashboard/project/ProjectTasks";
 import Inbox from "./features/dashboard/Inbox";
 import ProjectDasboard from "./features/dashboard/project/ProjectDasboard";
 import TeamsPage from "./features/dashboard/teams/TeamsPage";
@@ -34,8 +33,7 @@ function App() {
         <Route path="project-invite" element={<ProjectInvitePage />} />
         <Route path="team-invite" element={<TeamInvitePage />} />
         <Route path="signup" element={<SignupPage />} />
-        {/* <Route path="teamSetting" element={<TeamSettings/>}/> */}
-        {/* <Route path="projectSetting" element={<ProjectSettings/>}/> */}
+
         <Route
           path="dashboard"
           element={

@@ -94,3 +94,19 @@ export const updateProjectName = createAsyncThunk(
     }
   }
 );
+
+export const deleteProject = createAsyncThunk(
+  "project/deleteProject",
+  async (payload, thunkApi) => {
+    try {
+      const { projectId } = payload;
+      const res = await api.delete(`/projects/${projectId}`);
+      return res.data.projectId;
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(
+        error.response.data.message || "something went while deleting project"
+      );
+    }
+  }
+);
