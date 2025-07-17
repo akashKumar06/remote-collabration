@@ -75,11 +75,11 @@ async function deleteFiles(files) {
 
 export async function createProject(req, res) {
   try {
-    const { name, teamId, tags } = req.body;
+    const { name, teamIds, tags } = req.body;
     if (!name) throw new ApiError(400, "Project name is required.");
     const user = req.user;
 
-    const project = await Project.create({
+    let project = await Project.create({
       name,
       owner: req.user._id,
       members: [
@@ -97,14 +97,16 @@ export async function createProject(req, res) {
       ],
     });
 
-    if (teamId) {
-      const team = await Team.findById(teamId).populate(
+    if (teamIds.length > 0) {
+      const teams = await Team.find({ _id: { $in: teamIds } }).populate(
         "members.user",
         "email firstname"
       );
-      if (!team) throw new ApiError(404, "Team not found.");
 
-      const { members } = team;
+      let members = [];
+      teams.forEach((team) => {
+        members.push(...team.members);
+      });
 
       const emailPromises = members
         .filter((member) => member.user._id.toString() !== user._id.toString())
@@ -117,7 +119,7 @@ export async function createProject(req, res) {
         );
       await Promise.all(emailPromises);
 
-      project.teams.push(teamId);
+      project.teams.push(...teamIds);
       await project.save();
     }
 
@@ -146,18 +148,40 @@ export async function createProject(req, res) {
 
 export async function getUserProjects(req, res) {
   try {
-    // get the user own projects as well as being part of other projects
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+
     const userId = req.user._id;
-    const projects = await Project.find({
+
+    // calculate the number of documents to skip
+    const skip = (page - 1) * limit;
+
+    let filterQuery = {
       $or: [{ owner: userId }, { "members.user": userId }],
-    })
+    };
+
+    const totalItems = await Project.countDocuments(filterQuery);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    // Handle sorting (optional)
+    const sortField = req.query.sort_by || "createdAt"; // Default sort by creation date
+    const sortOrder = req.query.order === "desc" ? -1 : 1; // 1 for asc, -1 for desc
+
+    const sortOptions = { [sortField]: sortOrder };
+
+    const projects = await Project.find(filterQuery)
       .populate("owner", "firstname lastname avatar")
       .populate("members.user", "firstname lastname avatar")
-      .populate("teams");
+      .populate("teams")
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
 
     return res.status(200).json({
       success: true,
       projects,
+      totalPages,
+      totalItems,
     });
   } catch (error) {
     console.log("Error in getUserProjects", error);

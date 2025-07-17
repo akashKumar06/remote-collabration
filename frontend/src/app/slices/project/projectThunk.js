@@ -3,10 +3,15 @@ import api from "../../../api/axios";
 
 export const getUserProjects = createAsyncThunk(
   "project/getUserProjects",
-  async (_, thunkApi) => {
+  async (data, thunkApi) => {
+    console.log(data);
+    let query = "";
+    if (data.query) {
+      query = `page=${data.query.page}`;
+    }
     try {
-      const res = await api.get("/projects");
-      return res.data.projects;
+      const res = await api.get(`/projects?${query}`);
+      return res.data;
     } catch (error) {
       console.log(error);
       return thunkApi.rejectWithValue(

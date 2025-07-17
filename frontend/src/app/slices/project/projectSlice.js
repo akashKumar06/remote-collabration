@@ -12,17 +12,23 @@ import {
 const initialState = {
   projects: [],
   currentProject: null,
-  loading: false,
   error: null,
   tasks: [],
   isUploadingFiles: false,
   isUpdatingName: false,
+  isFetchingProjects: false,
+  currentPage: 1,
+  totalPages: 1,
+  totalItems: 0,
 };
 
 const projectSlice = createSlice({
   name: "project",
   initialState,
   reducers: {
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
     getCurrentProject: (state, action) => {
       const project = state.projects.find(
         (project) => project._id === action.payload
@@ -34,15 +40,17 @@ const projectSlice = createSlice({
     builder
       // GET_USER_PROJECTS
       .addCase(getUserProjects.pending, (state) => {
-        state.loading = true;
+        state.isFetchingProjects = true;
       })
       .addCase(getUserProjects.fulfilled, (state, action) => {
-        state.loading = false;
-        state.projects = action.payload;
+        state.isFetchingProjects = false;
+        state.projects = action.payload.projects;
+        state.totalItems = action.payload.totalItems;
+        state.totalPages = action.payload.totalPages;
         state.error = null;
       })
       .addCase(getUserProjects.rejected, (state, action) => {
-        state.loading = false;
+        state.isFetchingProjects = false;
         state.error = action.payload;
       })
 
@@ -124,5 +132,5 @@ const projectSlice = createSlice({
   },
 });
 
-export const { getCurrentProject } = projectSlice.actions;
+export const { getCurrentProject, setCurrentPage } = projectSlice.actions;
 export default projectSlice.reducer;

@@ -55,7 +55,7 @@ export default function NewProject() {
   const dispatch = useDispatch();
   const [projectName, setProjectName] = useState("");
   const [tags, setTags] = useState([]);
-  const [teamSelected, setTeamSelected] = useState([]);
+  const [teamsSelected, setTeamsSelected] = useState([]);
 
   const { loading } = useSelector((state) => state.project);
   const { teams } = useSelector((state) => state.team);
@@ -69,7 +69,7 @@ export default function NewProject() {
   const handleNewProject = () => {
     const projectData = {
       name: projectName,
-      teamId: teamSelected,
+      teamIds: teamsSelected,
       tags,
     };
 
@@ -79,7 +79,9 @@ export default function NewProject() {
 
   return (
     <div className="min-h-screen bg-[#1E1E1E] text-white p-4 sm:p-8 w-full max-w-screen-xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 text-center sm:text-left">New project</h1>
+      <h1 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 text-center sm:text-left">
+        New project
+      </h1>
 
       <div className="mb-4 sm:mb-6">
         <label className="block text-gray-300 mb-2" htmlFor="projectName">
@@ -163,9 +165,10 @@ export default function NewProject() {
       <div className="mb-4 sm:mb-6">
         <label className="block text-gray-300 mb-2">Select a team</label>
         <Select
+          isMulti={true}
           options={options}
-          onChange={(selectedOption) => {
-            setTeamSelected(selectedOption.value);
+          onChange={(selectedOptions) => {
+            setTeamsSelected(selectedOptions.map((opt) => opt.value));
           }}
           placeholder="Select Team"
           styles={{

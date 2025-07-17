@@ -26,7 +26,7 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getUserProjects());
+    dispatch(getUserProjects({ query: { page: 1 } }));
     dispatch(getAllTeams());
     dispatch(getUserTasks({ userId: user.id }));
   }, [dispatch, user]);
