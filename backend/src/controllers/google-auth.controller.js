@@ -6,19 +6,24 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export async function googleAuth(req, res) {
   const { token } = req.body;
+
   try {
+
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
+    console.log(payload)
     const { name, email, picture } = payload;
 
     const firstname = name.split(" ")?.[0];
     const lastname = name.split(" ")?.[1];
     const avatar = firstname[0].toUpperCase() + lastname[0].toUpperCase();
+    
     let user = await User.findOne({ email });
+
     if (!user) {
       user = await User.create({
         firstname,

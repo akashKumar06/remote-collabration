@@ -37,6 +37,7 @@ router.route("/accept-invite").post(checkAuth, acceptProjectInvite);
 router
   .route("/:projectId/uploads")
   .post(checkAuth, upload.array("files"), uploadFiles);
+  
 router.route("/ai/generate-project").post(checkAuth, generateProjectDetails);
 
 // getProjectById   GET   /api/projects/:projectId

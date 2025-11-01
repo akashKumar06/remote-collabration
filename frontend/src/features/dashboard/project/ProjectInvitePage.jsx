@@ -11,6 +11,7 @@ import { UserIcon } from "lucide-react";
 
 export default function ProjectInvitePage() {
   const [searchParams] = useSearchParams();
+
   const token = searchParams.get("token");
   // const { user } = useSelector((state) => state.auth);
 
@@ -25,8 +26,11 @@ export default function ProjectInvitePage() {
   const handleAccept = async () => {
     try {
       const res = await api.post("/projects/accept-invite", { token });
+
       const projectId = res.data.projectId;
+      
       navigate(`/dashboard/projects/${projectId}/overview`);
+
     } catch (error) {
       console.log(error);
       toast.error(error.response.data?.message);
