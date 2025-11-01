@@ -5,6 +5,7 @@ import { fetchCurrentUser } from "../app/slices/auth/authThunks";
 
 const AuthWrapper = ({ children }) => {
   const dispatch = useDispatch();
+  
   const { loading } = useSelector((state) => state.auth);
 
   useEffect(() => {

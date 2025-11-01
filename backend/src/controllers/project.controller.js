@@ -291,9 +291,11 @@ export async function inviteUserToProject(req, res) {
     const { email } = req.body;
 
     const project = await Project.findById(projectId);
+
     if (!project) throw new ApiError(404, "Project not found");
 
     const user = req.user;
+
     if (user.email === email)
       throw new ApiError(400, "You are already part of this project.");
 
@@ -306,7 +308,9 @@ export async function inviteUserToProject(req, res) {
     );
 
     if (!token) throw new ApiError(400, "Token could not be created.");
+
     const inviteLink = `${process.env.CLIENT_URL}/project-invite?token=${token}`;
+    
     await sendEmail({
       to: email,
       subject: "You are invited to join a project",
@@ -348,8 +352,11 @@ export async function inviteUserToProject(req, res) {
 export async function acceptProjectInvite(req, res) {
   try {
     const { token } = req.body; // email of the user to be accepted
+
     const user = req.user;
+
     const { email, projectId } = jwt.decode(token);
+    
     if (user.email !== email)
       throw new ApiError(403, "Invite email does not match with your account");
 

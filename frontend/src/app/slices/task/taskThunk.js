@@ -34,8 +34,10 @@ export const getUserTasks = createAsyncThunk(
   async (data, thunkApi) => {
     const { userId } = data;
     try {
+
       const res = await api.get(`/tasks?assignee=${userId}`);
       return res.data.tasks;
+
     } catch (error) {
       console.log(error);
       return thunkApi.rejectWithValue(error.response.data.message);
@@ -48,8 +50,10 @@ export const changeTaskStatus = createAsyncThunk(
   async (taskData, thunkApi) => {
     const { taskId, status } = taskData;
     try {
+      
       const res = await api.patch(`tasks/${taskId}/status`, { status });
       return res.data.task;
+
     } catch (error) {
       console.log(error);
       return thunkApi.rejectWithValue(error.response.data);

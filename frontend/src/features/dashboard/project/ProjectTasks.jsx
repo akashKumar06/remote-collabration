@@ -49,6 +49,7 @@ function ProjectTasks() {
       assignee: assigness[0],
       project: currentProject._id,
     };
+
     await dispatch(createTask(task))
       .unwrap()
       .then(() => {
@@ -57,6 +58,7 @@ function ProjectTasks() {
       .catch((err) => {
         toast.error(err);
       });
+      
     setAssignees([]);
     setTitle("");
     setDeadline("");

@@ -7,10 +7,14 @@ import CircularLoader from "./CircularLoader";
 const GoogleAuth = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const handleGoogleResponse = async (response) => {
+      console.log(response);
       const token = response.credential;
+      console.log(token);
       setIsLoading(true);
+
       const res = await fetch(
         `${import.meta.env.VITE_SERVER_URI}/api/v1/users/google`,
         {
@@ -26,6 +30,7 @@ const GoogleAuth = () => {
       dispatch(setCurrentUser(user));
       setIsLoading(false);
     };
+
     /* global google */
     google.accounts.id.initialize({
       client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,

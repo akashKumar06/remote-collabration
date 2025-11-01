@@ -13,16 +13,19 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
+
   const {
     projects,
     loading: isLoadingProjects,
     error: projectError,
   } = useSelector((state) => state.project);
+
   const {
     teams,
     loading: isLoadingTeams,
     error: teamError,
   } = useSelector((state) => state.team);
+  
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
