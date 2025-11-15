@@ -13,7 +13,7 @@ function Description({ currentProject }) {
   const dispatch = useDispatch();
   const [description, setDescription] = useState("");
   const [prompt, setPrompt] = useState("");
-  
+
   const [openGenerateInput, setOpenGenerateInput] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);

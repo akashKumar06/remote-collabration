@@ -4,7 +4,6 @@ import api from "../../../api/axios";
 export const getUserProjects = createAsyncThunk(
   "project/getUserProjects",
   async (data, thunkApi) => {
-    console.log(data);
     let query = "";
     if (data.query) {
       query = `page=${data.query.page}`;
