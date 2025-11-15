@@ -1,14 +1,10 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export const sendEmail = async ({ to, subject, html }) => {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  await transporter.sendMail({
-    from: `"Remote Collab" <${process.env.EMAIL_USERNAME}>`,
+  await resend.emails.send({
+    from: "Remote Collab <onboarding@resend.dev>",
     to,
     subject,
     html,

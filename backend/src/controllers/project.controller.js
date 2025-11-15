@@ -310,7 +310,6 @@ export async function inviteUserToProject(req, res) {
     if (!token) throw new ApiError(400, "Token could not be created.");
 
     const inviteLink = `${process.env.CLIENT_URL}/project-invite?token=${token}`;
-    
     await sendEmail({
       to: email,
       subject: "You are invited to join a project",
@@ -356,7 +355,7 @@ export async function acceptProjectInvite(req, res) {
     const user = req.user;
 
     const { email, projectId } = jwt.decode(token);
-    
+
     if (user.email !== email)
       throw new ApiError(403, "Invite email does not match with your account");
 
