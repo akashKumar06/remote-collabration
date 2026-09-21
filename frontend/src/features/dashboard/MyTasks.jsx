@@ -2,18 +2,19 @@ import { useSelector } from "react-redux";
 import SplashScreen from "../../components/SplashScreen";
 import { useNavigate } from "react-router";
 import clsx from "clsx";
+import { ListTodo } from "lucide-react";
 
 const statusColors = {
-  "To Do": "bg-zinc-700 text-zinc-300",
-  "In Progress": "bg-blue-600 text-white",
-  Blocked: "bg-red-600 text-white",
-  Completed: "bg-green-600 text-white",
+  "To Do": "bg-slate-100 text-slate-600",
+  "In Progress": "bg-info-50 text-info-600",
+  Blocked: "bg-danger-50 text-danger-600",
+  Completed: "bg-success-50 text-success-600",
 };
 
 const priorityColors = {
-  Low: "bg-green-600 text-white",
-  Medium: "bg-yellow-500 text-black",
-  High: "bg-red-500 text-white",
+  Low: "bg-success-50 text-success-600",
+  Medium: "bg-warning-50 text-warning-600",
+  High: "bg-danger-50 text-danger-600",
 };
 
 export default function MyTasks() {
@@ -23,86 +24,79 @@ export default function MyTasks() {
   if (loading) return <SplashScreen />;
 
   return (
-    <div className="px-8 py-6 text-sm text-white/90">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-white">My Tasks</h2>
-        <nav className="flex gap-3 text-sm">
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Filter
-          </button>
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Sort
-          </button>
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Group
-          </button>
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Options
-          </button>
-        </nav>
+        <div>
+          <h2 className="text-2xl font-display font-bold text-slate-900">My Tasks</h2>
+          <p className="text-sm text-slate-500 mt-0.5">
+            Every task assigned to you, across every project.
+          </p>
+        </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse">
-          <thead>
-            <tr className="bg-[#2B2C2E] text-white/80 text-left">
-              <th className="py-3 px-4 border-b border-white/30">Task</th>
-              <th className="py-3 px-4 border-b border-white/30">Project</th>
-              <th className="py-3 px-4 border-b border-white/30">Due Date</th>
-              <th className="py-3 px-4 border-b border-white/30">Priority</th>
-              <th className="py-3 px-4 border-b border-white/30">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userTasks.map((task) => (
-              <tr
-                key={task._id}
-                onClick={() => navigate(`${task._id}`)}
-                className="hover:bg-[#2B2C2E] cursor-pointer transition"
-              >
-                <td className="py-3 px-4 border-b border-white/20">
-                  {task.title}
-                </td>
-                <td className="py-3 px-4 border-b border-white/20">
-                  {task.assignee.firstname}
-                </td>
-                <td className="py-3 px-4 border-b border-white/20">
-                  {new Date(task.deadline).toLocaleDateString()}
-                </td>
-                <td className="py-3 px-4 border-b border-white/20">
-                  <span
-                    className={clsx(
-                      "px-2 py-1 rounded-full text-xs font-medium",
-                      priorityColors[task.priority] || "bg-gray-600 text-white"
-                    )}
-                  >
-                    {task.priority}
-                  </span>
-                </td>
-                <td className="py-3 px-4 border-b border-white/20">
-                  <span
-                    className={clsx(
-                      "px-2 py-1 rounded-full text-xs font-medium",
-                      statusColors[task.status] || "bg-gray-700 text-white"
-                    )}
-                  >
-                    {task.status}
-                  </span>
-                </td>
+      <div className="card-surface overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-slate-50 text-slate-500 text-left text-xs uppercase tracking-wide">
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Task</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Assignee</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Due Date</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Priority</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Status</th>
               </tr>
-            ))}
-            {userTasks.length === 0 && (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-6 text-zinc-400 border-b border-white/20"
+            </thead>
+            <tbody>
+              {userTasks.map((task) => (
+                <tr
+                  key={task._id}
+                  onClick={() => navigate(`${task._id}`)}
+                  className="hover:bg-slate-50 cursor-pointer transition"
                 >
-                  No tasks found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  <td className="py-3.5 px-5 border-b border-slate-100 font-medium text-slate-800">
+                    {task.title}
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100 text-slate-600">
+                    {task.assignee.firstname}
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100 text-slate-600">
+                    {new Date(task.deadline).toLocaleDateString()}
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100">
+                    <span
+                      className={clsx(
+                        "px-2.5 py-1 rounded-full text-xs font-medium",
+                        priorityColors[task.priority] || "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {task.priority}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100">
+                    <span
+                      className={clsx(
+                        "px-2.5 py-1 rounded-full text-xs font-medium",
+                        statusColors[task.status] || "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {task.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {userTasks.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="py-16">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <ListTodo className="w-8 h-8 text-slate-300 mb-2" />
+                      <p className="text-slate-400 text-sm">No tasks found.</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

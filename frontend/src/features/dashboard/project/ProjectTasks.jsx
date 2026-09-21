@@ -5,18 +5,25 @@ import Select from "react-select";
 import { createTask } from "../../../app/slices/task/taskThunk";
 import { useNavigate } from "react-router";
 import clsx from "clsx";
+import { ListTodo, Plus } from "lucide-react";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
+import { lightSelectStyles } from "../../../utils/selectStyles";
 
 const statusColors = {
-  "Not Started": "bg-zinc-700 text-zinc-300",
-  "In Progress": "bg-blue-600 text-white",
-  Completed: "bg-green-600 text-white",
+  "Not Started": "bg-slate-100 text-slate-600",
+  "In Progress": "bg-info-50 text-info-600",
+  Completed: "bg-success-50 text-success-600",
 };
 
 const priorityColors = {
-  Low: "bg-green-600 text-white",
-  Medium: "bg-yellow-500 text-black",
-  High: "bg-red-500 text-white",
+  Low: "bg-success-50 text-success-600",
+  Medium: "bg-warning-50 text-warning-600",
+  High: "bg-danger-50 text-danger-600",
 };
+
+const selectClass =
+  "w-full h-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 appearance-none";
 
 function ProjectTasks() {
   const [isAdddingTask, setIsAddingTask] = useState(false);
@@ -58,7 +65,7 @@ function ProjectTasks() {
       .catch((err) => {
         toast.error(err);
       });
-      
+
     setAssignees([]);
     setTitle("");
     setDeadline("");
@@ -68,222 +75,150 @@ function ProjectTasks() {
   };
 
   return (
-    <div className="px-4 py-2 text-sm text-white/90">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-white">Task ProjectTasks</h2>
-        <nav className="flex gap-3 text-sm">
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Filter
-          </button>
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Sort
-          </button>
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Group
-          </button>
-          <button className="px-3 py-1 hover:bg-[#2B2C2E] rounded transition">
-            Options
-          </button>
-        </nav>
-      </div>
-      {user.id === currentProject.owner._id && (
-        <div className="mb-4">
-          {!isAdddingTask ? (
-            <button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-              onClick={() => setIsAddingTask(true)}
-            >
-              Create new task
-            </button>
-          ) : (
-            <button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-              onClick={handleAddTask}
-            >
-              Add
-            </button>
-          )}
+    <div className="max-w-7xl mx-auto py-6 sm:py-8">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-display font-bold text-slate-900">Tasks</h2>
+          <p className="text-sm text-slate-500 mt-0.5">
+            Everything tracked for {currentProject.name}.
+          </p>
         </div>
-      )}
-      <table className="table-auto w-full border-collapse">
-        <thead>
-          <tr className="bg-[#2B2C2E] text-white/80 text-left">
-            <th className="py-3 px-4 border-b border-white/30">Task</th>
-            <th className="py-3 px-4 border-b border-white/30">Project</th>
-            <th className="py-3 px-4 border-b border-white/30">Due Date</th>
-            <th className="py-3 px-4 border-b border-white/30">Priority</th>
-            <th className="py-3 px-4 border-b border-white/30">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {isAdddingTask && (
-            <tr className="hover:bg-[#2B2C2E] transition">
-              <td className="border-b border-r h-12 border-white/20 relative">
-                <input
-                  type="text"
-                  className="w-full h-full border-none outline-none p-2 text-base"
-                  placeholder="Enter title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </td>
-              <td className="border-b h-12 border-r border-white/20 relative">
-                <Select
-                  isMulti
-                  options={options}
-                  onChange={(selectedOptions) =>
-                    setAssignees(selectedOptions.map((opt) => opt.value))
-                  }
-                  placeholder="Select Assignees"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      backgroundColor: "transparent",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "white",
-                      minHeight: "2.5rem",
-                    }),
-                    menu: (base) => ({
-                      ...base,
-                      backgroundColor: "#2B2C2E",
-                      color: "white",
-                      border: "none",
-                    }),
-                    option: (base, state) => ({
-                      ...base,
-                      backgroundColor: state.isFocused
-                        ? "#3a3b3d"
-                        : "transparent",
-                      color: "white",
-                      cursor: "pointer",
-                    }),
-                    multiValue: (base) => ({
-                      ...base,
-                      backgroundColor: "#3a3b3d",
-                    }),
-                    multiValueLabel: (base) => ({
-                      ...base,
-                      color: "white",
-                    }),
-                    multiValueRemove: (base) => ({
-                      ...base,
-                      color: "#aaa",
-                      ":hover": {
-                        backgroundColor: "#555",
-                        color: "white",
-                      },
-                    }),
-                    placeholder: (base) => ({
-                      ...base,
-                      color: "#ccc",
-                    }),
-                    input: (base) => ({
-                      ...base,
-                      color: "white",
-                    }),
-                    singleValue: (base) => ({
-                      ...base,
-                      color: "white",
-                    }),
-                  }}
-                />
-              </td>
-              <td className="border-b border-r h-12 border-white/20 relative">
-                <input
-                  type="date"
-                  className="w-full h-full border-none outline-none p-2 text-base"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                />
-              </td>
-              <td className="border-b border-r h-12 border-white/20 relative">
-                <select
-                  className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none"
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value)}
+        {user.id === currentProject.owner._id && !isAdddingTask && (
+          <Button size="sm" onClick={() => setIsAddingTask(true)}>
+            <Plus size={15} /> New task
+          </Button>
+        )}
+        {isAdddingTask && (
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsAddingTask(false)}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleAddTask}>
+              Add
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <div className="card-surface overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-slate-50 text-slate-500 text-left text-xs uppercase tracking-wide">
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Task</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Assignee</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Due Date</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Priority</th>
+                <th className="py-3 px-5 font-medium border-b border-slate-200">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isAdddingTask && (
+                <tr className="bg-primary-50/40">
+                  <td className="border-b border-slate-100 p-2.5">
+                    <Input
+                      type="text"
+                      placeholder="Enter title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </td>
+                  <td className="border-b border-slate-100 p-2.5">
+                    <Select
+                      isMulti
+                      options={options}
+                      onChange={(selectedOptions) =>
+                        setAssignees(selectedOptions.map((opt) => opt.value))
+                      }
+                      placeholder="Select assignees"
+                      styles={lightSelectStyles}
+                    />
+                  </td>
+                  <td className="border-b border-slate-100 p-2.5">
+                    <input
+                      type="date"
+                      className={selectClass}
+                      value={deadline}
+                      onChange={(e) => setDeadline(e.target.value)}
+                    />
+                  </td>
+                  <td className="border-b border-slate-100 p-2.5">
+                    <select
+                      className={selectClass}
+                      value={priority}
+                      onChange={(e) => setPriority(e.target.value)}
+                    >
+                      <option value="">Select priority</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </td>
+                  <td className="border-b border-slate-100 p-2.5">
+                    <select
+                      className={selectClass}
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                    >
+                      <option value="">Select status</option>
+                      <option value="Not Started">Not Started</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </td>
+                </tr>
+              )}
+              {projectTasks.map((task) => (
+                <tr
+                  key={task._id}
+                  onClick={() => navigate(`/dashboard/my-tasks/${task._id}`)}
+                  className="hover:bg-slate-50 cursor-pointer transition"
                 >
-                  <option className="bg-[#2B2C2E] text-white" value="">
-                    Select Priority
-                  </option>
-                  <option className="bg-[#2B2C2E] text-white" value="Low">
-                    Low
-                  </option>
-                  <option className="bg-[#2B2C2E] text-white" value="Medium">
-                    Medium
-                  </option>
-                  <option className="bg-[#2B2C2E] text-white" value="High">
-                    High
-                  </option>
-                </select>
-              </td>
-              <td className="border-b h-12 border-white/20 relative">
-                <select
-                  className="w-full h-full bg-transparent text-white px-3 py-2 outline-none appearance-none"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                >
-                  <option className="bg-[#2B2C2E] text-white" value="">
-                    Select Status
-                  </option>
-                  <option
-                    className="bg-[#2B2C2E] text-white"
-                    value="Not Started"
-                  >
-                    Not Started
-                  </option>
-                  <option
-                    className="bg-[#2B2C2E] text-white"
-                    value="In Progress"
-                  >
-                    In Progress
-                  </option>
-                  <option className="bg-[#2B2C2E] text-white" value="Completed">
-                    Completed
-                  </option>
-                </select>
-              </td>
-            </tr>
-          )}
-          {projectTasks.map((task) => (
-            <tr
-              key={task._id}
-              onClick={() => navigate(`/dashboard/my-tasks/${task._id}`)}
-              className="hover:bg-[#2B2C2E] cursor-pointer transition"
-            >
-              <td className="py-3 px-4 border-b border-white/20">
-                {task.title}
-              </td>
-              <td className="py-3 px-4 border-b border-white/20">
-                {task.assignee.firstname}
-              </td>
-              <td className="py-3 px-4 border-b border-white/20">
-                {new Date(task.deadline).toLocaleDateString()}
-              </td>
-              <td className="py-3 px-4 border-b border-white/20">
-                <span
-                  className={clsx(
-                    "px-2 py-1 rounded-full text-xs font-medium",
-                    priorityColors[task.priority] || "bg-gray-600 text-white"
-                  )}
-                >
-                  {task.priority}
-                </span>
-              </td>
-              <td className="py-3 px-4 border-b border-white/20">
-                <span
-                  className={clsx(
-                    "px-2 py-1 rounded-full text-xs font-medium",
-                    statusColors[task.status] || "bg-gray-700 text-white"
-                  )}
-                >
-                  {task.status}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td className="py-3.5 px-5 border-b border-slate-100 font-medium text-slate-800">
+                    {task.title}
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100 text-slate-600">
+                    {task.assignee.firstname}
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100 text-slate-600">
+                    {new Date(task.deadline).toLocaleDateString()}
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100">
+                    <span
+                      className={clsx(
+                        "px-2.5 py-1 rounded-full text-xs font-medium",
+                        priorityColors[task.priority] || "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {task.priority}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-5 border-b border-slate-100">
+                    <span
+                      className={clsx(
+                        "px-2.5 py-1 rounded-full text-xs font-medium",
+                        statusColors[task.status] || "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {task.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {projectTasks.length === 0 && !isAdddingTask && (
+                <tr>
+                  <td colSpan={5} className="py-16">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <ListTodo className="w-8 h-8 text-slate-300 mb-2" />
+                      <p className="text-slate-400 text-sm">No tasks yet.</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

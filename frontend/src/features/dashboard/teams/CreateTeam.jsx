@@ -3,8 +3,10 @@ import { close } from "../../../app/slices/modal";
 import { useState } from "react";
 import { createTeam } from "../../../app/slices/team/teamThunk";
 import { toast } from "react-hot-toast";
-import CircularLoader from "../../../components/CircularLoader";
 import { useNavigate } from "react-router";
+import { X, Users2 } from "lucide-react";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
 
 export default function CreateTeam() {
   const dispatch = useDispatch();
@@ -21,62 +23,65 @@ export default function CreateTeam() {
         navigate(`/dashboard/teams/${team._id}`);
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.message);
       });
     dispatch(close());
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] flex items-center justify-center px-2 py-8">
-      <div className="w-full max-w-2xl bg-[#1E1E1E]/80 backdrop-blur-md shadow-2xl border border-gray-700 text-white p-4 sm:p-8 rounded-2xl">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-6 sm:mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 text-center">
-          Create a New Team
-        </h1>
+    <div className="h-full flex flex-col">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center">
+            <Users2 className="w-4.5 h-4.5 text-primary-600" />
+          </div>
+          <h1 className="text-lg font-display font-semibold text-slate-900">
+            Create a new team
+          </h1>
+        </div>
+        <button
+          onClick={() => dispatch(close())}
+          className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+        >
+          <X size={18} />
+        </button>
+      </div>
 
-        <div className="mb-4 sm:mb-6">
-          <label className="block text-gray-400 mb-2" htmlFor="teamName">
-            Team Name
+      <div className="flex-1 overflow-y-auto thin-scrollbar px-6 py-6 space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="teamName">
+            Team name
           </label>
-          <input
+          <Input
             type="text"
             id="teamName"
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg px-3 py-2 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm sm:text-base"
-            placeholder='For example: "My first Team" or "Backend Team"'
+            placeholder='For example: "Backend Team"'
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
           />
         </div>
-        <div className="mb-4 sm:mb-6">
-          <label className="block text-gray-400 mb-2" htmlFor="teamDesc">
-            Team Description
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="teamDesc">
+            Team description
           </label>
           <textarea
             id="teamDesc"
-            className="w-full bg-[#2A2A2A] border border-gray-600 rounded-lg px-3 py-2 sm:px-4 sm:py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm sm:text-base"
+            className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-primary-500 focus:ring-4 focus:ring-primary-100 resize-none"
             value={teamDesc}
             onChange={(e) => setTeamDesc(e.target.value)}
-            rows={3}
+            rows={4}
             placeholder="Describe your team..."
           />
         </div>
+      </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end mt-6 sm:mt-8">
-          <button
-            className="cursor-pointer w-full sm:w-auto bg-gray-700 hover:bg-gray-800 text-white py-2 px-4 sm:py-2.5 sm:px-5 rounded-lg transition-all text-sm sm:text-base"
-            onClick={() => dispatch(close())}
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleTeamCreation}
-            className="cursor-pointer w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 sm:py-2.5 sm:px-5 rounded-lg transition-all text-sm sm:text-base"
-            type="button"
-          >
-            {isCreating ? <CircularLoader /> : "Create Team"}
-          </button>
-        </div>
+      <div className="flex gap-3 justify-end px-6 py-4 border-t border-slate-200 shrink-0">
+        <Button variant="outline" onClick={() => dispatch(close())}>
+          Cancel
+        </Button>
+        <Button onClick={handleTeamCreation} loading={isCreating} disabled={!teamName.trim()}>
+          Create team
+        </Button>
       </div>
     </div>
   );

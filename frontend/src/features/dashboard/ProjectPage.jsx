@@ -30,56 +30,42 @@ function ProjectPageLayout() {
   if (!currentProject) return <SplashScreen />;
 
   return (
-    <div className="relative min-h-screen font-roboto text-gray-300 bg-[#121212]">
+    <div className="relative min-h-full">
       {/* Header */}
-      <header className="z-10 sticky top-0 left-0 border-b border-white/10 px-4 py-3 shadow-md bg-[#1A1A1A]">
+      <header className="z-10 sticky top-0 left-0 border-b border-slate-200 px-4 sm:px-6 py-4 bg-white/90 backdrop-blur-sm">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-xl md:text-2xl font-display font-bold tracking-tight text-slate-900">
             {currentProject.name}
           </h2>
-          {/* Hamburger Icon */}
           <button
-            className="md:hidden text-white"
+            className="md:hidden text-slate-600"
             onClick={() => setIsNavOpen(!isNavOpen)}
           >
-            {isNavOpen ? <X size={24} /> : <Menu size={24} />}
+            {isNavOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
-        {/* Nav Links */}
         <nav
           className={`${
-            isNavOpen ? "block" : "hidden"
-          } md:flex flex-col md:flex-row gap-4 mt-4 text-sm font-medium`}
+            isNavOpen ? "flex" : "hidden"
+          } md:flex flex-col md:flex-row gap-1 md:gap-1 mt-4 text-sm font-medium`}
         >
-          <NavItem
-            to="overview"
-            icon={<ClipboardList size={16} />}
-            label="Overview"
-          />
-          <NavItem to="tasks" icon={<List size={16} />} label="Tasks" />
+          <NavItem to="overview" icon={<ClipboardList size={15} />} label="Overview" />
+          <NavItem to="tasks" icon={<List size={15} />} label="Tasks" />
           <NavItem
             to="project-dashboard"
-            icon={<LayoutDashboard size={16} />}
+            icon={<LayoutDashboard size={15} />}
             label="Analytics"
           />
-          <NavItem
-            to="messages"
-            icon={<MessagesSquare size={16} />}
-            label="Messages"
-          />
-          <NavItem to="files" icon={<FilesIcon size={16} />} label="Files" />
+          <NavItem to="messages" icon={<MessagesSquare size={15} />} label="Messages" />
+          <NavItem to="files" icon={<FilesIcon size={15} />} label="Files" />
           {user.id === currentProject.owner._id && (
-            <NavItem
-              to="settings"
-              icon={<Settings size={16} />}
-              label="Settings"
-            />
+            <NavItem to="settings" icon={<Settings size={15} />} label="Settings" />
           )}
         </nav>
       </header>
 
-      <main className="px-4 md:px-10 py-6">
+      <main className="px-4 sm:px-6">
         <Outlet />
       </main>
     </div>
@@ -90,14 +76,14 @@ const NavItem = ({ to, icon, label }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      isActive
-        ? "text-white border-b-2 border-blue-500 pb-1"
-        : "text-gray-400 hover:text-white pb-1 transition-all"
+      `flex items-center gap-1.5 px-3 py-2 rounded-lg transition ${
+        isActive
+          ? "bg-primary-50 text-primary-700"
+          : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+      }`
     }
   >
-    <div className="flex items-center gap-2">
-      {icon} {label}
-    </div>
+    {icon} {label}
   </NavLink>
 );
 

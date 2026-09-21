@@ -1,9 +1,7 @@
-const CircularLoader = ({ size = 20, color = "#363636", borderWidth = 2 }) => {
-  const borderClass = `border-${color}`;
-
+const CircularLoader = ({ size = 20, color = "#6640e0", borderWidth = 2 }) => {
   return (
     <div
-      className={`rounded-full border-t-transparent animate-spin`}
+      className="rounded-full border-t-transparent animate-spin"
       style={{
         width: size,
         height: size,

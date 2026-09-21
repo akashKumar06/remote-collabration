@@ -4,10 +4,10 @@ function NavLink({ to, icon, label }) {
   return (
     <Link
       to={to}
-      className="flex items-center gap-1 hover:bg-[#2B2C2E] rounded py-1 px-1.5 transition text-white/60 hover:text-white/100"
+      className="flex items-center gap-1.5 hover:bg-slate-100 rounded-lg py-1.5 px-2 transition text-slate-500 hover:text-slate-900 text-sm font-medium"
     >
       <span>{icon}</span>
-      <span className="mt-1">{label}</span>
+      <span>{label}</span>
     </Link>
   );
 }

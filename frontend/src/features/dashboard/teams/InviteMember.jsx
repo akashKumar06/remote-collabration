@@ -1,11 +1,13 @@
 import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import api from "../../../api/axios";
-import CircularLoader from "../../../components/CircularLoader";
 import { toast } from "react-hot-toast";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
+
 function InviteMember({ teamId }) {
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState("");
+  const [inviteRole, setInviteRole] = useState("Contributor");
   const [isInviting, setIsInviting] = useState(false);
   const handleInvite = async () => {
     setIsInviting(true);
@@ -16,41 +18,38 @@ function InviteMember({ teamId }) {
       });
       toast.success("Invitation sent successfully");
     } catch (error) {
-      toast.error(error.response.message);
+      toast.error(error.response?.data?.message || "Failed to send invite");
     }
     setIsInviting(false);
     setInviteEmail("");
   };
 
   return (
-    <div className="bg-[#2A2A2A] border border-gray-700 rounded-xl p-6 space-y-4">
-      <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
-        <UserPlus size={20} /> Invite Member
+    <div className="card-surface p-6 space-y-4">
+      <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
+        <UserPlus size={18} className="text-primary-600" /> Invite Member
       </h2>
-      <div className="flex flex-col md:flex-row gap-4">
-        <input
+      <div className="flex flex-col md:flex-row gap-3">
+        <Input
           type="email"
           placeholder="Enter email"
           value={inviteEmail}
           onChange={(e) => setInviteEmail(e.target.value)}
-          className="flex-1 px-4 py-2 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1"
         />
         <select
           value={inviteRole}
           onChange={(e) => setInviteRole(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white"
+          className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-100"
         >
           <option>Contributor</option>
           <option>Designer</option>
           <option>Developer</option>
           <option>Project Manager</option>
         </select>
-        <button
-          onClick={handleInvite}
-          className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white"
-        >
-          {isInviting ? <CircularLoader /> : "Invite"}
-        </button>
+        <Button onClick={handleInvite} loading={isInviting} disabled={!inviteEmail.trim()}>
+          Invite
+        </Button>
       </div>
     </div>
   );

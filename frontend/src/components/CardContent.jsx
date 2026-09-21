@@ -1,5 +1,5 @@
-export const CardContent = ({ children }) => {
-  return <div className="p-4">{children}</div>;
+export const CardContent = ({ children, className = "" }) => {
+  return <div className={`p-5 ${className}`}>{children}</div>;
 };
 
-
+export default CardContent;

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { UploadCloud } from "lucide-react";
 import { uploadFiles } from "../../../app/slices/project/projectThunk";
-import CircularLoader from "../../../components/CircularLoader";
+import { Button } from "../../../components/Button";
 
 const FileUpload = () => {
   const { currentProject, isUploadingFiles } = useSelector(
@@ -17,29 +18,31 @@ const FileUpload = () => {
   };
 
   const handleUpload = async () => {
-    if (!files.length) return alert("Please select at least one file");
+    if (!files.length) return toast.error("Please select at least one file");
 
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
     await dispatch(uploadFiles({ projectId: currentProject._id, formData }))
       .unwrap()
-      .then((data) => {
-        console.log(data);
+      .then(() => {
         toast.success("Files uploaded successfully");
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        toast.error("Failed to upload files");
       });
     setFiles([]);
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-4 border rounded-xl bg-gray-800 text-white">
+    <div className="max-w-md card-surface p-6">
       <label
         htmlFor="file-upload"
-        className="block w-full text-center py-3 cursor-pointer border-2 border-dashed border-gray-500 rounded-lg hover:border-blue-500"
+        className="flex flex-col items-center justify-center gap-2 w-full text-center py-8 cursor-pointer border-2 border-dashed border-slate-200 rounded-xl hover:border-primary-400 hover:bg-primary-50/40 transition"
       >
-        Click to select files
+        <UploadCloud className="w-6 h-6 text-primary-500" />
+        <span className="text-sm text-slate-600 font-medium">
+          Click to select files
+        </span>
         <input
           id="file-upload"
           type="file"
@@ -49,10 +52,9 @@ const FileUpload = () => {
         />
       </label>
 
-      {/* File names preview */}
       {files.length > 0 && (
-        <div className="mt-4 text-sm text-gray-300">
-          <p className="mb-2 font-semibold">Selected Files:</p>
+        <div className="mt-4 text-sm text-slate-600">
+          <p className="mb-2 font-semibold text-slate-700">Selected files:</p>
           <ul className="list-disc ml-5 space-y-1">
             {files.map((file, index) => (
               <li key={index}>{file.name}</li>
@@ -61,12 +63,9 @@ const FileUpload = () => {
         </div>
       )}
 
-      <button
-        onClick={handleUpload}
-        className="mt-6 w-full px-4 py-2 mb-2 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
-      >
-        {isUploadingFiles ? <CircularLoader color="#fff" /> : "Upload Files"}
-      </button>
+      <Button onClick={handleUpload} loading={isUploadingFiles} className="mt-5 w-full">
+        Upload files
+      </Button>
     </div>
   );
 };

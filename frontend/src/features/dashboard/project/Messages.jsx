@@ -25,7 +25,7 @@ function MessagesPage() {
       setMessages({
         ...messages,
         [selectedMember.id]: [
-          ...messages[selectedMember.id],
+          ...(messages[selectedMember.id] || []),
           { text: newMessage, type: "sent" },
         ],
       });
@@ -34,83 +34,92 @@ function MessagesPage() {
   };
 
   return (
-    <div className="h-[26rem] bg-[#1A1A1A] text-gray-200 font-roboto flex">
-      {/* Left - Project Members List */}
-      <div className="w-[260px] bg-[#222] border-r border-white/10 p-3 rounded-l-xl flex flex-col">
-        <h2 className="text-lg font-bold text-white mb-4">Members</h2>
-        <div className="flex-1 overflow-y-auto">
-          {projectMembers.map((member) => (
-            <div
-              key={member.id}
-              className={`flex items-center gap-3 p-2 cursor-pointer rounded-md hover:bg-gray-700 transition-all ${
-                selectedMember.id === member.id
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-400"
-              }`}
-              onClick={() => setSelectedMember(member)}
-            >
-              <img
-                src={member.avatar}
-                alt={member.name}
-                className="w-8 h-8 rounded-full object-cover"
-              />
-              <span className="text-sm">{member.name}</span>
-            </div>
-          ))}
-        </div>
+    <div className="max-w-7xl mx-auto py-6 sm:py-8">
+      <div className="mb-6">
+        <h2 className="text-2xl font-display font-bold text-slate-900">Messages</h2>
+        <p className="text-sm text-slate-500 mt-0.5">
+          Direct conversations with your project members.
+        </p>
       </div>
 
-      {/* Right - Messages Area */}
-      <div className="flex-1 bg-[#222] p-4 flex flex-col rounded-r-xl">
-        {/* Header for selected member */}
-        <div className="flex items-center gap-3 mb-3">
-          <img
-            src={selectedMember.avatar}
-            alt={selectedMember.name}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <h2 className="text-lg font-semibold text-white">
-            {selectedMember.name}
-          </h2>
-        </div>
-
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto bg-[#333] p-3 rounded-md mb-4">
-          {messages[selectedMember.id].map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                message.type === "sent" ? "justify-end" : "justify-start"
-              } mb-3`}
-            >
+      <div className="card-surface h-[28rem] flex overflow-hidden">
+        {/* Left - Project Members List */}
+        <div className="w-[240px] shrink-0 border-r border-slate-200 p-3 flex flex-col">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400 px-2 mb-2">
+            Members
+          </h3>
+          <div className="flex-1 overflow-y-auto thin-scrollbar space-y-0.5">
+            {projectMembers.map((member) => (
               <div
-                className={`max-w-[75%] px-3 py-2 rounded-md text-sm ${
-                  message.type === "sent"
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-700 text-gray-200"
+                key={member.id}
+                className={`flex items-center gap-2.5 p-2 cursor-pointer rounded-lg transition ${
+                  selectedMember.id === member.id
+                    ? "bg-primary-50 text-primary-700"
+                    : "text-slate-600 hover:bg-slate-50"
                 }`}
+                onClick={() => setSelectedMember(member)}
               >
-                {message.text}
+                <img
+                  src={member.avatar}
+                  alt={member.name}
+                  className="w-7 h-7 rounded-full object-cover"
+                />
+                <span className="text-sm font-medium">{member.name}</span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Message Input Area */}
-        <div className="bg-[#222] px-3 py-2 flex items-center gap-3 rounded-md border-t border-white/10">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type a message..."
-            className="w-full bg-[#333] text-gray-200 border border-white/10 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-          <button
-            onClick={handleSendMessage}
-            className="bg-blue-600 text-white rounded-md px-3 py-1.5 hover:bg-blue-700 transition-all"
-          >
-            <Send size={18} />
-          </button>
+        {/* Right - Messages Area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200 shrink-0">
+            <img
+              src={selectedMember.avatar}
+              alt={selectedMember.name}
+              className="w-9 h-9 rounded-full object-cover"
+            />
+            <h2 className="text-sm font-semibold text-slate-900">
+              {selectedMember.name}
+            </h2>
+          </div>
+
+          <div className="flex-1 overflow-y-auto thin-scrollbar bg-slate-50/60 p-4">
+            {(messages[selectedMember.id] || []).map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${
+                  message.type === "sent" ? "justify-end" : "justify-start"
+                } mb-3`}
+              >
+                <div
+                  className={`max-w-[75%] px-3.5 py-2 rounded-2xl text-sm ${
+                    message.type === "sent"
+                      ? "bg-primary-600 text-white rounded-br-sm"
+                      : "bg-white border border-slate-200 text-slate-700 rounded-bl-sm"
+                  }`}
+                >
+                  {message.text}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="px-3 py-3 flex items-center gap-2.5 border-t border-slate-200 shrink-0">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+              placeholder="Type a message..."
+              className="w-full bg-slate-100 text-slate-800 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-200"
+            />
+            <button
+              onClick={handleSendMessage}
+              className="bg-primary-600 text-white rounded-xl p-2.5 hover:bg-primary-700 transition shrink-0"
+            >
+              <Send size={16} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

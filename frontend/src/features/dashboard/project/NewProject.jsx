@@ -3,10 +3,12 @@ import { close } from "../../../app/slices/modal";
 import { useState } from "react";
 import { createProject } from "../../../app/slices/project/projectThunk";
 import Select from "react-select";
-import CircularLoader from "../../../components/CircularLoader";
+import { X, FolderPlus } from "lucide-react";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
+import { lightSelectStyles } from "../../../utils/selectStyles";
 
 const projectTags = [
-  // --- Technical Tags ---
   { label: "React", value: "React" },
   { label: "Node.js", value: "Node.js" },
   { label: "Python", value: "Python" },
@@ -27,8 +29,6 @@ const projectTags = [
   { label: "CI/CD", value: "CI/CD" },
   { label: "Blockchain", value: "Blockchain" },
   { label: "Mobile App", value: "Mobile App" },
-
-  // --- Non-Technical Tags ---
   { label: "UX Design", value: "UX Design" },
   { label: "UI Design", value: "UI Design" },
   { label: "Agile", value: "Agile" },
@@ -60,11 +60,7 @@ export default function NewProject() {
   const { loading } = useSelector((state) => state.project);
   const { teams } = useSelector((state) => state.team);
 
-  const options = [];
-
-  teams.forEach((team) => {
-    options.push({ label: team.name, value: team._id });
-  });
+  const options = teams.map((team) => ({ label: team.name, value: team._id }));
 
   const handleNewProject = () => {
     const projectData = {
@@ -78,174 +74,77 @@ export default function NewProject() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] text-white p-4 sm:p-8 w-full max-w-screen-xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 text-center sm:text-left">
-        New project
-      </h1>
-
-      <div className="mb-4 sm:mb-6">
-        <label className="block text-gray-300 mb-2" htmlFor="projectName">
-          Project name
-        </label>
-        <input
-          type="text"
-          id="projectName"
-          className="w-full bg-[#1E1E1E] border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500"
-          placeholder="Enter project name"
-          value={projectName}
-          onChange={(e) => setProjectName(e.target.value)}
-        />
-      </div>
-
-      <div className="mb-4 sm:mb-6">
-        <label className="block text-gray-300 mb-2" htmlFor="projectName">
-          Project tags
-        </label>
-        <Select
-          isMulti={true}
-          options={projectTags}
-          onChange={(selectedOptions) =>
-            setTags(selectedOptions.map((opt) => opt.value))
-          }
-          placeholder="Select Project tags"
-          styles={{
-            control: (base) => ({
-              ...base,
-              backgroundColor: "transparent",
-              boxShadow: "none",
-              borderColor: "#4a5565",
-              color: "white",
-              minHeight: "2.5rem",
-            }),
-            menu: (base) => ({
-              ...base,
-              backgroundColor: "#2B2C2E",
-              color: "white",
-              border: "#4a5565",
-            }),
-            option: (base, state) => ({
-              ...base,
-              backgroundColor: state.isFocused ? "#3a3b3d" : "transparent",
-              color: "white",
-              cursor: "pointer",
-            }),
-            multiValue: (base) => ({
-              ...base,
-              backgroundColor: "#3a3b3d",
-            }),
-            multiValueLabel: (base) => ({
-              ...base,
-              color: "white",
-            }),
-            multiValueRemove: (base) => ({
-              ...base,
-              color: "#aaa",
-              ":hover": {
-                backgroundColor: "#555",
-                color: "white",
-              },
-            }),
-            placeholder: (base) => ({
-              ...base,
-              color: "#ccc",
-            }),
-            input: (base) => ({
-              ...base,
-              color: "white",
-            }),
-            singleValue: (base) => ({
-              ...base,
-              color: "white",
-            }),
-          }}
-        />
-      </div>
-
-      {/* <div className="flex gap-6 mb-6"> */}
-      <div className="mb-4 sm:mb-6">
-        <label className="block text-gray-300 mb-2">Select a team</label>
-        <Select
-          isMulti={true}
-          options={options}
-          onChange={(selectedOptions) => {
-            setTeamsSelected(selectedOptions.map((opt) => opt.value));
-          }}
-          placeholder="Select Team"
-          styles={{
-            control: (base) => ({
-              ...base,
-              backgroundColor: "transparent",
-              boxShadow: "none",
-              borderColor: "#4a5565",
-              color: "white",
-              minHeight: "2.5rem",
-            }),
-            menu: (base) => ({
-              ...base,
-              backgroundColor: "#2B2C2E",
-              color: "white",
-              border: "#4a5565",
-            }),
-            option: (base, state) => ({
-              ...base,
-              backgroundColor: state.isFocused ? "#3a3b3d" : "transparent",
-              color: "white",
-              cursor: "pointer",
-            }),
-            multiValue: (base) => ({
-              ...base,
-              backgroundColor: "#3a3b3d",
-            }),
-            multiValueLabel: (base) => ({
-              ...base,
-              color: "white",
-            }),
-            multiValueRemove: (base) => ({
-              ...base,
-              color: "#aaa",
-              ":hover": {
-                backgroundColor: "#555",
-                color: "white",
-              },
-            }),
-            placeholder: (base) => ({
-              ...base,
-              color: "#ccc",
-            }),
-            input: (base) => ({
-              ...base,
-              color: "white",
-            }),
-            singleValue: (base) => ({
-              ...base,
-              color: "white",
-            }),
-          }}
-        />
-      </div>
-
-      {/* <div>
-          <label className="block text-gray-300 mb-2">Privacy</label>
-          <select className="w-full bg-[#1E1E1E] border border-gray-600 rounded-md px-4 py-2 text-white">
-            <option>Shared with team</option>
-          </select>
-        </div> */}
-      {/* </div> */}
-
-      <div className="flex gap-4 justify-end">
+    <div className="h-full flex flex-col">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center">
+            <FolderPlus className="w-4.5 h-4.5 text-primary-600" />
+          </div>
+          <h1 className="text-lg font-display font-semibold text-slate-900">
+            New project
+          </h1>
+        </div>
         <button
-          className="w-full sm:w-auto cursor-pointer bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md text-sm sm:text-base"
           onClick={() => dispatch(close())}
+          className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
         >
+          <X size={18} />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto thin-scrollbar px-6 py-6 space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="projectName">
+            Project name
+          </label>
+          <Input
+            type="text"
+            id="projectName"
+            placeholder="Enter project name"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="projectTags">
+            Project tags
+          </label>
+          <Select
+            inputId="projectTags"
+            isMulti={true}
+            options={projectTags}
+            onChange={(selectedOptions) =>
+              setTags(selectedOptions.map((opt) => opt.value))
+            }
+            placeholder="Select project tags"
+            styles={lightSelectStyles}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            Select a team
+          </label>
+          <Select
+            isMulti={true}
+            options={options}
+            onChange={(selectedOptions) => {
+              setTeamsSelected(selectedOptions.map((opt) => opt.value));
+            }}
+            placeholder="Select team"
+            styles={lightSelectStyles}
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-3 justify-end px-6 py-4 border-t border-slate-200 shrink-0">
+        <Button variant="outline" onClick={() => dispatch(close())}>
           Cancel
-        </button>
-        <button
-          className="w-full sm:w-auto cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm sm:text-base"
-          onClick={handleNewProject}
-          disabled={loading}
-        >
-          {loading ? <CircularLoader /> : "Create"}
-        </button>
+        </Button>
+        <Button onClick={handleNewProject} loading={loading} disabled={!projectName.trim()}>
+          Create project
+        </Button>
       </div>
     </div>
   );

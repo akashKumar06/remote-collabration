@@ -39,38 +39,36 @@ const Dashboard = () => {
   // if (teamError) return <h1>Project Error : Error loading dashboard</h1>;
 
   return (
-    <div className="h-screen font-roboto flex flex-col">
-      {/* Navbar */}
-      <div className="flex-shrink-0">
-        <Navbar onToggleSidbar={() => setIsSidebarOpen(!isSidebarOpen)} />
+    <div className="h-screen font-sans flex bg-surface">
+      {/* Sidebar - mobile (absolute) */}
+      <div
+        className={`fixed inset-y-0 left-0 z-40 transition-transform transform md:relative md:translate-x-0 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:flex-shrink-0 w-64`}
+      >
+        <Sidebar
+          isToggled={isSidebarOpen}
+          projects={projects}
+          teams={teams}
+          onClose={() => setIsSidebarOpen(false)}
+        />
       </div>
 
-      {/* Main Layout */}
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* Sidebar - mobile (absolute) */}
+      {/* Backdrop for mobile */}
+      {isSidebarOpen && (
         <div
-          className={`fixed inset-y-0 left-0 z-40 transition-transform transform md:relative md:translate-x-0 ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:flex-shrink-0 w-64`}
-        >
-          <Sidebar
-            isToggled={isSidebarOpen}
-            projects={projects}
-            teams={teams}
-            onClose={() => setIsSidebarOpen(false)}
-          />
+          className="fixed inset-0 bg-slate-900/40 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Layout */}
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <div className="flex-shrink-0">
+          <Navbar onToggleSidbar={() => setIsSidebarOpen(!isSidebarOpen)} />
         </div>
 
-        {/* Backdrop for mobile */}
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black opacity-50 z-30 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-
-        {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-[#1E1F21] text-white">
+        <main className="flex-1 overflow-y-auto thin-scrollbar text-slate-800">
           <Modal />
           <Outlet />
         </main>

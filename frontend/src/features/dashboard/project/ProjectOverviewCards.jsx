@@ -1,75 +1,59 @@
 import { motion } from "framer-motion";
-import { Crown, FolderKanban, Users } from "lucide-react";
+import { Crown, FolderKanban, Users, Users2 } from "lucide-react";
+
+const stats = (projects, teams) => [
+  {
+    icon: FolderKanban,
+    label: "Total Projects",
+    value: projects.total,
+    tint: "bg-primary-50 text-primary-600",
+  },
+  {
+    icon: Crown,
+    label: "Owned Projects",
+    value: projects.owned,
+    tint: "bg-warning-50 text-warning-600",
+  },
+  {
+    icon: Users,
+    label: "Collaborating On",
+    value: projects.total - projects.owned,
+    tint: "bg-info-50 text-info-600",
+  },
+  {
+    icon: Users2,
+    label: "Total Teams",
+    value: teams.total,
+    tint: "bg-success-50 text-success-600",
+  },
+  {
+    icon: Crown,
+    label: "Owned Teams",
+    value: teams.owned,
+    tint: "bg-pink-50 text-pink-600",
+  },
+];
 
 function ProjectOverviewCards({ teams, projects }) {
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 * 0 }}
-        className="bg-[#2A2A2A] p-5 rounded-2xl border border-gray-700 flex flex-col gap-2 hover:shadow-lg"
-      >
-        <div className="flex items-center gap-3">
-          <FolderKanban size={20} className="text-blue-400" />
-          <span className="text-sm text-gray-400">Total Projects</span>
-        </div>
-        <h2 className="text-2xl font-bold">{projects.total}</h2>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 * 1 }}
-        className="bg-[#2A2A2A] p-5 rounded-2xl border border-gray-700 flex flex-col gap-2 hover:shadow-lg"
-      >
-        <div className="flex items-center gap-3">
-          <Crown size={20} className="text-yellow-400" />
-          <span className="text-sm text-gray-400">Owned Projects</span>
-        </div>
-        <h2 className="text-2xl font-bold">{projects.owned}</h2>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 * 2 }}
-        className="bg-[#2A2A2A] p-5 rounded-2xl border border-gray-700 flex flex-col gap-2 hover:shadow-lg"
-      >
-        <div className="flex items-center gap-3">
-          <Users size={20} className="text-pink-400" />
-          <span className="text-sm text-gray-400">Collaborating on</span>
-        </div>
-        <h2 className="text-2xl font-bold">
-          {projects.total - projects.owned}
-        </h2>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 * 3 }}
-        className="bg-[#2A2A2A] p-5 rounded-2xl border border-gray-700 flex flex-col gap-2 hover:shadow-lg"
-      >
-        <div className="flex items-center gap-3">
-          <FolderKanban size={20} className="text-blue-400" />
-          <span className="text-sm text-gray-400">Total teams</span>
-        </div>
-        <h2 className="text-2xl font-bold">{teams.total}</h2>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.05 * 4 }}
-        className="bg-[#2A2A2A] p-5 rounded-2xl border border-gray-700 flex flex-col gap-2 hover:shadow-lg"
-      >
-        <div className="flex items-center gap-3">
-          <Crown size={20} className="text-yellow-400" />
-          <span className="text-sm text-gray-400">Owned teams</span>
-        </div>
-        <h2 className="text-2xl font-bold">{teams.owned}</h2>
-      </motion.div>
+      {stats(projects, teams).map((stat, idx) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.04 * idx }}
+          className="card-surface p-5 flex flex-col gap-3 hover:shadow-[var(--shadow-pop)] transition-shadow"
+        >
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${stat.tint}`}>
+            <stat.icon size={18} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-display font-bold text-slate-900">{stat.value}</h2>
+            <span className="text-sm text-slate-500">{stat.label}</span>
+          </div>
+        </motion.div>
+      ))}
     </>
   );
 }

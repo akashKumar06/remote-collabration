@@ -8,22 +8,20 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Define chart colors for each status
 const STATUS_COLORS = {
-  "Not Started": "#FF6B6B",
-  "In Progress": "#FFD93D",
-  Completed: "#6BCB77",
+  "Not Started": "#94a3b8",
+  "In Progress": "#f59e0b",
+  Completed: "#10b981",
 };
 
-// Custom tooltip to show status, count, and percentage
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const { name, value, percent } = payload[0];
     return (
-      <div className="bg-gray-700 text-white p-2 rounded shadow">
-        <p className="font-semibold">{name}</p>
-        <p>Count: {value}</p>
-        <p>Percentage: {(percent * 100).toFixed(1)}%</p>
+      <div className="bg-white border border-slate-200 shadow-[var(--shadow-pop)] p-3 rounded-xl text-sm">
+        <p className="font-semibold text-slate-800">{name}</p>
+        <p className="text-slate-500">Count: {value}</p>
+        <p className="text-slate-500">Percentage: {(percent * 100).toFixed(1)}%</p>
       </div>
     );
   }
@@ -31,7 +29,6 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 const TaskStatusChart = ({ tasks }) => {
-  // Count status
   const statusMap = {
     "Not Started": 0,
     "In Progress": 0,
@@ -49,17 +46,16 @@ const TaskStatusChart = ({ tasks }) => {
   }));
 
   return (
-    <div className="w-full h-96 p-4 bg-background rounded-2xl shadow-lg">
-      <ResponsiveContainer width="100%" height={300}>
+    <div className="w-full h-96 card-surface p-5">
+      <h3 className="text-sm font-semibold text-slate-700 mb-1">Task Status</h3>
+      <ResponsiveContainer width="100%" height={320}>
         <PieChart>
           <Pie
             data={chartData}
             cx="50%"
             cy="50%"
             outerRadius={100}
-            label={({ name, percent }) =>
-              `${name} ${(percent * 100).toFixed(0)}%`
-            }
+            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             dataKey="value"
           >
             {chartData.map((entry, index) => (
@@ -70,7 +66,7 @@ const TaskStatusChart = ({ tasks }) => {
           <Legend
             verticalAlign="bottom"
             iconType="circle"
-            wrapperStyle={{ color: "white" }}
+            wrapperStyle={{ color: "#475569", fontSize: 13 }}
           />
         </PieChart>
       </ResponsiveContainer>

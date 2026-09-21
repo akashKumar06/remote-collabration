@@ -1,13 +1,30 @@
 import { useState } from "react";
-import { Trash2, Save } from "lucide-react";
+import { Trash2, Save, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import CircularLoader from "../../../components/CircularLoader";
 import { toast } from "react-hot-toast";
 import {
   deleteProject,
   updateProjectName,
 } from "../../../app/slices/project/projectThunk";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
+
+const avatarTints = [
+  "bg-primary-100 text-primary-700",
+  "bg-info-50 text-info-600",
+  "bg-success-50 text-success-600",
+  "bg-warning-50 text-warning-600",
+  "bg-pink-50 text-pink-600",
+];
+
+const tintFor = (id) => {
+  if (!id) return avatarTints[0];
+  const sum = String(id)
+    .split("")
+    .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return avatarTints[sum % avatarTints.length];
+};
 
 const ProjectSettings = () => {
   const { currentProject, isUpdatingName } = useSelector(
@@ -18,22 +35,15 @@ const ProjectSettings = () => {
   const [projectName, setProjectName] = useState(() => name);
   const dispatch = useDispatch();
   const [isDeletingProject, setIsDeletingProject] = useState(false);
-  const handleRoleChange = (id, newRole) => {
-    setMembers((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, role: newRole } : m))
-    );
-  };
 
-  const removeMember = (id) => {
+  const removeMember = () => {
     if (
       window.confirm(
-        `Are you sure you want to remove ${
-          members.find((m) => m.id === id)?.name
-        }?`
+        `Are you sure you want to remove this member?`
       )
     ) {
-      setMembers((prev) => prev.filter((m) => m.id !== id));
-      console.log(`Member ${id} removed`);
+      // Member removal is not yet wired up to the backend.
+      toast("Member removal isn't available yet.");
     }
   };
 
@@ -60,116 +70,84 @@ const ProjectSettings = () => {
     await dispatch(updateProjectName(payload))
       .unwrap()
       .then(() => toast.success("Name changed successfully."))
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err?.message || "Failed to update name"));
   };
 
   return (
-    <div className="min-h-screen p-6 bg-[#121212] text-gray-100 transition duration-300 ease-in-out">
-      <div className="max-w-4xl mx-auto bg-[#1a1a1a] rounded-3xl shadow-xl p-8 space-y-8 border border-[#2a2a2a]">
-        {/* Header */}
-        <div className="flex justify-between items-center border-b border-[#2a2a2a] pb-4">
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
-            Project Settings
-          </h2>
-        </div>
+    <div className="max-w-4xl mx-auto py-6 sm:py-8 space-y-8">
+      <div>
+        <h2 className="text-2xl font-display font-bold text-slate-900">
+          Project Settings
+        </h2>
+        <p className="text-sm text-slate-500 mt-0.5">
+          Manage {name}&rsquo;s details, members and danger zone actions.
+        </p>
+      </div>
 
-        {/* Project Details */}
-        <section className="space-y-5">
-          <h3 className="text-xl font-bold text-gray-50">Project Name</h3>
-          <input
-            type="text"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            className="w-full p-3 rounded-lg border border-[#3a3a3a] bg-[#222222] text-white focus:outline-none focus:ring-3 focus:ring-blue-500 text-base shadow-sm"
-            placeholder="Enter Project Name"
-          />
-          <button
-            onClick={hanldeNameUpdate}
-            className="min-w-36 cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition"
-          >
-            {isUpdatingName ? (
-              <CircularLoader />
-            ) : (
-              <>
-                {" "}
-                <Save className="w-5 h-5" /> Save Changes
-              </>
-            )}
-          </button>
-        </section>
+      {/* Project Details */}
+      <section className="card-surface p-6 space-y-4">
+        <h3 className="text-base font-semibold text-slate-900">Project Name</h3>
+        <Input
+          type="text"
+          value={projectName}
+          onChange={(e) => setProjectName(e.target.value)}
+          placeholder="Enter project name"
+        />
+        <Button onClick={hanldeNameUpdate} loading={isUpdatingName}>
+          <Save size={16} /> Save changes
+        </Button>
+      </section>
 
-        <hr className="border-[#2a2a2a]" />
-
-        {/* Team Members */}
-        <section className="space-y-6">
-          <h3 className="text-xl font-bold text-gray-50">Team Members</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {members.map(
-              (member) =>
-                member.role !== "owner" && (
-                  <div
-                    key={member._id}
-                    className="flex flex-col items-start p-5 bg-[#222222] rounded-xl shadow-sm border border-[#3a3a3a] hover:shadow-md transition duration-200 ease-in-out"
-                  >
-                    <p className="font-semibold text-lg text-white mb-2">
+      {/* Team Members */}
+      <section className="card-surface p-6 space-y-4">
+        <h3 className="text-base font-semibold text-slate-900">Team Members</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {members.map(
+            (member) =>
+              member.role !== "owner" && (
+                <div
+                  key={member._id}
+                  className="flex flex-col items-start p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition"
+                >
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <span
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${tintFor(
+                        member.user._id
+                      )}`}
+                    >
+                      {member.user.firstname?.[0]?.toUpperCase()}
+                    </span>
+                    <p className="font-medium text-sm text-slate-800">
                       {`${member.user.firstname} ${member.user.lastname}`}
                     </p>
-                    <div className="flex items-center w-full justify-between">
-                      <p>{member.role}</p>
-                      {/* <select
-                    value={member.role}
-                    onChange={(e) =>
-                      handleRoleChange(member.user._id, e.target.value)
-                    }
-                    className="p-2.5 rounded-md border border-[#3a3a3a] text-sm bg-[#2a2a2a] text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="Admin">Admin</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Viewer">Viewer</option>
-                  </select> */}
-                      <button
-                        onClick={() => removeMember(member.user._id)}
-                        className="text-red-500 hover:text-red-700 font-medium text-sm ml-4 py-1 px-2 rounded-md transition duration-200"
-                        title="Remove Member"
-                      >
-                        Remove
-                      </button>
-                    </div>
                   </div>
-                )
-            )}
-          </div>
-        </section>
+                  <div className="flex items-center w-full justify-between">
+                    <span className="text-xs text-slate-400 capitalize">{member.role}</span>
+                    <button
+                      onClick={() => removeMember(member.user._id)}
+                      className="flex items-center gap-1 text-danger-600 hover:text-danger-700 font-medium text-xs"
+                      title="Remove Member"
+                    >
+                      <X size={13} /> Remove
+                    </button>
+                  </div>
+                </div>
+              )
+          )}
+        </div>
+      </section>
 
-        <hr className="border-[#2a2a2a]" />
-
-        {/* Danger Zone: Delete Project */}
-        <section className="pt-4 bg-gray-900 p-6 rounded-xl border border-red-900 shadow-inner">
-          {" "}
-          {/* Changed from red */}
-          <h3 className="text-xl font-bold text-gray-300 mb-3">
-            Danger Zone
-          </h3>{" "}
-          {/* Changed from red */}
-          <p className="text-gray-400 mb-4 text-sm">
-            {" "}
-            {/* Changed from red */}
-            Permanently delete this project and all its associated data. This
-            action cannot be undone.
-          </p>
-          <button
-            onClick={handleDeleteProject}
-            className="cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition transform focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          >
-            {isDeletingProject && <CircularLoader />}
-            {!isDeletingProject && (
-              <>
-                <Trash2 className="w-5 h-5" /> Delete Project
-              </>
-            )}
-          </button>
-        </section>
-      </div>
+      {/* Danger Zone: Delete Project */}
+      <section className="rounded-2xl border border-danger-200 bg-danger-50/40 p-6">
+        <h3 className="text-base font-semibold text-danger-700 mb-2">Danger Zone</h3>
+        <p className="text-slate-500 mb-4 text-sm">
+          Permanently delete this project and all its associated data. This
+          action cannot be undone.
+        </p>
+        <Button variant="danger" onClick={handleDeleteProject} loading={isDeletingProject}>
+          <Trash2 size={16} /> Delete project
+        </Button>
+      </section>
     </div>
   );
 };

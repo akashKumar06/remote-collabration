@@ -23,7 +23,7 @@ async function sendMailToTeam(inviter, receiver, project) {
       process.env.JWT_SECRET,
       {
         expiresIn: "2d",
-      }
+      },
     );
 
     if (!token) throw new ApiError(400, "Token could not be created.");
@@ -65,7 +65,7 @@ async function sendMailToTeam(inviter, receiver, project) {
 async function deleteFiles(files) {
   try {
     const deletePromises = files.map(
-      async (file) => await deleteFromCloudinary(file)
+      async (file) => await deleteFromCloudinary(file),
     );
     await Promise.allSettled(deletePromises);
   } catch (error) {
@@ -76,6 +76,7 @@ async function deleteFiles(files) {
 export async function createProject(req, res) {
   try {
     const { name, teamIds, tags } = req.body;
+
     if (!name) throw new ApiError(400, "Project name is required.");
     const user = req.user;
 
@@ -100,7 +101,7 @@ export async function createProject(req, res) {
     if (teamIds.length > 0) {
       const teams = await Team.find({ _id: { $in: teamIds } }).populate(
         "members.user",
-        "email firstname"
+        "email firstname",
       );
 
       let members = [];
@@ -114,8 +115,8 @@ export async function createProject(req, res) {
           sendMailToTeam(
             { firstname: user.firstname },
             { email: member.user.email },
-            { id: project._id, name: project.name }
-          )
+            { id: project._id, name: project.name },
+          ),
         );
       await Promise.all(emailPromises);
 
@@ -216,7 +217,7 @@ export async function getProjectById(req, res) {
     }
     return res.status(200).json({
       success: true,
-      message: "Project feteched successfully.",
+      message: "Project fetched successfully.",
       project,
     });
   } catch (error) {
@@ -254,7 +255,7 @@ export async function updateProjectDescription(req, res) {
     // check if user is member of the project or not
     const userId = req.user._id;
     const isMember = project.members.some(
-      (member) => member.user._id.toString() === userId.toString()
+      (member) => member.user._id.toString() === userId.toString(),
     );
     if (!isMember)
       throw new ApiError(403, "You are not a member of this project");
@@ -304,7 +305,7 @@ export async function inviteUserToProject(req, res) {
       process.env.JWT_SECRET,
       {
         expiresIn: "2d",
-      }
+      },
     );
 
     if (!token) throw new ApiError(400, "Token could not be created.");
@@ -364,7 +365,7 @@ export async function acceptProjectInvite(req, res) {
 
     // check if user is already a member
     const alreadyMember = project.members.some(
-      (member) => member.user.toString() === user._id.toString()
+      (member) => member.user.toString() === user._id.toString(),
     );
 
     if (alreadyMember)
@@ -409,7 +410,7 @@ export async function uploadFiles(req, res) {
 
     const files = req.files;
     const results = await Promise.all(
-      files.map((file) => uploadOnCloudinary(file))
+      files.map((file) => uploadOnCloudinary(file)),
     );
 
     project.files.push(...results);
@@ -482,18 +483,18 @@ export async function removeMemberFromProject(req, res) {
     if (project.owner.toString() === memberId) {
       throw new ApiError(
         400,
-        "The project owner cannot remove themselves from the project."
+        "The project owner cannot remove themselves from the project.",
       );
     }
 
     // check does member belongs to the project
     const isMember = project.members.some(
-      (member) => member.user.toString() === memberId
+      (member) => member.user.toString() === memberId,
     );
     if (!isMember)
       throw new ApiError(
         404,
-        "The specified member is not part of this project."
+        "The specified member is not part of this project.",
       );
 
     // Pull (remove) the member
@@ -508,7 +509,7 @@ export async function removeMemberFromProject(req, res) {
           },
         }, // add activity log
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedProject) {
@@ -602,13 +603,13 @@ export async function addMemberToProject(req, res) {
     if (project.owner.toString() !== req.user._id.toString()) {
       throw new ApiError(
         403,
-        "Only the project owner is authorized to perform this action"
+        "Only the project owner is authorized to perform this action",
       );
     }
 
     // check if user is already a member
     const alreadyMember = project.members.some(
-      (member) => member.user.toString() === userId
+      (member) => member.user.toString() === userId,
     );
     if (alreadyMember)
       throw new ApiError(400, "User is already member of project");
@@ -655,7 +656,7 @@ export async function assignTeamToProject(req, res) {
 
     const team = await Team.findById(teamId).populate(
       "members.user",
-      "firstname lastname"
+      "firstname lastname",
     );
 
     if (!team) {
@@ -666,7 +667,7 @@ export async function assignTeamToProject(req, res) {
     if (project.team) {
       throw new ApiError(
         400,
-        "Project already has a team assigned. Remove it first to assign a new one."
+        "Project already has a team assigned. Remove it first to assign a new one.",
       );
     }
 

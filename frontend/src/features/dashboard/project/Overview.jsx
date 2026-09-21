@@ -22,15 +22,15 @@ export default function Overview() {
   if (!currentProject) return <SplashScreen />;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 text-white space-y-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1 space-y-6">
+    <div className="max-w-7xl mx-auto py-6 sm:py-8 space-y-8">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 space-y-6 min-w-0">
           <Description currentProject={currentProject} />
           <Members currentProject={currentProject} />
           <ProjectResourcesQuickView files={currentProject.files} />
         </div>
 
-        <div className="w-full lg:w-[300px] space-y-6">
+        <div className="w-full lg:w-[320px] space-y-6 shrink-0">
           <Timeline activities={currentProject.activityLogs} />
           <MileStones />
           <ProjectQuickStats />

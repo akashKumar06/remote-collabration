@@ -37,34 +37,41 @@ function MileStones() {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.3 }}
-      className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700"
+      transition={{ delay: 0.25 }}
+      className="card-surface p-6"
     >
       <div
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsMilestonesOpen(!isMilestonesOpen)}
       >
-        <h2 className="text-lg font-semibold">Milestones</h2>
-        {isMilestonesOpen ? <ChevronDown /> : <ChevronRight />}
+        <h2 className="text-base font-semibold text-slate-900">Milestones</h2>
+        {isMilestonesOpen ? (
+          <ChevronDown className="text-slate-400" size={18} />
+        ) : (
+          <ChevronRight className="text-slate-400" size={18} />
+        )}
       </div>
       {isMilestonesOpen && (
-        <div className="space-y-2 mt-4">
+        <div className="space-y-3 mt-4">
+          {completed.length === 0 && inProgress.length === 0 && notStarted.length === 0 && (
+            <p className="text-sm text-slate-400">No tasks yet.</p>
+          )}
           {completed.length !== 0 && (
-            <div className="flex items-center gap-2">
-              <CalendarCheck size={16} className="text-green-400" />
-              <span>{completed.at(-1).title} - Completed</span>
+            <div className="flex items-center gap-2.5 text-sm text-slate-600">
+              <CalendarCheck size={16} className="text-success-500" />
+              <span>{completed.at(-1).title} &mdash; Completed</span>
             </div>
           )}
           {inProgress.length !== 0 && (
-            <div className="flex items-center gap-2">
-              <CalendarCheck size={16} className="text-yellow-400" />
-              <span>{inProgress[0].title} - In Progress</span>
+            <div className="flex items-center gap-2.5 text-sm text-slate-600">
+              <CalendarCheck size={16} className="text-warning-500" />
+              <span>{inProgress[0].title} &mdash; In Progress</span>
             </div>
           )}
           {notStarted.length !== 0 && (
-            <div className="flex items-center gap-2">
-              <CalendarCheck size={16} className="text-gray-400" />
-              <span>{notStarted[0].title}- Pending</span>
+            <div className="flex items-center gap-2.5 text-sm text-slate-600">
+              <CalendarCheck size={16} className="text-slate-400" />
+              <span>{notStarted[0].title} &mdash; Pending</span>
             </div>
           )}
         </div>

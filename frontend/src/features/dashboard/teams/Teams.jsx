@@ -1,32 +1,26 @@
 import { marked } from "marked";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-
-const Icon = ({ path, className = "w-6 h-6" }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className={className}
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-  </svg>
-);
-
-const UserIcon = () => (
-  <Icon path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-);
+import { User, Users2 } from "lucide-react";
 
 const getAvatar = (firstname, lastname) => {
   return `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}`;
 };
 
-const getRandomColor = () => {
-  const colors = ["14213d", "264653", "132a13", "6f1d1b", "343a40", "240046"];
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
+const avatarTints = [
+  "bg-primary-100 text-primary-700",
+  "bg-info-50 text-info-600",
+  "bg-success-50 text-success-600",
+  "bg-warning-50 text-warning-600",
+  "bg-pink-50 text-pink-600",
+];
+
+const tintFor = (id) => {
+  if (!id) return avatarTints[0];
+  const sum = String(id)
+    .split("")
+    .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return avatarTints[sum % avatarTints.length];
 };
 
 const TeamCard = ({ team }) => {
@@ -34,48 +28,36 @@ const TeamCard = ({ team }) => {
   return (
     <div
       onClick={() => navigate(`/dashboard/teams/${team._id}`)}
-      className="bg-[#2A2B2D] rounded-xl p-6 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-transparent hover:border-cyan-500/50 flex flex-col justify-between"
+      className="card-surface p-6 hover:shadow-[var(--shadow-pop)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col justify-between"
     >
       <div>
-        <div className="flex items-start justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-100">{team.name}</h3>
-          <img
-            src={`https://placehold.co/100x100/${getRandomColor()}/fff?text=${getAvatar(
-              team.owner.firstname,
-              team.owner.lastname
+        <div className="flex items-start justify-between mb-4 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+              <Users2 className="w-4.5 h-4.5 text-primary-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-slate-900 truncate">{team.name}</h3>
+          </div>
+          <div
+            className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 ${tintFor(
+              team.owner._id
             )}`}
-            alt={`${team.owner.firstname}'s avatar`}
-            className="w-12 h-12 rounded-full border-2 border-gray-600 object-cover"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://placehold.co/100x100/333/FFF?text=?";
-            }}
-          />
+          >
+            {getAvatar(team.owner.firstname, team.owner.lastname)}
+          </div>
         </div>
         <p
-          className="text-gray-400 mb-5 text-sm leading-relaxed min-h-[60px]"
+          className="text-slate-500 mb-5 text-sm leading-relaxed min-h-[40px] line-clamp-2"
           dangerouslySetInnerHTML={{
-            __html: marked(team.description.slice(0, 100) + "..."),
+            __html: marked((team.description || "").slice(0, 100) + "..."),
           }}
         ></p>
       </div>
-      <div>
-        <div className="flex items-center text-gray-400 text-sm mb-4">
-          <UserIcon />
-          <span className="ml-2">
-            {team.owner.firstname} {team.owner.lastname}
-          </span>
-        </div>
-        {/* <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-gray-600/50 text-cyan-300 text-xs font-semibold px-3 py-1 rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-        </div> */}
+      <div className="flex items-center text-slate-500 text-sm">
+        <User size={14} />
+        <span className="ml-2">
+          {team.owner.firstname} {team.owner.lastname}
+        </span>
       </div>
     </div>
   );
@@ -84,21 +66,29 @@ const TeamCard = ({ team }) => {
 function Teams() {
   const { teams } = useSelector((state) => state.team);
   return (
-    <div className="container mx-auto px-8 py-12">
-      <header className="text-center mb-12 animate-fade-in">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <header className="mb-8 animate-fade-in">
+        <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900">
           Teams
         </h1>
-        <p className="text-gray-400 mt-2 text-lg">Explore your teams.</p>
+        <p className="text-slate-500 mt-1">
+          Every team you own or belong to.
+        </p>
       </header>
       {teams.length === 0 ? (
-        <h1 className=" text-center text-2xl md:text-3xl font-extrabold text-white">
-          No teams 🙃.
-        </h1>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary-50 flex items-center justify-center mb-4">
+            <Users2 className="w-7 h-7 text-primary-600" />
+          </div>
+          <h2 className="text-lg font-semibold text-slate-800">No teams yet</h2>
+          <p className="text-slate-500 text-sm mt-1">
+            Create your first team from the sidebar to get started.
+          </p>
+        </div>
       ) : (
         <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in"
-          style={{ animationDelay: "0.2s" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in"
+          style={{ animationDelay: "0.1s" }}
         >
           {teams.map((team) => (
             <TeamCard key={team._id} team={team} />

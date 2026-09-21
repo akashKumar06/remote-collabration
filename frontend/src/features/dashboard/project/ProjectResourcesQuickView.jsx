@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, FileText, Paperclip } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 import { useState } from "react";
@@ -10,30 +10,36 @@ function ProjectResourcesQuickView({ files }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="bg-[#2A2A2A] p-6 rounded-2xl border border-gray-700"
+      className="card-surface p-6"
     >
       {files.length === 0 ? (
-        <p>No files currently.</p>
+        <div className="flex items-center gap-2.5 text-sm text-slate-400">
+          <Paperclip size={16} />
+          No files currently.
+        </div>
       ) : (
         <>
           <div
             className="flex items-center justify-between cursor-pointer"
             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
           >
-            <h2 className="text-lg font-semibold">Resources</h2>
-            {isResourcesOpen ? <ChevronDown /> : <ChevronRight />}
+            <h2 className="text-base font-semibold text-slate-900">Resources</h2>
+            {isResourcesOpen ? (
+              <ChevronDown className="text-slate-400" size={18} />
+            ) : (
+              <ChevronRight className="text-slate-400" size={18} />
+            )}
           </div>
           {isResourcesOpen && (
-            <ul className="space-y-3 mt-4 text-blue-400">
+            <ul className="space-y-2.5 mt-4">
               {files.map((file) => (
-                <li
-                  key={file._id}
-                  className="flex items-center gap-2 hover:underline"
-                >
-                  <Link size={16} />
-                  {/* <a href={res.url} target="_blank" rel="noopener noreferrer">
-                    {res.label}
-                  </a> */}
+                <li key={file._id}>
+                  <Link
+                    className="flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 hover:underline"
+                  >
+                    <FileText size={15} />
+                    {file.name || "Untitled file"}
+                  </Link>
                 </li>
               ))}
             </ul>

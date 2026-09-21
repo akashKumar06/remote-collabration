@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Pencil } from "lucide-react";
+import { Pencil, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { close, open, setActiveComponent } from "../../../app/slices/modal";
@@ -7,6 +7,8 @@ import { delay } from "../../../utils/delay";
 import toast from "react-hot-toast";
 import { marked } from "marked";
 import { updateProjectDescription } from "../../../app/slices/project/projectThunk";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
 
 function Description({ currentProject }) {
   const { state } = useSelector((state) => state.modal);
@@ -60,7 +62,6 @@ function Description({ currentProject }) {
         setIsSaving(false);
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error.message);
         setIsSaving(false);
       });
@@ -92,33 +93,36 @@ function Description({ currentProject }) {
     setIsGenerated(true);
   };
   return (
-    <>
-      <div className="flex gap-4">
-        <button
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-3">
+        <Button
+          variant={openGenerateInput ? "outline" : "secondary"}
+          size="sm"
           onClick={() => setOpenGenerateInput((prev) => !prev)}
-          className="px-4 py-2 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
         >
-          {!openGenerateInput
-            ? "Generate project description with AI"
-            : "Cancel"}
-        </button>
+          {!openGenerateInput ? (
+            <>
+              <Sparkles size={15} /> Generate description with AI
+            </>
+          ) : (
+            <>
+              <X size={15} /> Cancel
+            </>
+          )}
+        </Button>
         {openGenerateInput && (
-          <button
-            onClick={handleGenerateWithAI}
-            className="px-4 py-2 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
-          >
-            {isGenerating ? "Generating..." : "Generate"}
-          </button>
+          <Button size="sm" onClick={handleGenerateWithAI} loading={isGenerating}>
+            Generate
+          </Button>
         )}
       </div>
 
       {openGenerateInput && (
-        <input
+        <Input
           type="text"
           placeholder="Enter project idea..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          className="flex-1 w-full p-2.5 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-500 focus:outline-none"
         />
       )}
       {openGenerateInput && (
@@ -126,24 +130,19 @@ function Description({ currentProject }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#2A2A2A] border border-gray-700 p-6 rounded-2xl"
+          className="card-surface p-6"
         >
           <div className="flex items-end justify-end">
-            {isGenerating && <p1>...</p1>}
             {isGenerated && (
-              <button
-                onClick={handleSaveDescription}
-                className="px-4 py-1 cursor-pointer rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1"
-              >
-                {isSaving ? "Saving" : "Save  "}
-              </button>
+              <Button size="sm" onClick={handleSaveDescription} loading={isSaving}>
+                Save
+              </Button>
             )}
           </div>
           <div
-            className="prose text-gray-300 prose-invert max-w-none"
+            className="prose prose-sm max-w-none prose-slate"
             dangerouslySetInnerHTML={{ __html: marked(description) }}
           />
-          {/* <p className="text-gray-300">{description}</p> */}
         </motion.div>
       )}
 
@@ -151,12 +150,12 @@ function Description({ currentProject }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-[#2A2A2A] border border-gray-700 p-6 rounded-2xl"
+        className="card-surface p-6"
       >
-        <div className="flex items-start justify-between">
-          <h2 className="text-lg font-semibold mb-2">Project Description</h2>
+        <div className="flex items-start justify-between mb-2">
+          <h2 className="text-base font-semibold text-slate-900">Project Description</h2>
           <button
-            className="flex items-center gap-1 text-sm text-blue-400 hover:underline"
+            className="flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 font-medium shrink-0"
             onClick={async () => {
               if (state) {
                 dispatch(close());
@@ -166,11 +165,11 @@ function Description({ currentProject }) {
               dispatch(setActiveComponent("set_project_description"));
             }}
           >
-            <Pencil size={16} /> Edit
+            <Pencil size={14} /> Edit
           </button>
         </div>
         <div
-          className="prose text-gray-300 prose-invert max-w-none"
+          className="prose prose-sm max-w-none prose-slate text-slate-600"
           dangerouslySetInnerHTML={{
             __html: marked(
               expanded || !isLong
@@ -181,14 +180,14 @@ function Description({ currentProject }) {
         />
         {isLong && (
           <button
-            className="cursor-pointer mt-2 px-3 py-1 rounded bg-blue-700 text-white text-sm hover:bg-blue-800"
+            className="cursor-pointer mt-3 text-sm font-medium text-primary-600 hover:text-primary-700"
             onClick={() => setExpanded((prev) => !prev)}
           >
-            {expanded ? "Read Less" : "Read More"}
+            {expanded ? "Read less" : "Read more"}
           </button>
         )}
       </motion.div>
-    </>
+    </div>
   );
 }
 

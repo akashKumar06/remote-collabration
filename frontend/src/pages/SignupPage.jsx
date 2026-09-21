@@ -3,14 +3,12 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import { CardContent } from "../components/CardContent";
-import { Card } from "../components/Card";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../app/slices/auth/authThunks";
 import { clearErrors } from "../app/slices/auth/authSlice";
 import GoogleAuth from "../components/Google";
-import CircularLoader from "../components/CircularLoader";
+import { Boxes, Sparkles, Workflow } from "lucide-react";
 
 const SignupPage = () => {
   const dispatch = useDispatch();
@@ -51,111 +49,166 @@ const SignupPage = () => {
   }, [user, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <Card className="w-full max-w-md md:max-w-lg shadow-lg p-4 sm:p-6">
-        <CardContent>
-          <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">
-            Sign Up
+    <div className="min-h-screen flex bg-surface">
+      {/* Brand panel */}
+      <div className="hidden lg:flex lg:w-5/12 relative bg-primary-950 overflow-hidden flex-col justify-between p-12">
+        <div className="absolute inset-0 bg-grid-pattern opacity-40" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary-700/30 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-primary-500/20 blur-3xl" />
+
+        <Link to="/" className="relative flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+            <Boxes className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-white font-display font-bold text-lg tracking-tight">
+            RemoteSync
+          </span>
+        </Link>
+
+        <div className="relative space-y-8">
+          <h2 className="text-3xl font-display font-semibold text-white leading-snug">
+            Set your team up for its best work, in minutes.
           </h2>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 text-primary-100/90">
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                <Workflow className="w-4 h-4" />
+              </div>
+              <span className="text-sm">Organize projects into clear workflows</span>
+            </div>
+            <div className="flex items-center gap-3 text-primary-100/90">
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <span className="text-sm">Free forever for small teams</span>
+            </div>
+          </div>
+        </div>
+
+        <p className="relative text-xs text-primary-200/60">
+          &copy; {new Date().getFullYear()} RemoteSync. All rights reserved.
+        </p>
+      </div>
+
+      {/* Form panel */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12">
+        <div className="w-full max-w-md">
+          <div className="lg:hidden flex items-center gap-2.5 justify-center mb-8">
+            <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
+              <Boxes className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-slate-900 font-display font-bold text-lg">
+              RemoteSync
+            </span>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-2xl font-display font-semibold text-slate-900">
+              Create your account
+            </h2>
+            <p className="text-sm text-slate-500 mt-1.5">
+              Start collaborating with your team today.
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="w-full">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  First name
+                </label>
                 <Input
                   type="text"
-                  placeholder="First Name"
+                  placeholder="Jane"
                   name="firstname"
                   value={formData.firstname}
                   onChange={handleChange}
-                  className="w-full"
                   required
                 />
                 {fieldErrors.firstname && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-danger-600 text-xs mt-1.5">
                     {fieldErrors.firstname}
                   </p>
                 )}
               </div>
               <div className="w-full">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Last name
+                </label>
                 <Input
                   type="text"
-                  placeholder="Last Name"
+                  placeholder="Doe"
                   name="lastname"
                   value={formData.lastname}
                   onChange={handleChange}
-                  className="w-full"
                   required
                 />
                 {fieldErrors.lastname && (
-                  <p className="text-red-500 text-sm">{fieldErrors.lastname}</p>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div className="w-full">
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full"
-                  required
-                />
-                {fieldErrors.email && (
-                  <p className="text-red-500 text-sm">{fieldErrors.email}</p>
-                )}
-              </div>
-              {/* <div className="w-full">
-                <Input
-                  type="tel"
-                  placeholder="Phone Number"
-                  name="phoneNo"
-                  value={formData.phoneNo}
-                  onChange={handleChange}
-                  className="w-full"
-                  required
-                />
-                {fieldErrors.phoneNo && (
-                  <p className="text-red-500 text-sm">{fieldErrors.phoneNo}</p>
-                )}
-              </div> */}
-              <div className="w-full">
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full"
-                  required
-                />
-                {fieldErrors.password && (
-                  <p className="text-red-500 text-sm">{fieldErrors.password}</p>
+                  <p className="text-danger-600 text-xs mt-1.5">{fieldErrors.lastname}</p>
                 )}
               </div>
             </div>
 
-            <Button type="submit" className="w-full py-2 mt-2 cursor-pointer">
-              {status === "loading" ? (
-                <CircularLoader color="#fff" />
-              ) : (
-                "Sign Up"
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                Email address
+              </label>
+              <Input
+                type="email"
+                placeholder="you@company.com"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+              {fieldErrors.email && (
+                <p className="text-danger-600 text-xs mt-1.5">{fieldErrors.email}</p>
               )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                Password
+              </label>
+              <Input
+                type="password"
+                placeholder="Create a password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              {fieldErrors.password && (
+                <p className="text-danger-600 text-xs mt-1.5">{fieldErrors.password}</p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              size="lg"
+              loading={status === "loading"}
+              className="w-full mt-2"
+            >
+              Create account
             </Button>
           </form>
-          <div className="text-center mt-4">
-            <GoogleAuth />
+
+          <div className="flex items-center gap-3 my-6">
+            <hr className="flex-grow border-slate-200" />
+            <span className="text-xs font-medium text-slate-400">OR</span>
+            <hr className="flex-grow border-slate-200" />
           </div>
-          <div className="text-center mt-4">
-            <p className="text-sm">
-              Already have an account?{" "}
-              <a href="/login" className="text-gray-500 hover:underline">
-                Login
-              </a>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+
+          <GoogleAuth />
+
+          <p className="text-sm text-slate-500 text-center mt-6">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary-600 font-medium hover:text-primary-700">
+              Log in
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
