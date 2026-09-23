@@ -67,9 +67,7 @@ const HomePage = () => {
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button size="sm">
-                    Get started
-                  </Button>
+                  <Button size="sm">Get started</Button>
                 </Link>
               </>
             ) : (
@@ -128,7 +126,10 @@ const HomePage = () => {
             transition={{ duration: 0.55, delay: 0.18 }}
             className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
           >
-            <Link to={user ? "/dashboard" : "/signup"} className="w-full sm:w-auto">
+            <Link
+              to={user ? "/dashboard" : "/signup"}
+              className="w-full sm:w-auto"
+            >
               <Button size="lg" className="w-full sm:w-auto">
                 {user ? "Go to dashboard" : "Start for free"}
                 <ArrowRight className="w-4 h-4" />
@@ -136,7 +137,11 @@ const HomePage = () => {
             </Link>
             {!user && (
               <Link to="/login" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto"
+                >
                   Log in
                 </Button>
               </Link>
@@ -155,7 +160,7 @@ const HomePage = () => {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-300" />
             </div>
             <img
-              src="https://static.nomensa.com/collaboration_eb16f9b754.jpg"
+              src="https://img.magnific.com/free-vector/business-team-brainstorm-idea-lightbulb-from-jigsaw-working-team-collaboration-enterprise-cooperation-colleagues-mutual-assistance-concept-pinkish-coral-bluevector-isolated-illustration_335657-1651.jpg?semt=ais_hybrid&w=740&q=80"
               alt="Team collaborating on a project dashboard"
               className="w-full h-64 sm:h-96 object-cover"
             />
@@ -222,7 +227,10 @@ const HomePage = () => {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link to={user ? "/dashboard" : "/signup"}>
-                <Button size="lg" className="bg-white text-primary-700 hover:bg-primary-50">
+                <Button
+                  size="lg"
+                  className="bg-white text-primary-700 hover:bg-primary-50"
+                >
                   {user ? "Go to dashboard" : "Create your workspace"}
                   <ArrowRight className="w-4 h-4" />
                 </Button>
