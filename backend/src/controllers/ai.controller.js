@@ -1,12 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const generateProjectDetails = async (req, res) => {
   try {
     const { idea } = req.body;
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
         You are an expert product manager AI.
@@ -15,10 +13,14 @@ export const generateProjectDetails = async (req, res) => {
         Idea: "${idea}"
     `;
 
-    const result = await model.generateContentStream(prompt);
+    const stream = await groq.chat.completions.create({
+      model: "openai/gpt-oss-120b",
+      messages: [{ role: "user", content: prompt }],
+      stream: true,
+    });
 
-    for await (const chunk of result.stream) {
-      const text = chunk.text();
+    for await (const chunk of stream) {
+      const text = chunk.choices[0]?.delta?.content;
       if (text) {
         res.write(text); // stream the text to client
       }
@@ -27,6 +29,6 @@ export const generateProjectDetails = async (req, res) => {
     res.end(); // end the stream
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: "Gemini API call failed" });
+    res.status(500).json({ error: "Groq API call failed" });
   }
 };
